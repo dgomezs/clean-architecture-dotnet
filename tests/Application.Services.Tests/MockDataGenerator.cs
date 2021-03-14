@@ -9,7 +9,7 @@ namespace Application.Services.Tests
         public static CreateTodoListRequest CreateTodoList()
         {
             var generator = new Faker();
-            var foo = CreateTodoListRequest.Create(TodoListName.Create(generator.Random.AlphaNumeric(5)));
+            var foo = new CreateTodoListRequest(TodoListName.Create(generator.Random.AlphaNumeric(5)));
             return foo;
         }
     }

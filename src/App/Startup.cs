@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using WebApi.CustomConverters;
 
 namespace App
 {
@@ -39,7 +40,9 @@ namespace App
 
             services.AddControllers().AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.Converters.Add(
+                var jsonConverters = options.JsonSerializerOptions.Converters;
+                jsonConverters.Add(new TodoListNameConverter());
+                jsonConverters.Add(
                     new JsonStringEnumConverter());
             });
 

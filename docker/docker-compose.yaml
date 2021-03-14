@@ -7,5 +7,3 @@ services:
     environment:
       SA_PASSWORD: "TodoList@Demo"
       ACCEPT_EULA: "Y"
-    volumes:
-      - ./db:/var/opt/mssql
