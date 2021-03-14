@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Application.Services.Errors;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;
@@ -34,6 +35,22 @@ namespace Application.Services.Tests.CreateTodoList
             Assert.Equal(todoListName, todoList?.Name);
             Assert.Equal(id, todoList?.Id);
         }
+
+        [Fact]
+        public async Task Should_not_create_new_todolist_when_one_by_same_name_exists()
+        {
+            // arrange
+            // arrange
+            var todoListName = CreateTodoListName();
+            await TodoListDoesNotExist(todoListName);
+            await _createTodoListUseCase.Invoke(todoListName);
+
+            // act
+            // create another list by the same n
+            await Assert.ThrowsAsync<TodoListAlreadyExistsException>(() =>
+                _createTodoListUseCase.Invoke(todoListName));
+        }
+
 
         private TodoListName CreateTodoListName()
         {
