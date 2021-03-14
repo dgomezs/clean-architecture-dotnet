@@ -2,6 +2,7 @@
 {
     public static class ErrorCodes
     {
-        public const string TodoListAlreadyExists = "TODO_LIST_ALREADY_EXISTS";
+        public const string TodoListAlreadyExists = "TodoListAlreadyExists";
+        public const string BadCreateTodoListRequest = "BadCreateTodoListRequest";
     }
 }

@@ -13,8 +13,12 @@ namespace Domain.Tests.ValidateTodoListName
             var validListName = "valid-list-name";
             // act
             var listName = TodoListName.Create(validListName);
+            var resultListName = TodoListName.CreateWithErrors(validListName);
             // assert
             Assert.Equal(validListName, listName.Name);
+            resultListName.Match(
+                Succ: n => Assert.Equal(validListName, n.Name), 
+                Fail: ex => throw ex[0]);
         }
 
         [Theory]
@@ -23,6 +27,15 @@ namespace Domain.Tests.ValidateTodoListName
         public void Should_throw_a_validation_exception_for_invalid_names(string invalidName)
         {
             Assert.Throws<ValidationException>(() => TodoListName.Create(invalidName));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("this-is-a-very-long-validation-name-that-is-not-accepted")]
+        public void Should_return_a_validation_exception_for_invalid_names(string invalidName)
+        {
+            var result = TodoListName.CreateWithErrors(invalidName);
+            Assert.True(result.IsFail);
         }
     }
 }

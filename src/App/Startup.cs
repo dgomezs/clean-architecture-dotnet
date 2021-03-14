@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Application.Services;
 using Application.Services.Errors;
 using Autofac;
@@ -67,20 +69,7 @@ namespace App
                     .Get<IExceptionHandlerPathFeature>();
                 var exception = exceptionHandlerPathFeature.Error;
 
-                if (exception is DomainException appException)
-                {
-                    context.Response.StatusCode = (int) GetStatusCode(appException);
-                    await context.Response.WriteAsJsonAsync(new
-                    {
-                        errorKey = appException.ErrorKey,
-                        message = appException.Message
-                    });
-                }
-                else
-                {
-                    await context.Response.WriteAsJsonAsync(new
-                        {error = exception.Message});
-                }
+                await WriteExceptionToJson(exception, context);
             }));
 
 
@@ -100,6 +89,34 @@ namespace App
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"));
 
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
+        }
+
+        private async Task WriteExceptionToJson(Exception exception, HttpContext context)
+        {
+            if (exception is DomainException appException)
+            {
+                context.Response.StatusCode = (int) GetStatusCode(appException);
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    errorKey = appException.ErrorKey,
+                    message = appException.Message
+                });
+            }
+            else if (exception is DomainValidationException vException)
+            {
+                context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    errorKey = vException.ErrorKey,
+                    errors = vException.InternalValidationException.Errors,
+                    message = vException.Message
+                });
+            }
+            else
+            {
+                await context.Response.WriteAsJsonAsync(new
+                    {error = exception.Message});
+            }
         }
 
         private HttpStatusCode GetStatusCode(DomainException appException)

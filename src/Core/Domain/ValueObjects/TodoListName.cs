@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using Domain.Errors;
+using FluentValidation;
+using LanguageExt;
 
 namespace Domain.ValueObjects
 {
@@ -13,6 +15,11 @@ namespace Domain.ValueObjects
             var validator = new TodoListNameValidator();
             validator.ValidateAndThrow(result);
             return result;
+        }
+
+        public static Validation<DomainValidationException, TodoListName> CreateWithErrors(string name)
+        {
+            return ValidationUtils.WrapValidation(() => Create(name), ErrorCodes.InvalidTodoListName);
         }
     }
 
