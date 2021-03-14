@@ -16,36 +16,27 @@ namespace Application.Services.Tests.TestDoubles
             return Task.FromResult(_todoLists.Values.SingleOrDefault(t => t.Name.Equals(todoListName)));
         }
 
-        public Task<TodoListId> Save(TodoList todoList)
+        public Task<long> Save(TodoList todoList)
         {
-            var id = todoList.Id?.Id;
-            if (id is not null)
-            {
-                _todoLists.Remove(id.Value);
-            }
-            else
-            {
-                id = _todoLists.Count + 1;
-            }
-
-            var todoListId = TodoListId.Create(id.Value);
-            _todoLists.Add(id.Value, new TodoList(todoList.Name, todoListId));
-            return Task.FromResult(todoListId);
+            var id = todoList.Id ?? _todoLists.Count + 1;
+            _todoLists.Remove(id);
+            _todoLists.Add(id, new TodoList(todoList.Name, id));
+            return Task.FromResult(id);
         }
 
         public async Task RemoveByName(TodoListName todoListName)
         {
             var todoLists = await GetByName(todoListName);
-            var id = todoLists?.Id?.Id;
+            var id = todoLists?.Id;
             if (id is not null)
             {
                 _todoLists.Remove(id.Value);
             }
         }
 
-        public Task<TodoList?> GetById(TodoListId id)
+        public Task<TodoList?> GetById(long id)
         {
-            return Task.FromResult(_todoLists.GetValueOrDefault(id.Id));
+            return Task.FromResult(_todoLists.GetValueOrDefault(id));
         }
     }
 }

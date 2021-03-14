@@ -4,16 +4,16 @@ namespace Domain.Entities
 {
     public class TodoList
     {
-        public TodoList(TodoListName name, TodoListId id)
+        public TodoList(TodoListName name, long id)
         {
             Name = name;
             Id = id;
         }
 
-        public TodoList(TodoListName todoListName) =>
-            Name = todoListName;
+        public TodoList(TodoListName name) =>
+            Name = name;
 
         public TodoListName Name { get; }
-        public TodoListId? Id { get; }
+        public long? Id { get; }
     }
 }

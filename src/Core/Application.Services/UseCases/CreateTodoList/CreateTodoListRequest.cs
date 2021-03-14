@@ -1,6 +1,6 @@
 ﻿using Domain.ValueObjects;
 
-namespace Application.Services.Tests.CreateTodoList
+namespace Application.Services.UseCases.CreateTodoList
 {
     public class CreateTodoListRequest
     {

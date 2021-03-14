@@ -3,7 +3,6 @@ using Application.Services.Errors;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;
-using Bogus;
 using Domain.ValueObjects;
 using Xunit;
 
@@ -26,7 +25,7 @@ namespace Application.Services.Tests.CreateTodoList
         public async Task Should_create_new_todolist_when_does_not_exist()
         {
             // arrange
-            var createTodoListRequest = CreateTodoList();
+            var createTodoListRequest = MockDataGenerator.CreateTodoList();
             var todoListName = createTodoListRequest.TodoListName;
             await TodoListDoesNotExist(todoListName);
             // act
@@ -41,7 +40,7 @@ namespace Application.Services.Tests.CreateTodoList
         public async Task Should_not_create_new_todolist_when_one_by_same_name_exists()
         {
             // arrange
-            var createTodoListRequest = CreateTodoList();
+            var createTodoListRequest = MockDataGenerator.CreateTodoList();
             await TodoListDoesNotExist(createTodoListRequest.TodoListName);
             await _createTodoListUseCase.Invoke(createTodoListRequest);
 
@@ -51,13 +50,6 @@ namespace Application.Services.Tests.CreateTodoList
                 _createTodoListUseCase.Invoke(createTodoListRequest));
         }
 
-
-        private CreateTodoListRequest CreateTodoList()
-        {
-            var generator = new Faker();
-            var foo = CreateTodoListRequest.Create(TodoListName.Create(generator.Random.AlphaNumeric(5)));
-            return foo;
-        }
 
         private async Task TodoListDoesNotExist(TodoListName todoListName)
         {
