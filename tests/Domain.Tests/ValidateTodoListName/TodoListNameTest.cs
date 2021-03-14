@@ -1,4 +1,5 @@
 ﻿using Domain.ValueObjects;
+using FluentValidation;
 using Xunit;
 
 namespace Domain.Tests.ValidateTodoListName
@@ -14,6 +15,14 @@ namespace Domain.Tests.ValidateTodoListName
             var listName = TodoListName.Create(validListName);
             // assert
             Assert.Equal(validListName, listName.Name);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("this-is-a-very-long-validation-name-that-is-not-accepted")]
+        public void Should_throw_a_validation_exception_for_invalid_names(string invalidName)
+        {
+            Assert.Throws<ValidationException>(() => TodoListName.Create(invalidName));
         }
     }
 }
