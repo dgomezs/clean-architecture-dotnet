@@ -26,10 +26,11 @@ namespace Application.Services.Tests.CreateTodoList
         public async Task Should_create_new_todolist_when_does_not_exist()
         {
             // arrange
-            var todoListName = CreateTodoListName();
+            var createTodoListRequest = CreateTodoList();
+            var todoListName = createTodoListRequest.TodoListName;
             await TodoListDoesNotExist(todoListName);
             // act
-            var id = await _createTodoListUseCase.Invoke(todoListName);
+            var id = await _createTodoListUseCase.Invoke(createTodoListRequest);
             // assert
             var todoList = await _todoListRepository.GetById(id);
             Assert.Equal(todoListName, todoList?.Name);
@@ -40,22 +41,22 @@ namespace Application.Services.Tests.CreateTodoList
         public async Task Should_not_create_new_todolist_when_one_by_same_name_exists()
         {
             // arrange
-            // arrange
-            var todoListName = CreateTodoListName();
-            await TodoListDoesNotExist(todoListName);
-            await _createTodoListUseCase.Invoke(todoListName);
+            var createTodoListRequest = CreateTodoList();
+            await TodoListDoesNotExist(createTodoListRequest.TodoListName);
+            await _createTodoListUseCase.Invoke(createTodoListRequest);
 
             // act
             // create another list by the same n
             await Assert.ThrowsAsync<TodoListAlreadyExistsException>(() =>
-                _createTodoListUseCase.Invoke(todoListName));
+                _createTodoListUseCase.Invoke(createTodoListRequest));
         }
 
 
-        private TodoListName CreateTodoListName()
+        private CreateTodoListRequest CreateTodoList()
         {
             var generator = new Faker();
-            return TodoListName.Create(generator.Random.AlphaNumeric(5));
+            var foo = CreateTodoListRequest.Create(TodoListName.Create(generator.Random.AlphaNumeric(5)));
+            return foo;
         }
 
         private async Task TodoListDoesNotExist(TodoListName todoListName)
