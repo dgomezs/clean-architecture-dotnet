@@ -1,10 +1,11 @@
-﻿using Domain.Errors;
+﻿using System.Collections.Generic;
+using Domain.Errors;
 using FluentValidation;
 using LanguageExt;
 
 namespace Domain.ValueObjects
 {
-    public class TodoListName
+    public class TodoListName : ValueObject
     {
         public string Name { get; }
         private TodoListName(string name) => Name = name;
@@ -20,6 +21,11 @@ namespace Domain.ValueObjects
         public static Validation<DomainValidationException, TodoListName> CreateWithErrors(string name)
         {
             return ValidationUtils.WrapValidation(() => Create(name), ErrorCodes.InvalidTodoListName);
+        }
+
+        protected override IEnumerable<object?> GetEqualityComponents()
+        {
+            yield return Name;
         }
     }
 

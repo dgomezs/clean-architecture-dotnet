@@ -96,23 +96,23 @@ namespace App
 
         private async Task WriteExceptionToJson(Exception exception, HttpContext context)
         {
-            if (exception is DomainException appException)
+            if (exception is DomainValidationException vException)
+            {
+                context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    errorKey = vException.ErrorKey,
+                    errors = vException.Errors,
+                    message = vException.Message
+                });
+            }
+            else if (exception is DomainException appException)
             {
                 context.Response.StatusCode = (int) GetStatusCode(appException);
                 await context.Response.WriteAsJsonAsync(new
                 {
                     errorKey = appException.ErrorKey,
                     message = appException.Message
-                });
-            }
-            else if (exception is DomainValidationException vException)
-            {
-                context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
-                await context.Response.WriteAsJsonAsync(new
-                {
-                    errorKey = vException.ErrorKey,
-                    errors = vException.InternalValidationException.Errors,
-                    message = vException.Message
                 });
             }
             else

@@ -17,9 +17,16 @@ namespace WebApi.Controllers
 
         [HttpPost]
         public async Task<long> CreateTodoList(
-            [FromBody] CreateTodoListRequest createTodoListRequest)
+            [FromBody] RestCreateTodoListRequest createTodoListRequest)
         {
-            return await _createTodoListUseCase.Invoke(createTodoListRequest);
+            return await _createTodoListUseCase.Invoke(
+                CreateTodoListRequest.Create(createTodoListRequest.Name1, createTodoListRequest.Name2));
         }
+    }
+
+    public class RestCreateTodoListRequest
+    {
+        public string Name1 { get; set; }
+        public string Name2 { get; set; }
     }
 }

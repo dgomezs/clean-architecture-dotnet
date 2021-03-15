@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Domain.Errors;
 using FluentValidation;
+using FluentValidation.Results;
 using LanguageExt;
 using static LanguageExt.Prelude;
 
@@ -18,9 +20,10 @@ namespace Domain
             return ex switch
             {
                 ValidationException validationException => new DomainValidationException(errorKey,
-                    validationException),
+                    validationException.Errors),
                 _ => new DomainValidationException(errorKey,
-                    new ValidationException($"Unknown validation error {ex.Message}"))
+                    $"Unknown validation error {ex.Message}",
+                    Enumerable.Empty<ValidationFailure>())
             };
         }
     }
