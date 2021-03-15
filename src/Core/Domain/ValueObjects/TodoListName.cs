@@ -14,7 +14,7 @@ namespace Domain.ValueObjects
         {
             var result = new TodoListName(name);
             var validator = new TodoListNameValidator();
-            validator.ValidateAndThrow(result);
+            validator.ValidateAndThrow(result.Name);
             return result;
         }
 
@@ -29,15 +29,15 @@ namespace Domain.ValueObjects
         }
     }
 
-    internal class TodoListNameValidator : AbstractValidator<TodoListName>
+    public class TodoListNameValidator : AbstractValidator<string>
     {
         public TodoListNameValidator()
         {
             const int maximumLength = 50;
-            RuleFor(n => n.Name)
+            RuleFor(n => n)
                 .NotNull()
                 .MinimumLength(1)
-                .MaximumLength(maximumLength);
+                .MaximumLength(maximumLength).WithName("TodoListName");
         }
     }
 }

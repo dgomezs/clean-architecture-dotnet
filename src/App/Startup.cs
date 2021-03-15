@@ -1,9 +1,6 @@
-﻿using System;
-using System.Net;
+﻿using System.Reflection;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Application.Services;
-using Application.Services.Errors;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutofacSerilogIntegration;
@@ -16,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using WebApi;
 using WebApi.CustomConverters;
 
 namespace App
@@ -45,7 +43,6 @@ namespace App
                 jsonConverters.Add(
                     new JsonStringEnumConverter());
             });
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1",
@@ -53,6 +50,7 @@ namespace App
                 c.EnableAnnotations();
             });
         }
+        
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
@@ -72,7 +70,9 @@ namespace App
                     .Get<IExceptionHandlerPathFeature>();
                 var exception = exceptionHandlerPathFeature.Error;
 
-                await WriteExceptionToJson(exception, context);
+                var response = ExceptionHandlerMapper.Map(exception);
+                context.Response.StatusCode = response.Status;
+                await context.Response.WriteAsJsonAsync(response);
             }));
 
 
@@ -92,43 +92,6 @@ namespace App
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"));
 
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
-        }
-
-        private async Task WriteExceptionToJson(Exception exception, HttpContext context)
-        {
-            if (exception is DomainValidationException vException)
-            {
-                context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
-                await context.Response.WriteAsJsonAsync(new
-                {
-                    errorKey = vException.ErrorKey,
-                    errors = vException.Errors,
-                    message = vException.Message
-                });
-            }
-            else if (exception is DomainException appException)
-            {
-                context.Response.StatusCode = (int) GetStatusCode(appException);
-                await context.Response.WriteAsJsonAsync(new
-                {
-                    errorKey = appException.ErrorKey,
-                    message = appException.Message
-                });
-            }
-            else
-            {
-                await context.Response.WriteAsJsonAsync(new
-                    {error = exception.Message});
-            }
-        }
-
-        private HttpStatusCode GetStatusCode(DomainException appException)
-        {
-            return appException switch
-            {
-                EntityExistsException => HttpStatusCode.Conflict,
-                _ => HttpStatusCode.InternalServerError
-            };
         }
     }
 }
