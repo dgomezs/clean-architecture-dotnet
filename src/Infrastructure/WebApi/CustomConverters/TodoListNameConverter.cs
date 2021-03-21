@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Domain.ValueObjects;
+using Newtonsoft.Json;
 
 namespace WebApi.CustomConverters
 {
     public class TodoListNameConverter : JsonConverter<TodoListName>
     {
-        public override TodoListName? Read(ref Utf8JsonReader reader, Type typeToConvert,
-            JsonSerializerOptions options)
+        public override void WriteJson(JsonWriter writer, TodoListName value, JsonSerializer serializer)
         {
-            var s = reader.GetString();
-            return TodoListName.Create(s);
+            writer.WriteValue(value.Name);
         }
 
-        public override void Write(Utf8JsonWriter writer, TodoListName value, JsonSerializerOptions options)
+        public override TodoListName ReadJson(JsonReader reader, Type objectType, TodoListName existingValue,
+            bool hasExistingValue,
+            JsonSerializer serializer)
         {
-            writer.WriteStringValue(value.Name);
+            return TodoListName.Create(reader.ReadAsString());
         }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
 
-namespace CleanArchitecture.TodoList.WebApi.Tests
+namespace CleanArchitecture.TodoList.WebApi.Tests.Config
 {
     public class CustomWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class

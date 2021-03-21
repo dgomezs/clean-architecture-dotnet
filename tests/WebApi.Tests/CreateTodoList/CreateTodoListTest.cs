@@ -1,7 +1,9 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Application.Services.UseCases.CreateTodoList;
+using CleanArchitecture.TodoList.WebApi.Tests.Config;
 using Domain.Errors;
 using FluentAssertions;
 using FluentAssertions.Json;
@@ -16,7 +18,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
     public class CreateTodoListTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly CustomWebApplicationFactory<Startup> _factory;
-        private HttpClient _client;
+        private readonly HttpClient _client;
 
         public CreateTodoListTest(CustomWebApplicationFactory<Startup> factory)
         {
@@ -52,21 +54,26 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
                 GetCreateTodoListUseCase();
             const string errorKey = "TestingErrorKey";
             const string errorMessage = "ErrorMessage";
+            var errors = new List<Error>()
+            {
+                new("ddd")
+            };
+
+            const HttpStatusCode expectedHttpStatusCode = HttpStatusCode.InternalServerError;
 
             createTodoListUseCaseMock.Setup(m =>
                     m.Invoke(It.IsAny<CreateTodoListCommand>()))
-                .ThrowsAsync(new DomainException(errorKey, errorMessage));
+                .ThrowsAsync(new DomainException(errorKey, errorMessage, errors));
 
             // act
             var response = await SendCreateTodoListCommand("todoList");
 
             // assert
-            response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            response.StatusCode.Should().Be(expectedHttpStatusCode);
             var body = JToken.Parse(await response.Content.ReadAsStringAsync());
-            var expectedResult =
-                JToken.Parse(
-                    $"{{\"message\":\"{errorMessage}\",\"status\":500,\"errors\":[],\"errorKey\":\"{errorKey}\"}}");
-
+            var expectedResult = ErrorAssertionUtils.ExpectedErrorResult(errorMessage, errorKey,
+                expectedHttpStatusCode, errors);
+            
 
             body.Should().BeEquivalentTo(expectedResult);
         }

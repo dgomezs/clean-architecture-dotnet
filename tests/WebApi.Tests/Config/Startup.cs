@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using WebApi;
 
-namespace CleanArchitecture.TodoList.WebApi.Tests
+namespace CleanArchitecture.TodoList.WebApi.Tests.Config
 {
     public class Startup
     {

@@ -15,11 +15,6 @@ namespace Domain.Errors
         public DomainValidationException(string errorKey, string message) : base(errorKey, message)
         {
         }
-
-        public DomainValidationException PrefixErrors(string prefix)
-        {
-            _errors = _errors.Select(e => e with {PropertyName = $"{prefix}.{e.PropertyName}"}).ToList();
-            return this;
-        }
+        
     }
 }

@@ -2,7 +2,7 @@
 using System.Text;
 using Newtonsoft.Json;
 
-namespace CleanArchitecture.TodoList.WebApi.Tests
+namespace CleanArchitecture.TodoList.WebApi.Tests.Config
 {
     public static class ContentHelper
     {
