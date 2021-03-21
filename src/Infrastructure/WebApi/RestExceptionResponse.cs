@@ -26,7 +26,7 @@ namespace WebApi
 
         public int Status { get; }
 
-        public IEnumerable<Error>? Errors { get; }
+        public IEnumerable<Error> Errors { get; } = new List<Error>();
 
         public string? ErrorKey { get; }
     }

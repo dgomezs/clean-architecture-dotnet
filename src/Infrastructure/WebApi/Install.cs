@@ -22,6 +22,7 @@ namespace WebApi
 
             services.AddControllers().AddJsonOptions(options =>
             {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
                 var jsonConverters = options.JsonSerializerOptions.Converters;
                 jsonConverters.Add(new TodoListNameConverter());
                 jsonConverters.Add(

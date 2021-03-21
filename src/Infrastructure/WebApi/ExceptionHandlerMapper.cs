@@ -18,8 +18,7 @@ namespace App
                 DomainException dException => HandleDomainException(dException),
                 ValidationException vException => HandleFluentValidationException(vException),
                 ArgumentNullException aException => HandleArgumentException(aException),
-                { } ex => new
-                (
+                { } ex => new RestExceptionResponse(
                     (int) HttpStatusCode.InternalServerError,
                     ex.Message)
             };
@@ -29,9 +28,9 @@ namespace App
         private static RestExceptionResponse HandleArgumentException(ArgumentException aException)
         {
             var paramName = aException.ParamName ?? "Param";
-            return new((int) HttpStatusCode.BadRequest,
+            return new RestExceptionResponse((int) HttpStatusCode.BadRequest,
                 $"NotNull{paramName}",
-                new Error[]
+                new[]
                 {
                     new Error("NotNullValidator", paramName, aException.Message)
                 },
@@ -70,6 +69,7 @@ namespace App
             (
                 (int) GetStatusCode(vException),
                 vException.ErrorKey,
+                vException.Errors,
                 vException.Message);
         }
     }
