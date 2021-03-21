@@ -13,9 +13,9 @@ namespace Application.Services.UseCases.CreateTodoList
 
         private ITodoListRepository TodoListRepository { get; }
 
-        public async Task<long> Invoke(CreateTodoListRequest createTodoListRequest)
+        public async Task<long> Invoke(CreateTodoListCommand createTodoListCommand)
         {
-            var todoListName = createTodoListRequest.TodoListName;
+            var todoListName = createTodoListCommand.TodoListName;
             var todoList = await TodoListRepository.GetByName(todoListName);
             if (todoList is not null) throw new TodoListAlreadyExistsException(todoListName);
 

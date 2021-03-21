@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Application.Services.Errors;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.CreateTodoList;
@@ -31,9 +32,12 @@ namespace Application.Services.Tests.CreateTodoList
             // act
             var id = await _createTodoListUseCase.Invoke(createTodoListRequest);
             // assert
-            var todoList = await _todoListRepository.GetById(id);
-            Assert.Equal(todoListName, todoList?.Name);
-            Assert.Equal(id, todoList?.Id);
+            var todoList = await _todoListRepository.GetById(id) ?? throw new Exception();
+            Assert.Equal(todoListName, todoList.Name);
+            Assert.Equal(id, todoList.Id);
+
+            // TODO add domain events
+            //todoList.GetEvents();
         }
 
         [Fact]

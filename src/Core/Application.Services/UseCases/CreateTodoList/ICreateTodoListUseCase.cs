@@ -4,6 +4,6 @@ namespace Application.Services.UseCases.CreateTodoList
 {
     public interface ICreateTodoListUseCase
     {
-        Task<long> Invoke(CreateTodoListRequest createTodoListRequest);
+        Task<long> Invoke(CreateTodoListCommand createTodoListCommand);
     }
 }

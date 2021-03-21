@@ -5,11 +5,11 @@ namespace Application.Services.Tests
 {
     public static class MockDataGenerator
     {
-        public static CreateTodoListRequest CreateTodoList()
+        public static CreateTodoListCommand CreateTodoList()
         {
             var generator = new Faker();
             var todoListName = generator.Random.AlphaNumeric(5);
-            var foo = CreateTodoListRequest.Create(todoListName, todoListName);
+            var foo = CreateTodoListCommand.Create(todoListName);
             return foo;
         }
     }
