@@ -6,23 +6,15 @@ namespace Domain.Errors
 {
     public class DomainValidationException : DomainException
     {
-        private IList<DomainValidationFailure> _errors;
-
-        public IEnumerable<DomainValidationFailure> Errors => _errors;
-
         public DomainValidationException(string errorKey, IEnumerable<ValidationFailure> errors) :
-            base(errorKey) =>
-            _errors = errors.Select(e =>
-                new DomainValidationFailure(e.ErrorCode, e.PropertyName, e.ErrorMessage)).ToList();
+            base(errorKey, errors.Select(e =>
+                new Error(e.ErrorCode, e.PropertyName, e.ErrorMessage)))
+        {
+        }
 
-        public DomainValidationException(string errorKey, string errorMessage,
-            IEnumerable<DomainValidationFailure> errors) : base(errorKey, errorMessage) =>
-            _errors = errors.ToList();
-
-        public DomainValidationException(string errorKey, string errorMessage,
-            IEnumerable<ValidationFailure> errors) : base(errorKey, errorMessage) =>
-            _errors = errors.Select(e =>
-                new DomainValidationFailure(e.ErrorCode, e.PropertyName, e.ErrorMessage)).ToList();
+        public DomainValidationException(string errorKey, string message) : base(errorKey, message)
+        {
+        }
 
         public DomainValidationException PrefixErrors(string prefix)
         {

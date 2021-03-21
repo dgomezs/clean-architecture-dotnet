@@ -6,12 +6,12 @@ namespace WebApi
     public record RestExceptionResponse
     {
         public RestExceptionResponse(int code, string errorKey,
-            IEnumerable<DomainValidationFailure> errors,
+            IEnumerable<Error> errors,
             string message) =>
             (Status, ErrorKey, Errors, Message) = (code, errorKey, errors, message);
 
         public RestExceptionResponse(int code,
-            IEnumerable<DomainValidationFailure> errors,
+            IEnumerable<Error> errors,
             string message) =>
             (Status, Errors, Message) = (code, errors, message);
 
@@ -26,7 +26,7 @@ namespace WebApi
 
         public int Status { get; }
 
-        public IEnumerable<DomainValidationFailure>? Errors { get; }
+        public IEnumerable<Error>? Errors { get; }
 
         public string? ErrorKey { get; }
     }

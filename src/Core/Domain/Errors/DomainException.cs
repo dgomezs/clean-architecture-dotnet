@@ -1,19 +1,47 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain.Errors
 {
     public class DomainException : Exception
     {
-        public DomainException(string errorKey) =>
-            ErrorKey = errorKey;
+        private readonly Error _mainError;
+        protected List<Error> _errors = new();
+
+        public DomainException(Error mainError) : base(mainError.Message) =>
+            _mainError = mainError;
 
         public DomainException(string errorKey, string errorMessage) : base(errorMessage) =>
-            ErrorKey = errorKey;
+            _mainError = new Error(errorKey, errorMessage);
+        
+        
 
-        public DomainException(string errorKey, string errorMessage, Exception innerException) : base(
-            errorMessage, innerException) =>
-            ErrorKey = errorKey;
+        public DomainException(string errorKey) =>
+            _mainError = new Error(errorKey);
 
-        public string ErrorKey { get; }
+        public DomainException(string errorKey, IEnumerable<Error> errors)
+            => (_mainError, _errors) = (new Error(errorKey), errors.ToList());
+
+        public DomainException(Error error, Exception innerException) : base(
+            error.Message, innerException) => _mainError = error;
+        
+        
+
+        public DomainException(Error mainError, IEnumerable<Error> errors) : base(mainError.Message)
+            => (_mainError, _errors) = (mainError, errors.ToList());
+
+
+        public string ErrorKey => _mainError.ErrorCode;
+
+        public IEnumerable<Error> Errors => _errors;
+
+        public override string Message => _mainError.Message;
+
+        public DomainException PrefixErrors(string prefix)
+        {
+            _errors = _errors.Select(e => e with {PropertyName = $"{prefix}.{e.PropertyName}"}).ToList();
+            return this;
+        }
     }
 }

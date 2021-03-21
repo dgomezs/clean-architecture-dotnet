@@ -31,9 +31,9 @@ namespace App
             var paramName = aException.ParamName ?? "Param";
             return new((int) HttpStatusCode.BadRequest,
                 $"NotNull{paramName}",
-                new DomainValidationFailure[]
+                new Error[]
                 {
-                    new DomainValidationFailure("NotNullValidator", paramName, aException.Message)
+                    new Error("NotNullValidator", paramName, aException.Message)
                 },
                 aException.Message);
         }
@@ -42,7 +42,7 @@ namespace App
         {
             return new((int) HttpStatusCode.BadRequest,
                 vException.Errors.Select(x =>
-                    new DomainValidationFailure(x.ErrorCode, x.PropertyName, x.ErrorMessage)),
+                    new Error(x.ErrorCode, x.PropertyName, x.ErrorMessage)),
                 vException.Message);
         }
 

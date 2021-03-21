@@ -1,5 +1,4 @@
-﻿using System;
-using Domain.Errors;
+﻿using Domain.Errors;
 
 namespace Application.Services.Errors
 {
@@ -11,11 +10,6 @@ namespace Application.Services.Errors
 
         public EntityExistsException(string errorKey, string errorMessage) : base(errorKey,
             errorMessage)
-        {
-        }
-
-        public EntityExistsException(string errorKey, string errorMessage,
-            Exception innerException) : base(errorKey, errorMessage, innerException)
         {
         }
     }
