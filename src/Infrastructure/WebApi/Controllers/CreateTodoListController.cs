@@ -26,6 +26,13 @@ namespace WebApi.Controllers
             return await _createTodoListUseCase.Invoke(
                 CreateTodoListCommand.Create(createTodoListRequest.Name));
         }
+
+        [HttpGet("test")]
+        public long CreateTodoListTest()
+        {
+            var validator = new RestCreateTodoListRequestValidator();
+            return 1;
+        }
     }
 
     public class RestCreateTodoListRequest
