@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Services.Errors;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;
+using Domain.Events;
 using Domain.ValueObjects;
 using Xunit;
 
@@ -14,12 +16,14 @@ namespace Application.Services.Tests.CreateTodoList
         private readonly ICreateTodoListUseCase _createTodoListUseCase;
         private readonly InMemoryTodoListRepository _todoListRepository;
         private readonly AutoMock _mock;
+        private readonly InMemoryEventPublisher _eventPublisher;
 
         public CreateTodoListTest()
         {
             _mock = DiConfig.GetMock();
-            _createTodoListUseCase = _mock.Create<ICreateTodoListUseCase>();
             _todoListRepository = _mock.Create<InMemoryTodoListRepository>();
+            _eventPublisher = _mock.Create<InMemoryEventPublisher>();
+            _createTodoListUseCase = _mock.Create<ICreateTodoListUseCase>();
         }
 
         [Fact]
@@ -35,10 +39,11 @@ namespace Application.Services.Tests.CreateTodoList
             var todoList = await _todoListRepository.GetById(id) ?? throw new Exception();
             Assert.Equal(todoListName, todoList.Name);
             Assert.Equal(id, todoList.Id);
-
-            // TODO add domain events
-            //todoList.GetEvents();
+            IEnumerable<DomainEvent> domainEvents = _eventPublisher.Events;
+            Assert.Single(domainEvents);
+            Assert.Collection(domainEvents, d => Assert.True(d is TodoListCreatedEvent));
         }
+
 
         [Fact]
         public async Task Should_not_create_new_todolist_when_one_by_same_name_exists()
