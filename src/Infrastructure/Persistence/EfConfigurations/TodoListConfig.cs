@@ -12,7 +12,7 @@ namespace Infrastructure.Persistence.EfConfigurations
         public void Configure(EntityTypeBuilder<TodoList> todoList)
         {
             todoList.ToTable("TodoList");
-
+            
             todoList.Property<long>(IdShadowProperty)
                 .HasColumnType("long").ValueGeneratedOnAdd();
 
@@ -21,7 +21,9 @@ namespace Infrastructure.Persistence.EfConfigurations
                 .HasConversion(v => v.Value,
                     v => new TodoListId(v));
 
-            todoList.Property(b => b.Name)
+            todoList.Ignore(t => t.DomainEvents);
+            
+            todoList.Property(t => t.Name)
                 .IsRequired()
                 .HasConversion(
                     v => v.Name,
