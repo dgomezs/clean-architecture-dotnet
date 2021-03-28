@@ -38,3 +38,32 @@ The goal of this repository is to provide a starting point to implement Clean Ar
 The aim of the repo is to provide with a simple but complete set of features that show case the main concepts behind
 clean architecture and Domain-Driven design. 
 
+# Solution structure
+
+## Relation between Clean Architecture and the project structure
+
+![Clean Architecture Diagram](https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg "Clean Architecture ")
+*[From The Clean Architecture Blog Post](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)*
+
+- Core folder (Entities, Use Cases)
+    - Domain project contains the Entities, Aggregates and other elements of the domain 
+    - Application.Services project contains the Use cases of the application 
+- Infrastructure folder (Controllers, Gateways, Presenters)
+    - Persistence project contains the persistence and retrieval mechanisms for our entities, aggregates and Read models
+    - WebApi project contains the Http Controllers that expose the use cases of the application
+- The App project is the only project that knows about all projects in the solution. It composes all the dependencies and runs the application.    
+
+## Relation between projects
+
+As the rule of Clean Architecture indicates layers point inwards in the diagram. This means that:
+
+- Domain project does not know about any other projects
+- Application.Services only knows about the Domain
+- WebApi knows about the Application.Services
+- Persistence knows about the Application.Services
+
+![Project structure](https://docs.google.com/drawings/d/e/2PACX-1vQF_JYDw08PLfhVI16qDfn6vNFJePFReCFCAi5Vv1Jgy_1K4IBWeUgtxHpzXeUH3UECZqVPiIMnn8mN/pub?w=960&h=720)
+
+
+
+
