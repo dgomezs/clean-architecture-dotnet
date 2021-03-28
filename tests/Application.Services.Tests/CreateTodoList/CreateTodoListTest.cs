@@ -32,7 +32,7 @@ namespace Application.Services.Tests.CreateTodoList
             // arrange
             var createTodoListRequest = MockDataGenerator.CreateTodoList();
             var todoListName = createTodoListRequest.TodoListName;
-            await TodoListDoesNotExist(todoListName);
+            await ArrangeTodoListDoesNotExist(todoListName);
             // act
             var id = await _createTodoListUseCase.Invoke(createTodoListRequest);
             // assert
@@ -50,17 +50,17 @@ namespace Application.Services.Tests.CreateTodoList
         {
             // arrange
             var createTodoListRequest = MockDataGenerator.CreateTodoList();
-            await TodoListDoesNotExist(createTodoListRequest.TodoListName);
+            await ArrangeTodoListDoesNotExist(createTodoListRequest.TodoListName);
             await _createTodoListUseCase.Invoke(createTodoListRequest);
 
             // act
-            // create another list by the same n
+            // create another list by the same
             await Assert.ThrowsAsync<TodoListAlreadyExistsException>(() =>
                 _createTodoListUseCase.Invoke(createTodoListRequest));
         }
 
 
-        private async Task TodoListDoesNotExist(TodoListName todoListName)
+        private async Task ArrangeTodoListDoesNotExist(TodoListName todoListName)
         {
             await _todoListRepository.RemoveByName(todoListName);
         }
