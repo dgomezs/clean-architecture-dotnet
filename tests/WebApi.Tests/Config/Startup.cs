@@ -15,13 +15,13 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
 
         public void ConfigureServices(IServiceCollection services)
         {
-            Install.ConfigureServices(services);
+            WebApiInstall.ConfigureServices(services);
         }
 
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Install.Configure(app, env);
+            WebApiInstall.Configure(app, env);
         }
     }
 }

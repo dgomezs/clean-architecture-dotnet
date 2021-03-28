@@ -10,7 +10,7 @@ using Serilog;
 
 namespace App
 {
-    public class Program
+    public static class Program
     {
         public static async Task Main(string[] args)
         {

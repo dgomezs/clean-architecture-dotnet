@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -12,7 +13,7 @@ using WebApi.CustomConverters;
 
 namespace WebApi
 {
-    public static class Install
+    public static class WebApiInstall
     {
         public static void ConfigureServices(IServiceCollection services)
         {
@@ -32,6 +33,13 @@ namespace WebApi
                 jsonConverters.Add(new TodoListNameConverter());
                 jsonConverters.Add(
                     new StringEnumConverter());
+            });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo {Title = "My API", Version = "v1"});
+                c.EnableAnnotations();
             });
         }
 
@@ -66,6 +74,13 @@ namespace WebApi
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"));
         }
     }
 }
