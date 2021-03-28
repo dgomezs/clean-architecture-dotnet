@@ -13,7 +13,7 @@ namespace Domain
             return Try(f).ToValidation(ex => MapException(ex, errorKey));
         }
 
-        private static DomainValidationException MapException(Exception ex, string errorKey)
+        public static DomainValidationException MapException(Exception ex, string errorKey)
         {
             return ex switch
             {

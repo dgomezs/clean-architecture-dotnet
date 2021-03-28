@@ -7,12 +7,19 @@ namespace Infrastructure.Persistence.EfConfigurations
 {
     public class TodoListConfig : IEntityTypeConfiguration<TodoList>
     {
+        public const string IdShadowProperty = "InternalId";
+
         public void Configure(EntityTypeBuilder<TodoList> todoList)
         {
             todoList.ToTable("TodoList");
 
+            todoList.Property<long>(IdShadowProperty)
+                .HasColumnType("long").ValueGeneratedOnAdd();
+
             todoList.Property(t => t.Id)
-                .ValueGeneratedOnAdd();
+                .IsRequired()
+                .HasConversion(v => v.Value,
+                    v => new TodoListId(v));
 
             todoList.Property(b => b.Name)
                 .IsRequired()
@@ -20,7 +27,7 @@ namespace Infrastructure.Persistence.EfConfigurations
                     v => v.Name,
                     v => TodoListName.Create(v));
             todoList
-                .HasKey(t => t.Id);
+                .HasKey(IdShadowProperty);
         }
     }
 }

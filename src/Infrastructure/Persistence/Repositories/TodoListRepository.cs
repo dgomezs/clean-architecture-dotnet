@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Repositories;
 using Domain.Entities;
@@ -15,7 +14,7 @@ namespace Infrastructure.Persistence.Repositories
         public TodoListRepository(TodoListContext todoListContext) =>
             _todoListContext = todoListContext;
 
-        public async Task<TodoList?> GetById(long id)
+        public async Task<TodoList?> GetById(TodoListId id)
         {
             return await _todoListContext.TodoLists.Where(_ => id.Equals(_.Id)).SingleOrDefaultAsync();
         }
@@ -26,13 +25,12 @@ namespace Infrastructure.Persistence.Repositories
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<long> Save(TodoList todoList)
+        public async Task Save(TodoList todoList)
         {
             if (_todoListContext.Entry(todoList).State == EntityState.Detached)
                 _todoListContext.TodoLists.Add(todoList);
 
             await _todoListContext.SaveChangesAsync();
-            return todoList.Id ?? throw new InvalidOperationException("No possible to assign id to todo list");
         }
     }
 }

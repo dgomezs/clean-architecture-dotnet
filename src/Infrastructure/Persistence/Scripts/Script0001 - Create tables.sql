@@ -6,7 +6,8 @@ GO
 
 CREATE TABLE [todos].[TodoList]
 (
-    [ID]           BIGINT PRIMARY KEY IDENTITY (1,1),
+    [InternalId]           BIGINT PRIMARY KEY IDENTITY (1,1),
+    [Id]           UNIQUEIDENTIFIER NOT NULL,
     [Name]    NVARCHAR(10) NOT NULL
 )
 GO

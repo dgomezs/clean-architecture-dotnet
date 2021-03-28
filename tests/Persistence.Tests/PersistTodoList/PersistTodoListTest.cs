@@ -26,8 +26,9 @@ namespace Persistence.Tests.PersistTodoList
         {
             // arrange
             var todoList = new TodoList(TodoListName.Create("ddd"));
+            var todoListId = todoList.Id;
             // act
-            var todoListId = await _todoListRepository.Save(todoList);
+            await _todoListRepository.Save(todoList);
             var todoListPersisted = await _todoListRepository.GetById(todoListId) ?? throw new Exception();
 
             // assert

@@ -18,13 +18,14 @@ namespace WebApi.Controllers
 
 
         [HttpPost]
-        public async Task<long> CreateTodoList(
+        public async Task<string> CreateTodoList(
             [FromBody] RestCreateTodoListRequest createTodoListRequest)
         {
             var validator = new RestCreateTodoListRequestValidator();
             await validator.ValidateAndThrowAsync(createTodoListRequest);
-            return await _createTodoListUseCase.Invoke(
+            var result = await _createTodoListUseCase.Invoke(
                 CreateTodoListCommand.Create(createTodoListRequest.Name));
+            return result.Value.ToString();
         }
 
         [HttpGet("test")]

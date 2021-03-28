@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace Application.Services.UseCases.CreateTodoList
 {
     public interface ICreateTodoListUseCase
     {
-        Task<long> Invoke(CreateTodoListCommand createTodoListCommand);
+        Task<TodoListId> Invoke(CreateTodoListCommand createTodoListCommand);
     }
 }

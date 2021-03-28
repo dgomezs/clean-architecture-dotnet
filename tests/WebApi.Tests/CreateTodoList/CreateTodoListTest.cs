@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Application.Services.UseCases.CreateTodoList;
 using CleanArchitecture.TodoList.WebApi.Tests.Config;
+using Domain.Entities;
 using Domain.Errors;
 using FluentAssertions;
 using FluentAssertions.Json;
@@ -27,7 +29,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
         public async Task Should_return_id_of_a_new_list()
         {
             // Arrange
-            const int expectedId = 3;
+            var expectedId = new TodoListId(Guid.NewGuid());
             var createTodoListUseCaseMock = new Mock<ICreateTodoListUseCase>();
 
             var client = ConfigureClient(createTodoListUseCaseMock);
@@ -42,7 +44,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             var body = await response.Content.ReadAsStringAsync();
-            body.Should().Be(expectedId.ToString());
+            body.Should().Be(expectedId.Value.ToString());
         }
 
         [Fact]
