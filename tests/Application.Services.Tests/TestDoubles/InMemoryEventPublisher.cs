@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Services.Events;
 using Domain.Events;
 
 namespace Application.Services.Tests.TestDoubles

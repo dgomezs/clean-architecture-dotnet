@@ -3,7 +3,6 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutofacSerilogIntegration;
 using Infrastructure.Persistence;
-using MessageBroker;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +28,6 @@ namespace App
         public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterLogger();
-            builder.RegisterModule(new MessageBrokerModule());
             builder.Register(_ => Configuration).AsSelf().SingleInstance();
             builder.RegisterModule(new PersistenceModule());
             builder.RegisterModule(new ApplicationServicesModule());

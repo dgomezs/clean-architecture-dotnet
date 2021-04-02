@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.Events;
 
-namespace Domain.Events
+namespace Application.Services.Events
 {
     public interface IDomainEventPublisher
     {

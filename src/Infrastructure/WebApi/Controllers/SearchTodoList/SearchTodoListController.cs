@@ -4,7 +4,7 @@ using Application.Services.UseCases.SearchTodoListByName;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers.SearchTodoList
 {
     [Route("/todo-lists")]
     [ApiController]

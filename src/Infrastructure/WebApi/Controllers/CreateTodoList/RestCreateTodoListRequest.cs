@@ -1,7 +1,7 @@
 ﻿using Domain.ValueObjects;
 using FluentValidation;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers.CreateTodoList
 {
     public class RestCreateTodoListRequest
     {

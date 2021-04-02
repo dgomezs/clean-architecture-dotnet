@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Application.Services.Errors;
+using Application.Services.Events;
 using Application.Services.Repositories;
 using Domain.Entities;
 using Domain.Events;

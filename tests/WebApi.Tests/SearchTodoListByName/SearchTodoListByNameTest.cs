@@ -58,7 +58,6 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.SearchTodoListByName
             var response = await SearchTodoLists(invalidName);
             // arrange
             var error = new Error(errorKey, errorMessage);
-            ;
 
             var expectedErrorResponse = new RestErrorResponse((int) HttpStatusCode.BadRequest,
                 error.ErrorKey, new List<Error>(), error.Message);

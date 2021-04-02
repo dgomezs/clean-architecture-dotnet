@@ -3,7 +3,7 @@ using Application.Services.UseCases.CreateTodoList;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers.CreateTodoList
 {
     [Route("/todo-lists")]
     [ApiController]

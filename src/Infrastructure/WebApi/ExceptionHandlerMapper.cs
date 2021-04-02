@@ -4,9 +4,8 @@ using System.Net;
 using Application.Services.Errors;
 using Domain.Errors;
 using FluentValidation;
-using WebApi;
 
-namespace App
+namespace WebApi
 {
     public class ExceptionHandlerMapper
     {

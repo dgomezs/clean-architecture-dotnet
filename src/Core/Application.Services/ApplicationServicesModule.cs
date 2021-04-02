@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using Application.Services.Events;
+using Autofac;
 
 namespace Application.Services
 {
@@ -7,6 +8,9 @@ namespace Application.Services
         protected override void Load(ContainerBuilder builder)
         {
             var assemblies = typeof(ApplicationServicesModule).Assembly;
+
+            builder.Register(x => new DomainEventPublisher()).AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
             builder.RegisterAssemblyTypes(assemblies)
                 .Where(t => t.Name.EndsWith("UseCase"))

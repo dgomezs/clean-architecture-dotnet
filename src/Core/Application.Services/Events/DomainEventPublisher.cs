@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Domain.Events;
 
-namespace MessageBroker
+namespace Application.Services.Events
 {
     public class DomainEventPublisher : IDomainEventPublisher
     {
