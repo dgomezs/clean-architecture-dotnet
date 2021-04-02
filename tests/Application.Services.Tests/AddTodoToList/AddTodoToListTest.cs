@@ -44,8 +44,10 @@ namespace Application.Services.Tests.AddTodoToList
             var todoListId = await ArrangeTodoListDoesNotExist(createTodoListRequest);
             var addTodoCommand = new AddTodoCommand(todoListId, new TodoDescription());
             // act / assert
-            await Assert.ThrowsAsync<TodoListDoesNotExistsException>(() =>
+            var exception = await Assert.ThrowsAsync<TodoListDoesNotExistsException>(() =>
                 _addTodoUseCase.AddTodo(addTodoCommand));
+            var exceptionData = exception.Data;
+            Assert.Equal(todoListId.Value.ToString(), exceptionData["TodoListId"]);
         }
 
 
