@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Domain.Errors;
 using Domain.ValueObjects;
 
-namespace Application.Services.Errors
+namespace Application.Services.Errors.TodoList
 {
     public class TodoListAlreadyExistsException : DomainException
     {
@@ -13,15 +13,9 @@ namespace Application.Services.Errors
             base(new TodoListAlreadyExistsError()) =>
             _todoListName = todoListName;
 
-        public override IDictionary Data
+        public override IDictionary Data => new Dictionary<string, string>
         {
-            get
-            {
-                return new Dictionary<string, string>
-                {
-                    {"TodoListName", _todoListName.Name}
-                };
-            }
-        }
+            {"TodoListName", _todoListName.Name}
+        };
     }
 }

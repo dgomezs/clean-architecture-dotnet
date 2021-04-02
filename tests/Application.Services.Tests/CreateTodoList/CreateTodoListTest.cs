@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Services.Errors;
+using Application.Services.Errors.TodoList;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;

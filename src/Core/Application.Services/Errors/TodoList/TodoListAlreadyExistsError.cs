@@ -1,4 +1,4 @@
-﻿namespace Application.Services.Errors
+﻿namespace Application.Services.Errors.TodoList
 {
     public record TodoListAlreadyExistsError : EntityAlreadyExistsError
     {
