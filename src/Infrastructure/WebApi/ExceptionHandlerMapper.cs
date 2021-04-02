@@ -44,11 +44,11 @@ namespace WebApi
                 vException.Message);
         }
 
-        private static HttpStatusCode GetStatusCode(DomainException appException)
+        private static HttpStatusCode GetStatusCode(Error appException)
         {
             return appException switch
             {
-                EntityExistsException => HttpStatusCode.Conflict,
+                EntityAlreadyExistsError => HttpStatusCode.Conflict,
                 _ => HttpStatusCode.InternalServerError
             };
         }
@@ -66,7 +66,7 @@ namespace WebApi
         {
             return new
             (
-                (int) GetStatusCode(vException),
+                (int) GetStatusCode(vException.MainError),
                 vException.ErrorKey,
                 vException.Errors,
                 vException.Message);

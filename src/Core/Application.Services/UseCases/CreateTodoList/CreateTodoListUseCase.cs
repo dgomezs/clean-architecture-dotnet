@@ -3,7 +3,8 @@ using Application.Services.Errors;
 using Application.Services.Events;
 using Application.Services.Repositories;
 using Domain.Entities;
-using Domain.Events;
+using Domain.Errors;
+using LanguageExt;
 
 namespace Application.Services.UseCases.CreateTodoList
 {
@@ -24,6 +25,23 @@ namespace Application.Services.UseCases.CreateTodoList
             var todoListName = createTodoListCommand.TodoListName;
             var todoList = await _todoListRepository.GetByName(todoListName);
             if (todoList is not null) throw new TodoListAlreadyExistsException(todoListName);
+
+            var result = new TodoList(todoListName);
+            await _todoListRepository.Save(result);
+
+            await _domainEventPublisher.PublishEvents(result.DomainEvents);
+            return result.Id;
+        }
+
+        public async Task<Either<Error, TodoListId>> InvokeWithErrors(
+            CreateTodoListCommand createTodoListCommand)
+        {
+            var todoListName = createTodoListCommand.TodoListName;
+            var todoList = await _todoListRepository.GetByName(todoListName);
+            if (todoList is not null)
+            {
+                return new TodoListAlreadyExistsError();
+            }
 
             var result = new TodoList(todoListName);
             await _todoListRepository.Save(result);

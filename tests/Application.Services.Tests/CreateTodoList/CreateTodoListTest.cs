@@ -5,8 +5,10 @@ using Application.Services.Errors;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;
+using Domain.Entities;
 using Domain.Events;
 using Domain.ValueObjects;
+using LanguageExt.UnsafeValueAccess;
 using Xunit;
 
 namespace Application.Services.Tests.CreateTodoList
@@ -34,7 +36,7 @@ namespace Application.Services.Tests.CreateTodoList
             var todoListName = createTodoListRequest.TodoListName;
             await ArrangeTodoListDoesNotExist(todoListName);
             // act
-            var id = await _createTodoListUseCase.Invoke(createTodoListRequest);
+            var id = await CreateTodoListWithError(createTodoListRequest);
             // assert
             var todoList = await _todoListRepository.GetById(id) ?? throw new Exception();
             Assert.Equal(todoListName, todoList.Name);
@@ -42,6 +44,17 @@ namespace Application.Services.Tests.CreateTodoList
             IEnumerable<DomainEvent> domainEvents = _eventPublisher.Events;
             Assert.Single(domainEvents);
             Assert.Collection(domainEvents, d => Assert.True(d is TodoListCreatedEvent));
+        }
+
+        private Task<TodoListId> CreateTodoList(CreateTodoListCommand createTodoListRequest)
+        {
+            return _createTodoListUseCase.Invoke(createTodoListRequest);
+        }
+
+        private async Task<TodoListId> CreateTodoListWithError(CreateTodoListCommand createTodoListRequest)
+        {
+            var result = await _createTodoListUseCase.InvokeWithErrors(createTodoListRequest);
+            return result.ValueUnsafe();
         }
 
 

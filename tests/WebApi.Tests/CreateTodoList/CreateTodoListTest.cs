@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using WebApi;
-using WebApi.Controllers;
 using WebApi.Controllers.CreateTodoList;
 using Xunit;
 
@@ -59,7 +58,6 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
             _createTodoListUseCaseMock.Setup(m =>
                     m.Invoke(It.IsAny<CreateTodoListCommand>()))
                 .ThrowsAsync(new DomainException(error, errors));
-
             // act
             var response = await SendCreateTodoListCommand("todoList");
             // assert
