@@ -10,7 +10,7 @@ namespace Domain.Tests.ValidateTodoListName
         public void Should_create_a_todo_list_name_when_valid_name()
         {
             // arrange
-            var validListName = "valid-list-name";
+            const string validListName = "valid-list-name";
             // act
             var listName = TodoListName.Create(validListName);
             var resultListName = TodoListName.CreateWithErrors(validListName);
@@ -28,7 +28,7 @@ namespace Domain.Tests.ValidateTodoListName
         public void Should_throw_a_validation_exception_for_invalid_names(string invalidName)
         {
             var domainValidationException =
-                Assert.Throws<DomainValidationException>(() => TodoListName.Create(invalidName));
+                Assert.Throws<DomainException>(() => TodoListName.Create(invalidName));
             Assert.True(domainValidationException.ErrorKey.Equals(ErrorCodes.InvalidTodoListName));
         }
 

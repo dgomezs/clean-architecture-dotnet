@@ -8,19 +8,19 @@ namespace Domain
 {
     public static class ValidationUtils
     {
-        public static Validation<DomainValidationException, T> WrapValidation<T>(Func<T> f, string errorKey)
+        public static Validation<DomainException, T> WrapValidation<T>(Func<T> f, string errorKey)
         {
             return Try(f).ToValidation(ex => MapException(ex, errorKey));
         }
 
-        public static DomainValidationException MapException(Exception ex, string errorKey)
+        public static DomainException MapException(Exception ex, string errorKey)
         {
             return ex switch
             {
-                ValidationException validationException => new DomainValidationException(errorKey,
+                ValidationException validationException => new DomainException(errorKey,
                     validationException.Errors),
-                _ => new DomainValidationException(errorKey,
-                    $"Unknown validation error {ex.Message}")
+                _ => new DomainException(new ValidationError(errorKey,
+                    $"Unknown validation error {ex.Message}"))
             };
         }
     }

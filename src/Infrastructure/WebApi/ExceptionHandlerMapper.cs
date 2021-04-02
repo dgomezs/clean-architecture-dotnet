@@ -13,7 +13,6 @@ namespace WebApi
         {
             return exception switch
             {
-                DomainValidationException vException => HandleDomainValidationException(vException),
                 DomainException dException => HandleDomainException(dException),
                 ValidationException vException => HandleFluentValidationException(vException),
                 ArgumentNullException aException => HandleArgumentException(aException),
@@ -49,18 +48,11 @@ namespace WebApi
             return appException switch
             {
                 EntityAlreadyExistsError => HttpStatusCode.Conflict,
+                ValidationError => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError
             };
         }
 
-        private static RestErrorResponse HandleDomainValidationException(
-            DomainValidationException vException)
-        {
-            return new((int) HttpStatusCode.BadRequest,
-                vException.ErrorKey,
-                vException.Errors,
-                vException.Message);
-        }
 
         private static RestErrorResponse HandleDomainException(DomainException vException)
         {

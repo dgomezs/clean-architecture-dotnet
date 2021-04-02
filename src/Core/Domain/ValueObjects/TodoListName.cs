@@ -25,7 +25,7 @@ namespace Domain.ValueObjects
             }
         }
 
-        public static Validation<DomainValidationException, TodoListName> CreateWithErrors(string name)
+        public static Validation<DomainException, TodoListName> CreateWithErrors(string name)
         {
             return ValidationUtils.WrapValidation(() => Create(name), ErrorCodes.InvalidTodoListName);
         }

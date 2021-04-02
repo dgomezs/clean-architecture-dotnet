@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentValidation.Results;
 
 namespace Domain.Errors
 {
@@ -20,6 +21,12 @@ namespace Domain.Errors
         {
             MainError = new Error(errorKey, errorMessage);
             _errors = errors.ToList();
+        }
+
+        public DomainException(string errorKey, IEnumerable<ValidationFailure> errors)
+        {
+            MainError = new ValidationError(errorKey);
+            _errors = errors.Select(x => new ValidationError(x)).ToList<Error>();
         }
 
         public DomainException(string errorKey) =>
