@@ -1,7 +1,7 @@
 ﻿using System;
 using Ardalis.GuardClauses;
 
-namespace Domain.Entities
+namespace Domain.ValueObjects
 {
     public record TodoListId
     {

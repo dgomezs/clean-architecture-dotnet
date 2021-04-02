@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Domain.Entities;
 using Domain.Errors;
+using Domain.ValueObjects;
 
 namespace Application.Services.Errors.TodoList
 {

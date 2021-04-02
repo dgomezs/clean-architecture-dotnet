@@ -31,9 +31,11 @@ namespace Application.Services.Tests.AddTodoToList
             // arrange
             var createTodoListRequest = MockDataGenerator.CreateTodoList();
             var todoListId = await ArrangeTodoListExist(createTodoListRequest);
+            var addTodoCommand = new AddTodoCommand(todoListId, new TodoDescription());
             // act
-
+            var todoId = await _addTodoUseCase.AddTodo(addTodoCommand);
             // assert
+            Assert.NotNull(todoId);
         }
 
         [Fact]
