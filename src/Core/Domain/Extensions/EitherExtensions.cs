@@ -1,0 +1,25 @@
+﻿using Domain.Errors;
+using LanguageExt;
+
+namespace Domain.Extensions
+{
+    public static class EitherExtensions
+    {
+        public static T ToThrowException<T>(this Either<Error, T> result)
+        {
+            return result.Match(r => r, e => throw new DomainException(e));
+        }
+
+        public static T ToThrowException<T>(this Validation<Error, T> result)
+        {
+            return result.Match(r => r, errors => errors.Case switch
+            {
+                EmptyCase<Error> => throw new DomainException(ErrorCodes.UnexpectedError),
+                HeadCase<Error> headCase => throw new DomainException(headCase.Head),
+                HeadTailCase<Error> headTailCase => throw new DomainException(headTailCase.Head,
+                    headTailCase.Tail),
+                _ => throw new DomainException(ErrorCodes.UnexpectedError)
+            });
+        }
+    }
+}

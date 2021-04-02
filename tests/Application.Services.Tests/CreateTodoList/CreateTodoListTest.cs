@@ -8,8 +8,8 @@ using Autofac.Extras.Moq;
 using Domain.Entities;
 using Domain.Events;
 using Domain.ValueObjects;
-using LanguageExt.UnsafeValueAccess;
 using Xunit;
+using static Domain.Extensions.EitherExtensions;
 
 namespace Application.Services.Tests.CreateTodoList
 {
@@ -54,7 +54,7 @@ namespace Application.Services.Tests.CreateTodoList
         private async Task<TodoListId> CreateTodoListWithError(CreateTodoListCommand createTodoListRequest)
         {
             var result = await _createTodoListUseCase.InvokeWithErrors(createTodoListRequest);
-            return result.ValueUnsafe();
+            return result.ToThrowException();
         }
 
 
