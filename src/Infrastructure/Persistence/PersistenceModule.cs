@@ -3,6 +3,9 @@ using AutoMapper.Contrib.Autofac.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.NodaTime.Extensions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using Serilog.Extensions.Logging;
 
 namespace Infrastructure.Persistence
 {
@@ -24,10 +27,13 @@ namespace Infrastructure.Persistence
             builder.Register(x =>
             {
                 var dbConnectionConfig = x.Resolve<DbConnectionConfig>();
+                var loggerFactory = x.Resolve<ILoggerFactory>();
 
                 var optionsBuilder =
                     new DbContextOptionsBuilder<TodoListContext>();
-                optionsBuilder.UseSqlServer(
+                optionsBuilder
+                    .UseLoggerFactory(loggerFactory)
+                    .UseSqlServer(
                     dbConnectionConfig.ConnectionBuilder.ToString(),
                     x => x.UseNodaTime());
                 return new TodoListContext(optionsBuilder.Options);

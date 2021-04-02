@@ -64,6 +64,3 @@ As the rule of Clean Architecture indicates layers point inwards in the diagram.
 
 ![Project structure](https://docs.google.com/drawings/d/e/2PACX-1vQF_JYDw08PLfhVI16qDfn6vNFJePFReCFCAi5Vv1Jgy_1K4IBWeUgtxHpzXeUH3UECZqVPiIMnn8mN/pub?w=960&h=720)
 
-
-
-

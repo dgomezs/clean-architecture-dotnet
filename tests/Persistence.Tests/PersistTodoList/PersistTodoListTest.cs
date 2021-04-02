@@ -2,9 +2,7 @@
 using System.Threading.Tasks;
 using Application.Services.Repositories;
 using Autofac;
-using Domain.Entities;
-using Domain.ValueObjects;
-using Infrastructure.Persistence;
+using Persistence.Tests.FakeData;
 using Persistence.Tests.Fixtures;
 using Xunit;
 
@@ -15,17 +13,14 @@ namespace Persistence.Tests.PersistTodoList
     {
         private readonly ITodoListRepository _todoListRepository;
 
-        public PersistTodoListTest(DbFixture dbFixture)
-        {
-            TodoListContext todoListContext = dbFixture.TodoListContext;
+        public PersistTodoListTest(DbFixture dbFixture) =>
             _todoListRepository = dbFixture.Container.Resolve<ITodoListRepository>();
-        }
 
         [Fact]
         public async Task Should_persist_new_created_todo_list()
         {
             // arrange
-            var todoList = new TodoList(TodoListName.Create("ddd"));
+            var todoList = TodoListMockData.CreateTodoList();
             var todoListId = todoList.Id;
             // act
             await _todoListRepository.Save(todoList);
