@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Application.Services.Errors;
 using Application.Services.Errors.TodoList;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.CreateTodoList;
@@ -69,8 +68,10 @@ namespace Application.Services.Tests.CreateTodoList
 
             // act
             // create another list by the same
-            await Assert.ThrowsAsync<TodoListAlreadyExistsException>(() =>
+            var exception = await Assert.ThrowsAsync<TodoListAlreadyExistsException>(() =>
                 _createTodoListUseCase.Invoke(createTodoListRequest));
+            var exceptionData = exception.Data;
+            Assert.Equal(createTodoListRequest.TodoListName.Name, exceptionData["TodoListName"]);
         }
 
 
