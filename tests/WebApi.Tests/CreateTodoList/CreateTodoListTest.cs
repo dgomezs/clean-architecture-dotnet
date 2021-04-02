@@ -8,11 +8,10 @@ using CleanArchitecture.TodoList.WebApi.Tests.Config;
 using Domain.Entities;
 using Domain.Errors;
 using FluentAssertions;
-using FluentAssertions.Json;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Newtonsoft.Json.Linq;
+using WebApi;
 using WebApi.Controllers;
 using Xunit;
 
@@ -21,25 +20,22 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
     public class CreateTodoListTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly CustomWebApplicationFactory<Startup> _factory;
+        private readonly Mock<ICreateTodoListUseCase> _createTodoListUseCaseMock;
 
-        public CreateTodoListTest(CustomWebApplicationFactory<Startup> factory) =>
+        public CreateTodoListTest(CustomWebApplicationFactory<Startup> factory)
+        {
             _factory = factory;
+            _createTodoListUseCaseMock = new Mock<ICreateTodoListUseCase>();
+        }
 
         [Fact]
         public async Task Should_return_id_of_a_new_list()
         {
             // Arrange
             var expectedId = new TodoListId(Guid.NewGuid());
-            var createTodoListUseCaseMock = new Mock<ICreateTodoListUseCase>();
-
-            var client = ConfigureClient(createTodoListUseCaseMock);
-
-            createTodoListUseCaseMock.Setup(m =>
-                    m.Invoke(It.IsAny<CreateTodoListCommand>()))
-                .ReturnsAsync(expectedId);
-
+            MockControllerResponse(expectedId);
             // act
-            var response = await SendCreateTodoListCommand(client, "todoList");
+            var response = await SendCreateTodoListCommand("todoList");
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -51,37 +47,27 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
         public async Task Should_return_error_if_todo_list_already_exists()
         {
             // arrange
-            var createTodoListUseCaseMock = new Mock<ICreateTodoListUseCase>();
-            var client = ConfigureClient(createTodoListUseCaseMock);
-
-            const string errorKey = "TestingErrorKey";
-            const string errorMessage = "ErrorMessage";
-            var errors = new List<Error>()
+            var error = new Error("TestingErrorKey", "ErrorMessage");
+            var errors = new List<Error>
             {
                 new("ddd")
             };
+            var expectedErrorResponse = new RestErrorResponse((int) HttpStatusCode.InternalServerError,
+                error.ErrorKey, errors, error.Message);
 
-            const HttpStatusCode expectedHttpStatusCode = HttpStatusCode.InternalServerError;
-
-            createTodoListUseCaseMock.Setup(m =>
+            _createTodoListUseCaseMock.Setup(m =>
                     m.Invoke(It.IsAny<CreateTodoListCommand>()))
-                .ThrowsAsync(new DomainException(errorKey, errorMessage, errors));
+                .ThrowsAsync(new DomainException(error, errors));
 
             // act
-            var response = await SendCreateTodoListCommand(client, "todoList");
-
+            var response = await SendCreateTodoListCommand("todoList");
             // assert
-            response.StatusCode.Should().Be(expectedHttpStatusCode);
-            var body = JToken.Parse(await response.Content.ReadAsStringAsync());
-            var expectedResult = ErrorAssertionUtils.ExpectedErrorResult(errorMessage, errorKey,
-                expectedHttpStatusCode, errors);
-
-
-            body.Should().BeEquivalentTo(expectedResult);
+            await ErrorAssertionUtils.AssertError(response, expectedErrorResponse);
         }
 
-        private async Task<HttpResponseMessage> SendCreateTodoListCommand(HttpClient client, string todoListName)
+        private async Task<HttpResponseMessage> SendCreateTodoListCommand(string todoListName)
         {
+            var client = ConfigureClient();
             RestCreateTodoListRequest createTodoListRequest = new(todoListName);
 
             // Act
@@ -90,16 +76,23 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
             return response;
         }
 
-        private HttpClient ConfigureClient(Mock<ICreateTodoListUseCase> createTodoListUseCaseMock)
+        private HttpClient ConfigureClient()
         {
             return _factory.WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureTestServices(services =>
                     {
-                        services.AddScoped(x => createTodoListUseCaseMock.Object);
+                        services.AddScoped(x => _createTodoListUseCaseMock.Object);
                     });
                 })
                 .CreateClient();
+        }
+
+        private void MockControllerResponse(TodoListId expectedId)
+        {
+            _createTodoListUseCaseMock.Setup(m =>
+                    m.Invoke(It.IsAny<CreateTodoListCommand>()))
+                .ReturnsAsync(expectedId);
         }
     }
 }

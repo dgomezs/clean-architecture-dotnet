@@ -10,7 +10,7 @@ namespace App
 {
     public class ExceptionHandlerMapper
     {
-        public static RestExceptionResponse Map(Exception exception)
+        public static RestErrorResponse Map(Exception exception)
         {
             return exception switch
             {
@@ -18,17 +18,17 @@ namespace App
                 DomainException dException => HandleDomainException(dException),
                 ValidationException vException => HandleFluentValidationException(vException),
                 ArgumentNullException aException => HandleArgumentException(aException),
-                { } ex => new RestExceptionResponse(
+                { } ex => new RestErrorResponse(
                     (int) HttpStatusCode.InternalServerError,
                     ex.Message)
             };
         }
 
 
-        private static RestExceptionResponse HandleArgumentException(ArgumentException aException)
+        private static RestErrorResponse HandleArgumentException(ArgumentException aException)
         {
             var paramName = aException.ParamName ?? "Param";
-            return new RestExceptionResponse((int) HttpStatusCode.BadRequest,
+            return new RestErrorResponse((int) HttpStatusCode.BadRequest,
                 $"NotNull{paramName}",
                 new[]
                 {
@@ -37,7 +37,7 @@ namespace App
                 aException.Message);
         }
 
-        private static RestExceptionResponse HandleFluentValidationException(ValidationException vException)
+        private static RestErrorResponse HandleFluentValidationException(ValidationException vException)
         {
             return new((int) HttpStatusCode.BadRequest,
                 vException.Errors.Select(x =>
@@ -54,7 +54,7 @@ namespace App
             };
         }
 
-        private static RestExceptionResponse HandleDomainValidationException(
+        private static RestErrorResponse HandleDomainValidationException(
             DomainValidationException vException)
         {
             return new((int) HttpStatusCode.BadRequest,
@@ -63,7 +63,7 @@ namespace App
                 vException.Message);
         }
 
-        private static RestExceptionResponse HandleDomainException(DomainException vException)
+        private static RestErrorResponse HandleDomainException(DomainException vException)
         {
             return new
             (

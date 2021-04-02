@@ -2,29 +2,29 @@
 {
     public record Error
     {
-        public Error(string errorCode, string propertyName, string message)
+        public Error(string errorKey, string propertyName, string message)
         {
-            ErrorCode = errorCode;
+            ErrorKey = errorKey;
             PropertyName = propertyName;
             Message = message;
         }
 
-        public Error(string errorCode, string message)
+        public Error(string errorKey, string message)
         {
-            ErrorCode = errorCode;
+            ErrorKey = errorKey;
             Message = message;
             PropertyName = null;
         }
 
-        public Error(string errorCode)
+        public Error(string errorKey)
         {
-            ErrorCode = errorCode;
+            ErrorKey = errorKey;
             Message = "";
             PropertyName = null;
         }
 
 
-        public string ErrorCode { get; }
+        public string ErrorKey { get; }
         public string? PropertyName { get; init; }
         public string Message { get; }
     }

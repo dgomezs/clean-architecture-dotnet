@@ -36,7 +36,7 @@ namespace Domain.Errors
             => (_mainError, _errors) = (mainError, errors.ToList());
 
 
-        public string ErrorKey => _mainError.ErrorCode;
+        public string ErrorKey => _mainError.ErrorKey;
 
         public IEnumerable<Error> Errors => _errors;
 

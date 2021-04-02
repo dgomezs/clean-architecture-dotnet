@@ -3,23 +3,23 @@ using Domain.Errors;
 
 namespace WebApi
 {
-    public record RestExceptionResponse
+    public record RestErrorResponse
     {
-        public RestExceptionResponse(int code, string errorKey,
+        public RestErrorResponse(int code, string errorKey,
             IEnumerable<Error> errors,
             string message) =>
             (Status, ErrorKey, Errors, Message) = (code, errorKey, errors, message);
 
-        public RestExceptionResponse(int code,
+        public RestErrorResponse(int code,
             IEnumerable<Error> errors,
             string message) =>
             (Status, Errors, Message) = (code, errors, message);
 
-        public RestExceptionResponse(int code, string errorKey,
+        public RestErrorResponse(int code, string errorKey,
             string message) =>
             (Status, ErrorKey, Message) = (code, errorKey, message);
 
-        public RestExceptionResponse(int code, string message) =>
+        public RestErrorResponse(int code, string message) =>
             (Status, Message) = (code, message);
 
         public string Message { get; }
