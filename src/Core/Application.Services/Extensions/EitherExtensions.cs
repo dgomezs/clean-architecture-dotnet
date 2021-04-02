@@ -2,7 +2,7 @@
 using Domain.Errors;
 using LanguageExt;
 
-namespace Domain.Extensions
+namespace Application.Services.Extensions
 {
     public static class EitherExtensions
     {

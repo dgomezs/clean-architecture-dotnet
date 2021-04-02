@@ -3,7 +3,7 @@ using Application.Services.UseCases.CreateTodoList;
 using Domain.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using static Domain.Extensions.EitherExtensions;
+using static Application.Services.Extensions.EitherExtensions;
 
 namespace WebApi.Controllers.CreateTodoList
 {

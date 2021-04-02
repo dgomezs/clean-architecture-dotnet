@@ -9,7 +9,7 @@ using Domain.Entities;
 using Domain.Events;
 using Domain.ValueObjects;
 using Xunit;
-using static Domain.Extensions.EitherExtensions;
+using static Application.Services.Extensions.EitherExtensions;
 
 namespace Application.Services.Tests.CreateTodoList
 {
