@@ -1,4 +1,5 @@
-﻿using Domain.Errors;
+﻿using System.Threading.Tasks;
+using Domain.Errors;
 using LanguageExt;
 
 namespace Domain.Extensions
@@ -8,6 +9,12 @@ namespace Domain.Extensions
         public static T ToThrowException<T>(this Either<Error, T> result)
         {
             return result.Match(r => r, e => throw new DomainException(e));
+        }
+
+        public static async Task<T> ToThrowException<T>(this Task<Either<Error, T>> task)
+        {
+            var result = await task;
+            return ToThrowException(result);
         }
 
         public static T ToThrowException<T>(this Validation<Error, T> result)

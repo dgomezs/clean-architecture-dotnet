@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,6 +13,7 @@ using Moq;
 using WebApi;
 using WebApi.Controllers.CreateTodoList;
 using Xunit;
+using static LanguageExt.Prelude;
 
 namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
 {
@@ -48,16 +48,19 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
         {
             // arrange
             var error = new Error("TestingErrorKey", "ErrorMessage");
-            var errors = new List<Error>
-            {
-                new("ddd")
-            };
+
             var expectedErrorResponse = new RestErrorResponse((int) HttpStatusCode.InternalServerError,
-                error.ErrorKey, errors, error.Message);
+                error.ErrorKey, error.Message);
 
             _createTodoListUseCaseMock.Setup(m =>
                     m.Invoke(It.IsAny<CreateTodoListCommand>()))
-                .ThrowsAsync(new DomainException(error, errors));
+                .ThrowsAsync(new DomainException(error));
+
+            _createTodoListUseCaseMock.Setup(m =>
+                    m.InvokeWithErrors(It.IsAny<CreateTodoListCommand>()))
+                .ReturnsAsync(Left(error));
+
+
             // act
             var response = await SendCreateTodoListCommand("todoList");
             // assert
@@ -92,6 +95,10 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
             _createTodoListUseCaseMock.Setup(m =>
                     m.Invoke(It.IsAny<CreateTodoListCommand>()))
                 .ReturnsAsync(expectedId);
+
+            _createTodoListUseCaseMock.Setup(m =>
+                    m.InvokeWithErrors(It.IsAny<CreateTodoListCommand>()))
+                .ReturnsAsync(Right(expectedId));
         }
     }
 }

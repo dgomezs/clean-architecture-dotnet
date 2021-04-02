@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Application.Services.UseCases.CreateTodoList;
+using Domain.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using static Domain.Extensions.EitherExtensions;
 
 namespace WebApi.Controllers.CreateTodoList
 {
@@ -22,8 +24,8 @@ namespace WebApi.Controllers.CreateTodoList
         {
             var validator = new RestCreateTodoListRequestValidator();
             await validator.ValidateAndThrowAsync(createTodoListRequest);
-            var result = await _createTodoListUseCase.Invoke(
-                CreateTodoListCommand.Create(createTodoListRequest.Name));
+            TodoListId result = await _createTodoListUseCase.InvokeWithErrors(
+                CreateTodoListCommand.Create(createTodoListRequest.Name)).ToThrowException();
             return result.Value.ToString();
         }
     }
