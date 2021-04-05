@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ardalis.GuardClauses;
+using Domain.Errors;
 using Domain.Events;
 using Domain.ValueObjects;
 
@@ -9,6 +10,7 @@ namespace Domain.Entities
     public class TodoList : Aggregate
     {
         private readonly List<Todo> _todos;
+        public const int MaxNumberOfTodosNotDoneAllowed = 5;
 
         public TodoList(TodoListName name, TodoListId id, List<Todo> todos)
         {
@@ -31,8 +33,18 @@ namespace Domain.Entities
 
         public IEnumerable<Todo> Todos => _todos;
 
+        public bool CanIAddTodo()
+        {
+            return _todos.Count < MaxNumberOfTodosNotDoneAllowed;
+        }
+
         public TodoId AddTodo(TodoDescription todoDescription)
         {
+            if (!CanIAddTodo())
+            {
+                throw new DomainException(new MaxNumberOfTodosUnDoneReachedError(Name, _todos.Count));
+            }
+
             var newTodo = new Todo(todoDescription);
             _todos.Add(newTodo);
             Events.Add(new TodoAddedToListEvent(Id, newTodo));

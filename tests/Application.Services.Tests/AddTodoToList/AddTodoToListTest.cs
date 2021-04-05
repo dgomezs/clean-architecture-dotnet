@@ -6,6 +6,7 @@ using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.AddTodo;
 using Application.Services.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;
+using Domain.Entities;
 using Domain.Errors;
 using Domain.Events;
 using Domain.ValueObjects;
@@ -36,7 +37,7 @@ namespace Application.Services.Tests.AddTodoToList
         {
             // arrange
             var createTodoListRequest = MockDataGenerator.CreateTodoList();
-            var todoListId = await ArrangeTodoListExistWithMaxTodosNotReached(createTodoListRequest);
+            var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
             var todoDescription = MockDataGenerator.CreateTodoDescription();
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
             // act
@@ -53,7 +54,7 @@ namespace Application.Services.Tests.AddTodoToList
         {
             // arrange
             var createTodoListRequest = MockDataGenerator.CreateTodoList();
-            var todoListId = await ArrangeTodoListExistWithMaxTodosNotReached(createTodoListRequest);
+            var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
             var todoDescription = MockDataGenerator.CreateTodoDescription();
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
             _eventPublisher.ClearEvents();
@@ -84,8 +85,29 @@ namespace Application.Services.Tests.AddTodoToList
             Assert.Equal(todoListId.Value.ToString(), exceptionData["TodoListId"]);
         }
 
+        [Fact]
+        public async Task Should_throw_an_error_when_adding_todo_and_list_already_has_maximum_number()
+        {
+            // arrange
+            var createTodoListRequest = MockDataGenerator.CreateTodoList();
+            var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
 
-        private async Task<TodoListId> ArrangeTodoListExistWithMaxTodosNotReached(
+            for (var i = 0; i < TodoList.MaxNumberOfTodosNotDoneAllowed; i++)
+            {
+                await _addTodoUseCase.AddTodo(new AddTodoCommand(todoListId,
+                    MockDataGenerator.CreateTodoDescription()));
+            }
+
+            var addTodoCommand = new AddTodoCommand(todoListId, MockDataGenerator.CreateTodoDescription());
+            // act / assert
+            var exception = await Assert.ThrowsAsync<DomainException>(() =>
+                _addTodoUseCase.AddTodo(addTodoCommand));
+            var exceptionData = exception.Data;
+            Assert.Equal(TodoList.MaxNumberOfTodosNotDoneAllowed.ToString(), exceptionData["CurrentNumberOfTodos"]);
+        }
+
+
+        private async Task<TodoListId> ArrangeTodoListExistWithNoTodos(
             CreateTodoListCommand todoListName)
         {
             await _todoListRepository.RemoveByName(todoListName.TodoListName);
