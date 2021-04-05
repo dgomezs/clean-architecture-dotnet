@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation.Results;
@@ -49,10 +50,14 @@ namespace Domain.Errors
 
         public override string Message => MainError.Message;
 
+        public override IDictionary Data => MainError.Data;
+
         public DomainException PrefixErrors(string prefix)
         {
             _errors = _errors.Select(e => e with {PropertyName = $"{prefix}.{e.PropertyName}"}).ToList();
             return this;
         }
+
+        
     }
 }

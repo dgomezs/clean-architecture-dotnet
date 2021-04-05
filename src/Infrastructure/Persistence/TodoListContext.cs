@@ -15,6 +15,7 @@ namespace Infrastructure.Persistence
         {
             modelBuilder.HasDefaultSchema("todos");
 
+            modelBuilder.ApplyConfiguration(new TodoConfig());
             modelBuilder.ApplyConfiguration(new TodoListConfig());
         }
     }

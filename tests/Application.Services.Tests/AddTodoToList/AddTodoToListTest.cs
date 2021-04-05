@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
-using Application.Services.Errors.TodoList;
+﻿using System;
+using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.AddTodo;
 using Application.Services.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;
-using Domain.Entities;
+using Domain.Errors;
 using Domain.ValueObjects;
+using FluentAssertions;
 using Xunit;
 
 namespace Application.Services.Tests.AddTodoToList
@@ -31,11 +32,15 @@ namespace Application.Services.Tests.AddTodoToList
             // arrange
             var createTodoListRequest = MockDataGenerator.CreateTodoList();
             var todoListId = await ArrangeTodoListExist(createTodoListRequest);
-            var addTodoCommand = new AddTodoCommand(todoListId, new TodoDescription());
+            var todoDescription = MockDataGenerator.CreateTodoDescription();
+            var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
             // act
             var todoId = await _addTodoUseCase.AddTodo(addTodoCommand);
             // assert
             Assert.NotNull(todoId);
+            var todoList = await _todoListRepository.GetById(todoListId) ?? throw new Exception();
+            todoList.Todos.Should().Contain(t => todoId.Equals(t.Id));
+            todoList.Todos.Should().Contain(t => todoDescription.Equals(t.Description));
         }
 
         [Fact]
@@ -44,9 +49,9 @@ namespace Application.Services.Tests.AddTodoToList
             // arrange
             var createTodoListRequest = MockDataGenerator.CreateTodoList();
             var todoListId = await ArrangeTodoListDoesNotExist(createTodoListRequest);
-            var addTodoCommand = new AddTodoCommand(todoListId, new TodoDescription());
+            var addTodoCommand = new AddTodoCommand(todoListId, MockDataGenerator.CreateTodoDescription());
             // act / assert
-            var exception = await Assert.ThrowsAsync<TodoListDoesNotExistsException>(() =>
+            var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _addTodoUseCase.AddTodo(addTodoCommand));
             var exceptionData = exception.Data;
             Assert.Equal(todoListId.Value.ToString(), exceptionData["TodoListId"]);

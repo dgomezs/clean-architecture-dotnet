@@ -21,7 +21,7 @@ namespace Application.Services.Tests.TestDoubles
         {
             var id = todoList.Id ?? throw new Exception();
             _todoLists.Remove(id);
-            _todoLists.Add(id, new TodoList(todoList.Name, id));
+            _todoLists.Add(id, todoList);
             return Task.CompletedTask;
         }
 

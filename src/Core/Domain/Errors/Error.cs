@@ -1,4 +1,6 @@
-﻿namespace Domain.Errors
+﻿using System.Collections;
+
+namespace Domain.Errors
 {
     public record Error
     {
@@ -27,5 +29,6 @@
         public string ErrorKey { get; }
         public string? PropertyName { get; init; }
         public string Message { get; }
+        public virtual IDictionary Data { get; }
     }
 }

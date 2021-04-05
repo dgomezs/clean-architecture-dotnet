@@ -10,4 +10,14 @@ CREATE TABLE [todos].[TodoList]
     [Id]           UNIQUEIDENTIFIER NOT NULL,
     [Name]    NVARCHAR(50) NOT NULL
 )
-GO 
+GO
+
+CREATE TABLE [todos].[Todo]
+(
+    [InternalId]           BIGINT PRIMARY KEY IDENTITY (1,1),
+    [Id]           UNIQUEIDENTIFIER NOT NULL,
+    [Description]    NVARCHAR(255) NOT NULL,
+    [TodoListId]     BIGINT NOT NULL,
+    CONSTRAINT FK_Todo_TodoList_TodoList_InternalId FOREIGN KEY (TodoListId) REFERENCES [todos].[TodoList] (InternalId)
+    )
+    GO 

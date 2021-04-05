@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Application.Services.Errors.TodoList;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;
-using Domain.Entities;
+using Domain.Errors;
 using Domain.Events;
 using Domain.ValueObjects;
 using Xunit;
@@ -68,7 +67,7 @@ namespace Application.Services.Tests.CreateTodoList
 
             // act
             // create another list by the same
-            var exception = await Assert.ThrowsAsync<TodoListAlreadyExistsException>(() =>
+            var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _createTodoListUseCase.Invoke(createTodoListRequest));
             var exceptionData = exception.Data;
             Assert.Equal(createTodoListRequest.TodoListName.Name, exceptionData["TodoListName"]);

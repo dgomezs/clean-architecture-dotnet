@@ -1,5 +1,6 @@
 ﻿using Application.Services.UseCases.CreateTodoList;
 using Bogus;
+using Domain.ValueObjects;
 
 namespace Application.Services.Tests
 {
@@ -9,8 +10,14 @@ namespace Application.Services.Tests
         {
             var generator = new Faker();
             var todoListName = generator.Random.AlphaNumeric(5);
-            var foo = CreateTodoListCommand.Create(todoListName);
-            return foo;
+            return CreateTodoListCommand.Create(todoListName);
+        }
+
+        public static TodoDescription CreateTodoDescription()
+        {
+            var generator = new Faker();
+            var todoDescription = generator.Random.AlphaNumeric(5);
+            return TodoDescription.Create(todoDescription);
         }
     }
 }

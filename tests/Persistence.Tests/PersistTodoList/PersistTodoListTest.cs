@@ -29,5 +29,20 @@ namespace Persistence.Tests.PersistTodoList
             // assert
             Assert.Equal(todoList.Name, todoListPersisted.Name);
         }
+        
+        [Fact]
+        public async Task Should_persist_new_created_todo_list_with_some_todos()
+        {
+            // arrange
+            const int numberOfTodos = 3;
+            var todoList = TodoListMockData.CreateTodoList(numberOfTodos);
+            var todoListId = todoList.Id;
+            // act
+            await _todoListRepository.Save(todoList);
+            var todoListPersisted = await _todoListRepository.GetById(todoListId) ?? throw new Exception();
+
+            // assert
+            Assert.Equal(todoList.Name, todoListPersisted.Name);
+        }
     }
 }

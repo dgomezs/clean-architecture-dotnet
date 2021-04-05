@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Application.Services.Errors;
 using Application.Services.Errors.TodoList;
 using Application.Services.Events;
+using Application.Services.Extensions;
 using Application.Services.Repositories;
 using Domain.Entities;
 using Domain.Errors;
@@ -24,15 +24,7 @@ namespace Application.Services.UseCases.CreateTodoList
 
         public async Task<TodoListId> Invoke(CreateTodoListCommand createTodoListCommand)
         {
-            var todoListName = createTodoListCommand.TodoListName;
-            var todoList = await _todoListRepository.GetByName(todoListName);
-            if (todoList is not null) throw new TodoListAlreadyExistsException(todoListName);
-
-            var result = new TodoList(todoListName);
-            await _todoListRepository.Save(result);
-
-            await _domainEventPublisher.PublishEvents(result.DomainEvents);
-            return result.Id;
+            return await InvokeWithErrors(createTodoListCommand).ToThrowException();
         }
 
         public async Task<Either<Error, TodoListId>> InvokeWithErrors(
@@ -42,7 +34,7 @@ namespace Application.Services.UseCases.CreateTodoList
             var todoList = await _todoListRepository.GetByName(todoListName);
             if (todoList is not null)
             {
-                return new TodoListAlreadyExistsError();
+                return new TodoListAlreadyExistsError(todoListName);
             }
 
             var result = new TodoList(todoListName);
