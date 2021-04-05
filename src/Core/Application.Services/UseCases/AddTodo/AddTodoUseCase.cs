@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Application.Services.Errors.TodoList;
 using Application.Services.Repositories;
 using Domain.Errors;
@@ -19,7 +18,8 @@ namespace Application.Services.UseCases.AddTodo
             var todoList = await _todoListRepository.GetById(addTodoCommand.TodoListId)
                            ?? throw new DomainException(
                                new TodoListDoesNotExistsError(addTodoCommand.TodoListId));
-            return new TodoId(Guid.NewGuid());
+
+            return todoList.AddTodo(addTodoCommand.TodoDescription);
         }
     }
 }

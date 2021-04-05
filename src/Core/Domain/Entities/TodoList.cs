@@ -30,5 +30,12 @@ namespace Domain.Entities
         public TodoListId Id { get; }
 
         public IEnumerable<Todo> Todos => _todos;
+
+        public TodoId AddTodo(TodoDescription todoDescription)
+        {
+            var newTodo = new Todo(todoDescription);
+            _todos.Add(newTodo);
+            return newTodo.Id;
+        }
     }
 }
