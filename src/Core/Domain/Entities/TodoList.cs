@@ -35,6 +35,7 @@ namespace Domain.Entities
         {
             var newTodo = new Todo(todoDescription);
             _todos.Add(newTodo);
+            Events.Add(new TodoAddedToListEvent(Id, newTodo));
             return newTodo.Id;
         }
     }

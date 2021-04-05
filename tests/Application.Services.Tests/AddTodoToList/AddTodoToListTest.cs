@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.AddTodo;
 using Application.Services.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;
 using Domain.Errors;
+using Domain.Events;
 using Domain.ValueObjects;
 using FluentAssertions;
 using Xunit;
@@ -17,11 +20,13 @@ namespace Application.Services.Tests.AddTodoToList
         private readonly InMemoryTodoListRepository _todoListRepository;
         private readonly ICreateTodoListUseCase _createTodoListUseCase;
         private readonly IAddTodoUseCase _addTodoUseCase;
+        private readonly InMemoryEventPublisher _eventPublisher;
 
         public AddTodoToListTest()
         {
             _mock = DiConfig.GetMock();
             _todoListRepository = _mock.Create<InMemoryTodoListRepository>();
+            _eventPublisher = _mock.Create<InMemoryEventPublisher>();
             _createTodoListUseCase = _mock.Create<ICreateTodoListUseCase>();
             _addTodoUseCase = _mock.Create<IAddTodoUseCase>();
         }
@@ -31,7 +36,7 @@ namespace Application.Services.Tests.AddTodoToList
         {
             // arrange
             var createTodoListRequest = MockDataGenerator.CreateTodoList();
-            var todoListId = await ArrangeTodoListExist(createTodoListRequest);
+            var todoListId = await ArrangeTodoListExistWithMaxTodosNotReached(createTodoListRequest);
             var todoDescription = MockDataGenerator.CreateTodoDescription();
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
             // act
@@ -42,6 +47,28 @@ namespace Application.Services.Tests.AddTodoToList
             todoList.Todos.Should().Contain(t => todoId.Equals(t.Id));
             todoList.Todos.Should().Contain(t => todoDescription.Equals(t.Description));
         }
+
+        [Fact]
+        public async Task Should_publish_todo_added_event_when_adding_a_todo_successfully()
+        {
+            // arrange
+            var createTodoListRequest = MockDataGenerator.CreateTodoList();
+            var todoListId = await ArrangeTodoListExistWithMaxTodosNotReached(createTodoListRequest);
+            var todoDescription = MockDataGenerator.CreateTodoDescription();
+            var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
+            _eventPublisher.ClearEvents();
+            // act
+            var todoId = await _addTodoUseCase.AddTodo(addTodoCommand);
+            // assert
+            IEnumerable<DomainEvent> domainEvents = _eventPublisher.Events;
+            Assert.Single(domainEvents);
+            var eDomainEvent = domainEvents.Single();
+            Assert.True(eDomainEvent is TodoAddedToListEvent);
+            var todoAddedToListEvent = (TodoAddedToListEvent) eDomainEvent;
+            Assert.Equal(todoDescription, todoAddedToListEvent.Todo.Description);
+            Assert.Equal(todoListId, todoAddedToListEvent.TodoListId);
+        }
+
 
         [Fact]
         public async Task Should_throw_an_error_when_todo_list_does_not_exist()
@@ -58,7 +85,8 @@ namespace Application.Services.Tests.AddTodoToList
         }
 
 
-        private async Task<TodoListId> ArrangeTodoListExist(CreateTodoListCommand todoListName)
+        private async Task<TodoListId> ArrangeTodoListExistWithMaxTodosNotReached(
+            CreateTodoListCommand todoListName)
         {
             await _todoListRepository.RemoveByName(todoListName.TodoListName);
             return await _createTodoListUseCase.Invoke(todoListName);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.CreateTodoList;
@@ -40,10 +41,26 @@ namespace Application.Services.Tests.CreateTodoList
             var todoList = await _todoListRepository.GetById(id) ?? throw new Exception();
             Assert.Equal(todoListName, todoList.Name);
             Assert.Equal(id, todoList.Id);
+        }
+
+        [Fact]
+        public async Task Should_publish_created_todo_list_event_when_a_new_todo_list_is_created()
+        {
+            // arrange
+            var createTodoListRequest = MockDataGenerator.CreateTodoList();
+            var todoListName = createTodoListRequest.TodoListName;
+            await ArrangeTodoListDoesNotExist(todoListName);
+            // act
+            var id = await CreateTodoList(createTodoListRequest);
+            // assert
             IEnumerable<DomainEvent> domainEvents = _eventPublisher.Events;
             Assert.Single(domainEvents);
-            Assert.Collection(domainEvents, d => Assert.True(d is TodoListCreatedEvent));
+            var eDomainEvent = domainEvents.Single();
+            Assert.True(eDomainEvent is TodoListCreatedEvent);
+            var todoListCreatedEvent = (TodoListCreatedEvent) eDomainEvent;
+            Assert.Equal(todoListName, todoListCreatedEvent.TodoList.Name);
         }
+
 
         private Task<TodoListId> CreateTodoList(CreateTodoListCommand createTodoListRequest)
         {

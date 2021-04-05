@@ -20,5 +20,10 @@ namespace Application.Services.Tests.TestDoubles
             Events.AddRange(events);
             return Task.CompletedTask;
         }
+
+        public void ClearEvents()
+        {
+            Events.Clear();
+        }
     }
 }

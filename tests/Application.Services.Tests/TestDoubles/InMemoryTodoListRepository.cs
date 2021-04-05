@@ -21,7 +21,7 @@ namespace Application.Services.Tests.TestDoubles
         {
             var id = todoList.Id ?? throw new Exception();
             _todoLists.Remove(id);
-            _todoLists.Add(id, todoList);
+            _todoLists.Add(id, new TodoList(todoList.Name, todoList.Id, todoList.Todos.ToList()));
             return Task.CompletedTask;
         }
 
@@ -37,7 +37,9 @@ namespace Application.Services.Tests.TestDoubles
 
         public Task<TodoList?> GetById(TodoListId id)
         {
-            return Task.FromResult(_todoLists.GetValueOrDefault(id));
+            var valueOrDefault = _todoLists.GetValueOrDefault(id);
+            _todoLists.Clear(); // force the entity to be saved again
+            return Task.FromResult(valueOrDefault);
         }
     }
 }
