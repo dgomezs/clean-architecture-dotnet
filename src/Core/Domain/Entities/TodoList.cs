@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ardalis.GuardClauses;
 using Domain.Errors;
+using Domain.Errors.TodoList;
 using Domain.Events;
 using Domain.ValueObjects;
 
@@ -49,6 +51,13 @@ namespace Domain.Entities
             _todos.Add(newTodo);
             Events.Add(new TodoAddedToListEvent(Id, newTodo));
             return newTodo.Id;
+        }
+
+        public void MarkAsDone(TodoId todoId)
+        {
+            var todo = _todos.FirstOrDefault(t => todoId.Equals(t.Id)) ??
+                       throw new DomainException(new TodoNotFoundError(todoId));
+            todo.MarkAsDone();
         }
     }
 }

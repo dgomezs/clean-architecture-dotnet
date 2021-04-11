@@ -1,12 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Domain.ValueObjects;
 
-namespace Domain.Errors
+namespace Domain.Errors.TodoList
 {
     public record MaxNumberOfTodosUnDoneReachedError : Error
     {
-        public const string MaxNumberOfUnDoneTodosReached = "MaxNumberOfUnDoneTodosReached";
+        private const string MaxNumberOfUnDoneTodosReached = "MaxNumberOfUnDoneTodosReached";
 
         public MaxNumberOfTodosUnDoneReachedError(TodoListName name, int todosCount)
             : base(MaxNumberOfUnDoneTodosReached, "No more todos allowed till you do one")
@@ -15,12 +16,12 @@ namespace Domain.Errors
             CurrentNumberOfTodos = todosCount;
         }
 
-        public int CurrentNumberOfTodos { get; }
-        public string TodoListName { get; }
+        private int CurrentNumberOfTodos { get; }
+        private string TodoListName { get; }
 
         public override IDictionary Data => new Dictionary<string, string>()
         {
-            {"CurrentNumberOfTodos", CurrentNumberOfTodos + ""},
+            {"CurrentNumberOfTodos", Convert.ToString(CurrentNumberOfTodos)},
             {"TodoListName", TodoListName}
         };
     }

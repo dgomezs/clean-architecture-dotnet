@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
+using Application.Services.UseCases.MarkTodoAsDone;
 using Autofac.Extras.Moq;
 using Domain.Entities;
-using Domain.ValueObjects;
 using Xunit;
 
 namespace Application.Services.Tests.MarkTodoAsDone
@@ -28,7 +28,7 @@ namespace Application.Services.Tests.MarkTodoAsDone
         public async Task Should_mark_todo_done_when_list_and_todo_exists_and_todo_not_done_yet()
         {
             // arrange
-            var numberOfTodosNotDone = 1;
+            const int numberOfTodosNotDone = 1;
             var existingTodoList = await ArrangeTodoListExistsWithTodosNotDone(numberOfTodosNotDone);
             var todo = existingTodoList.Todos.First();
             // act
@@ -45,14 +45,5 @@ namespace Application.Services.Tests.MarkTodoAsDone
             await _todoListRepository.Save(todoList);
             return todoList;
         }
-    }
-
-    public record MarkTodoDoneCommand(TodoId TodoId)
-    {
-    }
-
-    internal interface IMarkTodoDoneUseCase
-    {
-        Task Invoke(MarkTodoDoneCommand markTodoDoneCommand);
     }
 }
