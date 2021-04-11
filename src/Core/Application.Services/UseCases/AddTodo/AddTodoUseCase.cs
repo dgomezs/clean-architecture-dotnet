@@ -18,7 +18,7 @@ namespace Application.Services.UseCases.AddTodo
             _domainEventPublisher = domainEventPublisher;
         }
 
-        public async Task<TodoId> AddTodo(AddTodoCommand addTodoCommand)
+        public async Task<TodoId> Invoke(AddTodoCommand addTodoCommand)
         {
             var todoList = await _todoListRepository.GetById(addTodoCommand.TodoListId)
                            ?? throw new DomainException(

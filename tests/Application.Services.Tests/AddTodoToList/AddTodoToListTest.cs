@@ -33,7 +33,7 @@ namespace Application.Services.Tests.AddTodoToList
         }
 
         [Fact]
-        public async Task Should_add_a_todo_to_a_list_when_list_exists_and_max_todos_not_reached()
+        public async Task Should_add_todo_when_list_exists_and_max_number_todos_not_reached()
         {
             // arrange
             var createTodoListRequest = MockDataGenerator.CreateTodoList();
@@ -41,7 +41,7 @@ namespace Application.Services.Tests.AddTodoToList
             var todoDescription = MockDataGenerator.CreateTodoDescription();
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
             // act
-            var todoId = await _addTodoUseCase.AddTodo(addTodoCommand);
+            var todoId = await _addTodoUseCase.Invoke(addTodoCommand);
             // assert
             Assert.NotNull(todoId);
             var todoList = await _todoListRepository.GetById(todoListId) ?? throw new Exception();
@@ -59,15 +59,15 @@ namespace Application.Services.Tests.AddTodoToList
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
             _eventPublisher.ClearEvents();
             // act
-            var todoId = await _addTodoUseCase.AddTodo(addTodoCommand);
+            await _addTodoUseCase.Invoke(addTodoCommand);
             // assert
             IEnumerable<DomainEvent> domainEvents = _eventPublisher.Events;
             Assert.Single(domainEvents);
             var eDomainEvent = domainEvents.Single();
             Assert.True(eDomainEvent is TodoAddedToListEvent);
-            var todoAddedToListEvent = (TodoAddedToListEvent) eDomainEvent;
-            Assert.Equal(todoDescription, todoAddedToListEvent.Todo.Description);
-            Assert.Equal(todoListId, todoAddedToListEvent.TodoListId);
+            var (todoListId1, todo) = (TodoAddedToListEvent) eDomainEvent;
+            Assert.Equal(todoDescription, todo.Description);
+            Assert.Equal(todoListId, todoListId1);
         }
 
 
@@ -80,7 +80,7 @@ namespace Application.Services.Tests.AddTodoToList
             var addTodoCommand = new AddTodoCommand(todoListId, MockDataGenerator.CreateTodoDescription());
             // act / assert
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
-                _addTodoUseCase.AddTodo(addTodoCommand));
+                _addTodoUseCase.Invoke(addTodoCommand));
             var exceptionData = exception.Data;
             Assert.Equal(todoListId.Value.ToString(), exceptionData["TodoListId"]);
         }
@@ -94,14 +94,14 @@ namespace Application.Services.Tests.AddTodoToList
 
             for (var i = 0; i < TodoList.MaxNumberOfTodosNotDoneAllowed; i++)
             {
-                await _addTodoUseCase.AddTodo(new AddTodoCommand(todoListId,
+                await _addTodoUseCase.Invoke(new AddTodoCommand(todoListId,
                     MockDataGenerator.CreateTodoDescription()));
             }
 
             var addTodoCommand = new AddTodoCommand(todoListId, MockDataGenerator.CreateTodoDescription());
             // act / assert
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
-                _addTodoUseCase.AddTodo(addTodoCommand));
+                _addTodoUseCase.Invoke(addTodoCommand));
             var exceptionData = exception.Data;
             Assert.Equal(TodoList.MaxNumberOfTodosNotDoneAllowed.ToString(), exceptionData["CurrentNumberOfTodos"]);
         }

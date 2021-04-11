@@ -5,6 +5,6 @@ namespace Application.Services.UseCases.AddTodo
 {
     public interface IAddTodoUseCase
     {
-        Task<TodoId> AddTodo(AddTodoCommand addTodoCommand);
+        Task<TodoId> Invoke(AddTodoCommand addTodoCommand);
     }
 }
