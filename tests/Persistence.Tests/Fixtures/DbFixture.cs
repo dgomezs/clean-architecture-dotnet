@@ -16,7 +16,7 @@ namespace Persistence.Tests.Fixtures
 {
     public class DbFixture : IAsyncLifetime
     {
-        public IContainer Container { get; }
+        public IContainer Container { get; set; }
 
         private const int SqlServerPort = 1433;
         public TodoListContext TodoListContext { get; }
@@ -30,41 +30,54 @@ namespace Persistence.Tests.Fixtures
                 .WriteTo.TestOutput(diagnosticMessageSink)
                 .CreateLogger();
 
+            Container = BuildIoCContainer();
 
-            var cfg = new ContainerBuilder();
+            var dbConfig = Container.Resolve<DbConnectionConfig>();
+            TodoListContext = Container.Resolve<TodoListContext>();
             
+            DockerEnvironment = BuildDockerEnvironment(dbConfig);
+        }
+
+        private IContainer BuildIoCContainer()
+        {
+            var cfg = new ContainerBuilder();
+
             cfg.RegisterInstance(new SerilogLoggerFactory(Log.Logger)).AsImplementedInterfaces();
 
             cfg.RegisterInstance(Config).AsSelf().AsImplementedInterfaces();
             cfg.RegisterModule(new PersistenceModule());
             cfg.RegisterModule(new ApplicationServicesModule());
 
-            Container = cfg.Build();
+            return cfg.Build();
+        }
 
-            var dbConfig = Container.Resolve<DbConnectionConfig>();
-            TodoListContext = Container.Resolve<TodoListContext>();
-
-
-            DockerEnvironment = new DockerEnvironmentBuilder()
-                .AddMssqlContainer("my-mssql",
-                    imageName: "mcr.microsoft.com/mssql/server",
-                    saPassword: dbConfig.Password,
-                    ports: new Dictionary<ushort, ushort>
-                        {{SqlServerPort, SqlServerPort}}, reuseContainer: true)
-                .Build();
+        private DockerEnvironment? BuildDockerEnvironment(DbConnectionConfig dbConfig)
+        {
+            return Config.GetValue<bool>("CREATE_FROM_DOCKER")
+                ? new DockerEnvironmentBuilder()
+                    .AddMssqlContainer("my-mssql",
+                        imageName: "mcr.microsoft.com/mssql/server",
+                        saPassword: dbConfig.Password,
+                        ports: new Dictionary<ushort, ushort>
+                            {{SqlServerPort, SqlServerPort}}, reuseContainer: true)
+                    .Build()
+                : null;
         }
 
         private IConfiguration
             Config { get; }
 
-        private DockerEnvironment DockerEnvironment { get; }
+        private DockerEnvironment? DockerEnvironment { get; }
 
         private IDbContextTransaction? CurrentTransaction { get; set; }
 
 
         public async Task InitializeAsync()
         {
-            await DockerEnvironment.Up();
+            if (DockerEnvironment is not null)
+            {
+                await DockerEnvironment.Up();
+            }
 
             var dbUpMigrator = new DbUpMigrator(Config);
 
@@ -79,8 +92,11 @@ namespace Persistence.Tests.Fixtures
 
             await TodoListContext.DisposeAsync();
 
-            await DockerEnvironment.Down();
-            await DockerEnvironment.DisposeAsync();
+            if (DockerEnvironment is not null)
+            {
+                await DockerEnvironment.Down();
+                await DockerEnvironment.DisposeAsync();
+            }
         }
     }
 }
