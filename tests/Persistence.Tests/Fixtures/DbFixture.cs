@@ -53,7 +53,7 @@ namespace Persistence.Tests.Fixtures
 
         private DockerEnvironment? BuildDockerEnvironment(DbConnectionConfig dbConfig)
         {
-            return Config.GetValue<bool>("CREATE_FROM_DOCKER")
+            return Config.GetValue<bool>("RUN_NEW_MSSQL_IN_DOCKER")
                 ? new DockerEnvironmentBuilder()
                     .AddMssqlContainer("my-mssql",
                         imageName: "mcr.microsoft.com/mssql/server",
