@@ -20,5 +20,10 @@ namespace Domain.Entities
 
         public TodoId Id { get; }
         public TodoDescription Description { get; }
+
+        public bool IsDone()
+        {
+            return false;
+        }
     }
 }

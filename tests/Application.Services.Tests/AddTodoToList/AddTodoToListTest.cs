@@ -36,7 +36,7 @@ namespace Application.Services.Tests.AddTodoToList
         public async Task Should_add_todo_when_list_exists_and_max_number_todos_not_reached()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoList();
+            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
             var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
             var todoDescription = MockDataGenerator.CreateTodoDescription();
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
@@ -53,7 +53,7 @@ namespace Application.Services.Tests.AddTodoToList
         public async Task Should_publish_todo_added_event_when_adding_a_todo_successfully()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoList();
+            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
             var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
             var todoDescription = MockDataGenerator.CreateTodoDescription();
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
@@ -75,7 +75,7 @@ namespace Application.Services.Tests.AddTodoToList
         public async Task Should_throw_an_error_when_todo_list_does_not_exist()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoList();
+            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
             var todoListId = await ArrangeTodoListDoesNotExist(createTodoListRequest);
             var addTodoCommand = new AddTodoCommand(todoListId, MockDataGenerator.CreateTodoDescription());
             // act / assert
@@ -89,7 +89,7 @@ namespace Application.Services.Tests.AddTodoToList
         public async Task Should_throw_an_error_when_adding_todo_and_list_already_has_maximum_number()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoList();
+            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
             var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
 
             for (var i = 0; i < TodoList.MaxNumberOfTodosNotDoneAllowed; i++)

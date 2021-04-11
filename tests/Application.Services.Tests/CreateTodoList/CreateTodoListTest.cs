@@ -32,7 +32,7 @@ namespace Application.Services.Tests.CreateTodoList
         public async Task Should_create_new_todolist_when_does_not_exist()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoList();
+            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
             var todoListName = createTodoListRequest.TodoListName;
             await ArrangeTodoListDoesNotExist(todoListName);
             // act
@@ -47,7 +47,7 @@ namespace Application.Services.Tests.CreateTodoList
         public async Task Should_publish_created_todo_list_event_when_a_new_todo_list_is_created()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoList();
+            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
             var todoListName = createTodoListRequest.TodoListName;
             await ArrangeTodoListDoesNotExist(todoListName);
             // act
@@ -78,7 +78,7 @@ namespace Application.Services.Tests.CreateTodoList
         public async Task Should_not_create_new_todolist_when_one_by_same_name_exists()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoList();
+            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
             await ArrangeTodoListDoesNotExist(createTodoListRequest.TodoListName);
             await _createTodoListUseCase.Invoke(createTodoListRequest);
 

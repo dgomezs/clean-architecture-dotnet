@@ -25,6 +25,11 @@ namespace Infrastructure.Persistence.Repositories
                 .SingleOrDefaultAsync();
         }
 
+        public Task<TodoList?> GetByTodoId(TodoId todoId)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public async Task Save(TodoList todoList)
         {
             if (_todoListContext.Entry(todoList).State == EntityState.Detached)

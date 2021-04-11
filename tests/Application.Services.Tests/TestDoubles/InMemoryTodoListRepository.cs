@@ -41,5 +41,10 @@ namespace Application.Services.Tests.TestDoubles
             _todoLists.Clear(); // force the entity to be saved again
             return Task.FromResult(valueOrDefault);
         }
+
+        public Task<TodoList?> GetByTodoId(TodoId todoId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -8,6 +8,8 @@ namespace Application.Services.Repositories
     {
         Task<TodoList?> GetById(TodoListId id);
         Task<TodoList?> GetByName(TodoListName todoListName);
+        Task<TodoList?> GetByTodoId(TodoId todoId);
+
         Task Save(TodoList todoList);
     }
 }
