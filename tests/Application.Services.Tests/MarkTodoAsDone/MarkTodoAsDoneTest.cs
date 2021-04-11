@@ -36,7 +36,7 @@ namespace Application.Services.Tests.MarkTodoAsDone
             // assert
             var todoListAfterUpdate = await _todoListRepository.GetByTodoId(todo.Id) ?? throw new Exception();
             var todoAfterUpdate = todoListAfterUpdate.Todos.First(t => todo.Id.Equals(t.Id));
-            Assert.True(todoAfterUpdate.IsDone());
+            Assert.True(todoAfterUpdate.Done);
         }
 
         private async Task<TodoList> ArrangeTodoListExistsWithTodosNotDone(int numberOfTodosNotDone)

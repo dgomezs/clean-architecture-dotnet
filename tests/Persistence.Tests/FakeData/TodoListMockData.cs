@@ -9,10 +9,20 @@ namespace Persistence.Tests.FakeData
 {
     public static class TodoListMockData
     {
-        public static TodoList CreateTodoList(int numberOfTodos = 0)
+        public static TodoList CreateTodoList(int numberOfTodos = 0, int numberOfTodosDone = 0)
         {
-            return CreateTodoList("", 1, numberOfTodos).First();
+            var todoList = CreateTodoList("", 1, numberOfTodos)
+                .First();
+
+            var ids = todoList.Todos.ToList().GetRange(0, numberOfTodosDone).Select(_ => _.Id);
+            foreach (var id in ids)
+            {
+                todoList.MarkAsDone(id);
+            }
+
+            return todoList;
         }
+
 
         public static List<TodoList> CreateTodoList(string namePrefix, int count, int numberOfTodos = 0)
         {

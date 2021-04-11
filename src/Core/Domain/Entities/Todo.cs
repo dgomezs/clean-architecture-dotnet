@@ -6,29 +6,26 @@ namespace Domain.Entities
 {
     public class Todo : Entity
     {
-        private bool _done;
+        public bool Done { get; private set; }
 
         public Todo(TodoDescription description)
         {
             Id = new TodoId(Guid.NewGuid());
             Description = Guard.Against.Null(description, nameof(description));
-            _done = false;
+            Done = false;
         }
 
         public Todo(TodoId id, TodoDescription description, bool done)
         {
             Id = Guard.Against.Null(id, nameof(id));
             Description = Guard.Against.Null(description, nameof(description));
-            _done = done;
+            Done = done;
         }
 
         public TodoId Id { get; }
         public TodoDescription Description { get; }
 
-        public bool IsDone() =>
-            _done;
-
         public void MarkAsDone() =>
-            _done = true;
+            Done = true;
     }
 }

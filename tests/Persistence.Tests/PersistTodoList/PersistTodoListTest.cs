@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Repositories;
 using Autofac;
@@ -29,20 +30,22 @@ namespace Persistence.Tests.PersistTodoList
             // assert
             Assert.Equal(todoList.Name, todoListPersisted.Name);
         }
-        
+
         [Fact]
         public async Task Should_persist_new_created_todo_list_with_some_todos()
         {
             // arrange
-            const int numberOfTodos = 3;
-            var todoList = TodoListMockData.CreateTodoList(numberOfTodos);
-            var todoListId = todoList.Id;
+            const int totalNumberOfTodos = 3;
+            const int numberOfTodosDone = 2;
+            var todoList = TodoListMockData.CreateTodoList(totalNumberOfTodos, numberOfTodosDone);
             // act
             await _todoListRepository.Save(todoList);
-            var todoListPersisted = await _todoListRepository.GetById(todoListId) ?? throw new Exception();
-
+            var todoListPersisted = await _todoListRepository.GetById(todoList.Id) ?? throw new Exception();
+            var todosDonePersisted = todoListPersisted.Todos.Where(t => t.Done);
             // assert
             Assert.Equal(todoList.Name, todoListPersisted.Name);
+            Assert.Equal(totalNumberOfTodos, todoListPersisted.Todos.Count());
+            Assert.Equal(numberOfTodosDone, todosDonePersisted.Count());
         }
     }
 }
