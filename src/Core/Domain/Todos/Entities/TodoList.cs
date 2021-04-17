@@ -12,8 +12,8 @@ namespace Domain.Todos.Entities
 {
     public class TodoList : Aggregate
     {
-        private readonly List<Todo> _todos;
         public const int MaxNumberOfTodosNotDoneAllowed = 5;
+        private readonly List<Todo> _todos;
 
         public TodoList(TodoListName name, TodoListId id, List<Todo> todos)
         {
@@ -36,17 +36,15 @@ namespace Domain.Todos.Entities
 
         public IEnumerable<Todo> Todos => _todos;
 
-        public bool CanIAddTodo()
+        public bool CanAddTodo()
         {
             return _todos.Count < MaxNumberOfTodosNotDoneAllowed;
         }
 
         public TodoId AddTodo(TodoDescription todoDescription)
         {
-            if (!CanIAddTodo())
-            {
+            if (!CanAddTodo())
                 throw new DomainException(new MaxNumberOfTodosUnDoneReachedError(Name, _todos.Count));
-            }
 
             var newTodo = new Todo(todoDescription);
             _todos.Add(newTodo);

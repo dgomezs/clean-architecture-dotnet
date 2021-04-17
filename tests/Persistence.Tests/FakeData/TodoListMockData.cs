@@ -16,9 +16,7 @@ namespace Persistence.Tests.FakeData
 
             var ids = todoList.Todos.ToList().GetRange(0, numberOfTodosDone).Select(_ => _.Id);
             foreach (var id in ids)
-            {
                 todoList.MarkAsDone(id);
-            }
 
             return todoList;
         }

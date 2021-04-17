@@ -24,12 +24,13 @@ namespace Application.Services.Tests
         }
 
 
-        public static TodoList CreateTodoListWithNumberTodosNotDone(int numberOfTodosNotDone)
+        public static Domain.Todos.Entities.TodoList CreateTodoListWithNumberTodosNotDone(
+            int numberOfTodosNotDone)
         {
             var todos = Enumerable.Range(0, numberOfTodosNotDone)
                 .Select(x => CreateTodoNotDone()).ToList();
 
-            return new TodoList(CreateTodoListName(), CreateTodoListId(), todos);
+            return new Domain.Todos.Entities.TodoList(CreateTodoListName(), CreateTodoListId(), todos);
         }
 
         private static TodoListName CreateTodoListName()

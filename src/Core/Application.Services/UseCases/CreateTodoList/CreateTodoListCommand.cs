@@ -10,7 +10,9 @@ namespace Application.Services.UseCases.CreateTodoList
 
         public TodoListName TodoListName { get; }
 
-        public static CreateTodoListCommand Create(string name) =>
-            new(TodoListName.Create(name));
+        public static CreateTodoListCommand Create(string name)
+        {
+            return new(TodoListName.Create(name));
+        }
     }
 }

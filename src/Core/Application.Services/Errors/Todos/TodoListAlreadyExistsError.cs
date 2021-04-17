@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Domain.Todos.ValueObjects;
 
-namespace Application.Services.Errors.TodoList
+namespace Application.Services.Errors.Todos
 {
     public record TodoListAlreadyExistsError : EntityAlreadyExistsError
     {

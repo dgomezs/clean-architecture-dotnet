@@ -57,7 +57,5 @@ namespace Domain.Shared.Errors
             _errors = _errors.Select(e => e with {PropertyName = $"{prefix}.{e.PropertyName}"}).ToList();
             return this;
         }
-
-        
     }
 }

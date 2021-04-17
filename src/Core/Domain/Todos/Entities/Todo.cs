@@ -7,8 +7,6 @@ namespace Domain.Todos.Entities
 {
     public class Todo : Entity
     {
-        public bool Done { get; private set; }
-
         public Todo(TodoDescription description)
         {
             Id = new TodoId(Guid.NewGuid());
@@ -23,10 +21,14 @@ namespace Domain.Todos.Entities
             Done = done;
         }
 
+        public bool Done { get; private set; }
+
         public TodoId Id { get; }
         public TodoDescription Description { get; }
 
-        public void MarkAsDone() =>
+        public void MarkAsDone()
+        {
             Done = true;
+        }
     }
 }

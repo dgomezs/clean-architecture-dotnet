@@ -3,26 +3,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Repositories;
-using Domain.Todos.Entities;
 using Domain.Todos.ValueObjects;
 
 namespace Application.Services.Tests.TestDoubles
 {
     public class InMemoryTodoListRepository : ITodoListRepository
     {
-        private readonly Dictionary<TodoListId, TodoList> _todoLists = new();
+        private readonly Dictionary<TodoListId, Domain.Todos.Entities.TodoList> _todoLists = new();
 
-        public Task<TodoList?> GetByName(TodoListName todoListName)
+        public Task<Domain.Todos.Entities.TodoList?> GetByName(TodoListName todoListName)
         {
             return Task.FromResult(_todoLists.Values.SingleOrDefault(t => t.Name.Equals(todoListName)));
         }
 
-        public Task Save(TodoList todoList)
+        public Task Save(Domain.Todos.Entities.TodoList todoList)
         {
             var id = todoList.Id ?? throw new Exception();
             _todoLists.Remove(id);
-            _todoLists.Add(id, new TodoList(todoList.Name, todoList.Id, todoList.Todos.ToList()));
+            _todoLists.Add(id,
+                new Domain.Todos.Entities.TodoList(todoList.Name, todoList.Id, todoList.Todos.ToList()));
             return Task.CompletedTask;
+        }
+
+        public Task<Domain.Todos.Entities.TodoList?> GetById(TodoListId id)
+        {
+            var valueOrDefault = _todoLists.GetValueOrDefault(id);
+            _todoLists.Clear(); // force the entity to be saved again
+            return Task.FromResult(valueOrDefault);
+        }
+
+        public Task<Domain.Todos.Entities.TodoList?> GetByTodoId(TodoId todoId)
+        {
+            var valueOrDefault =
+                _todoLists.Values.SingleOrDefault(l => l.Todos.Exists(t => todoId.Equals(t.Id)));
+            _todoLists.Clear(); // force the entity to be saved again
+            return Task.FromResult(valueOrDefault);
         }
 
         public async Task RemoveByName(TodoListName todoListName)
@@ -30,24 +45,7 @@ namespace Application.Services.Tests.TestDoubles
             var todoLists = await GetByName(todoListName);
             var id = todoLists?.Id;
             if (id is not null)
-            {
                 _todoLists.Remove(id);
-            }
-        }
-
-        public Task<TodoList?> GetById(TodoListId id)
-        {
-            var valueOrDefault = _todoLists.GetValueOrDefault(id);
-            _todoLists.Clear(); // force the entity to be saved again
-            return Task.FromResult(valueOrDefault);
-        }
-
-        public Task<TodoList?> GetByTodoId(TodoId todoId)
-        {
-            var valueOrDefault =
-                _todoLists.Values.SingleOrDefault(l => l.Todos.Exists(t => todoId.Equals(t.Id)));
-            _todoLists.Clear(); // force the entity to be saved again
-            return Task.FromResult(valueOrDefault);
         }
     }
 }

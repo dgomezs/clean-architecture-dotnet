@@ -12,7 +12,7 @@ namespace Application.Services.Tests.User.CreateUser
     public class CreateUserTest
     {
         private readonly ICreateUserUseCase _createUserUseCase;
-        private AutoMock _mock;
+        private readonly AutoMock _mock;
         private readonly InMemoryUserRepository _userRepository;
 
         public CreateUserTest()
@@ -48,6 +48,8 @@ namespace Application.Services.Tests.User.CreateUser
             var exceptionData = exception.Data;
             Assert.Equal(existingUser.Email.Email, exceptionData["Email"]);
         }
+
+        // TODO add cases for invalid names and email
 
         private async Task<Domain.Users.User> CreateUser()
         {

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Application.Services.Errors.TodoList;
+using Application.Services.Errors.Todos;
 using Application.Services.Events;
 using Application.Services.Extensions;
 using Application.Services.Repositories;
@@ -12,15 +12,16 @@ namespace Application.Services.UseCases.CreateTodoList
 {
     public class CreateTodoListUseCase : ICreateTodoListUseCase
     {
+        private readonly IDomainEventPublisher _domainEventPublisher;
+
+        private readonly ITodoListRepository _todoListRepository;
+
         public CreateTodoListUseCase(ITodoListRepository todoListRepository,
             IDomainEventPublisher domainEventPublisher)
         {
             _todoListRepository = todoListRepository;
             _domainEventPublisher = domainEventPublisher;
         }
-
-        private readonly ITodoListRepository _todoListRepository;
-        private readonly IDomainEventPublisher _domainEventPublisher;
 
         public async Task<TodoListId> Invoke(CreateTodoListCommand createTodoListCommand)
         {
@@ -33,9 +34,7 @@ namespace Application.Services.UseCases.CreateTodoList
             var todoListName = createTodoListCommand.TodoListName;
             var todoList = await _todoListRepository.GetByName(todoListName);
             if (todoList is not null)
-            {
                 return new TodoListAlreadyExistsError(todoListName);
-            }
 
             var result = new TodoList(todoListName);
             await _todoListRepository.Save(result);

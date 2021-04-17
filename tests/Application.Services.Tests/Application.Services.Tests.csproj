@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TodoList" />
+    <Folder Include="Todos" />
   </ItemGroup>
 
 </Project>

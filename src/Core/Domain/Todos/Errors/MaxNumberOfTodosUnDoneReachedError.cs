@@ -20,7 +20,7 @@ namespace Domain.Todos.Errors
         private int CurrentNumberOfTodos { get; }
         private string TodoListName { get; }
 
-        public override IDictionary Data => new Dictionary<string, string>()
+        public override IDictionary Data => new Dictionary<string, string>
         {
             {"CurrentNumberOfTodos", Convert.ToString(CurrentNumberOfTodos)},
             {"TodoListName", TodoListName}

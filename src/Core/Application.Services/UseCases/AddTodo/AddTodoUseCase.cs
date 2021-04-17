@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Application.Services.Errors.TodoList;
+using Application.Services.Errors.Todos;
 using Application.Services.Events;
 using Application.Services.Repositories;
 using Domain.Shared.Errors;
@@ -9,8 +9,8 @@ namespace Application.Services.UseCases.AddTodo
 {
     public class AddTodoUseCase : IAddTodoUseCase
     {
-        private readonly ITodoListRepository _todoListRepository;
         private readonly IDomainEventPublisher _domainEventPublisher;
+        private readonly ITodoListRepository _todoListRepository;
 
         public AddTodoUseCase(ITodoListRepository todoListRepository, IDomainEventPublisher domainEventPublisher)
         {

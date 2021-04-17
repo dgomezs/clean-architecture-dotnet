@@ -16,7 +16,7 @@ namespace Infrastructure.Persistence.EfConfigurations
 
             todo.Property<long>(IdShadowProperty)
                 .HasColumnType("long").ValueGeneratedOnAdd();
-            
+
             todo.Property<long>(TodoListId).IsRequired();
 
             todo.Property(t => t.Id)

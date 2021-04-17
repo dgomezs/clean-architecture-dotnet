@@ -25,7 +25,7 @@ namespace Domain.Tests.ValidateTodoDescription
         {
             AssertTodoDescriptionName(invalidName);
         }
-        
+
         [Fact]
         public void Should_throw_a_validation_exception_for_very_long_descriptions()
         {

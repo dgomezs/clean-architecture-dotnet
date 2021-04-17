@@ -9,7 +9,7 @@
 
         public static EmailAddress Create(string email)
         {
-            return new EmailAddress(email);
+            return new(email);
         }
     }
 }

@@ -16,10 +16,7 @@ namespace Persistence.Tests.Fixtures
 {
     public class DbFixture : IAsyncLifetime
     {
-        public IContainer Container { get; set; }
-
         private const int SqlServerPort = 1433;
-        public TodoListContext TodoListContext { get; }
 
         public DbFixture(IMessageSink diagnosticMessageSink)
         {
@@ -34,8 +31,44 @@ namespace Persistence.Tests.Fixtures
 
             var dbConfig = Container.Resolve<DbConnectionConfig>();
             TodoListContext = Container.Resolve<TodoListContext>();
-            
+
             DockerEnvironment = BuildDockerEnvironment(dbConfig);
+        }
+
+        public IContainer Container { get; set; }
+        public TodoListContext TodoListContext { get; }
+
+        private IConfiguration
+            Config { get; }
+
+        private DockerEnvironment? DockerEnvironment { get; }
+
+        private IDbContextTransaction? CurrentTransaction { get; set; }
+
+
+        public async Task InitializeAsync()
+        {
+            if (DockerEnvironment is not null)
+                await DockerEnvironment.Up();
+
+            var dbUpMigrator = new DbUpMigrator(Config);
+
+            dbUpMigrator.DoUpgrade();
+            CurrentTransaction =
+                await TodoListContext.Database.BeginTransactionAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await CurrentTransaction?.RollbackAsync()!;
+
+            await TodoListContext.DisposeAsync();
+
+            if (DockerEnvironment is not null)
+            {
+                await DockerEnvironment.Down();
+                await DockerEnvironment.DisposeAsync();
+            }
         }
 
         private IContainer BuildIoCContainer()
@@ -62,41 +95,6 @@ namespace Persistence.Tests.Fixtures
                             {{SqlServerPort, SqlServerPort}}, reuseContainer: true)
                     .Build()
                 : null;
-        }
-
-        private IConfiguration
-            Config { get; }
-
-        private DockerEnvironment? DockerEnvironment { get; }
-
-        private IDbContextTransaction? CurrentTransaction { get; set; }
-
-
-        public async Task InitializeAsync()
-        {
-            if (DockerEnvironment is not null)
-            {
-                await DockerEnvironment.Up();
-            }
-
-            var dbUpMigrator = new DbUpMigrator(Config);
-
-            dbUpMigrator.DoUpgrade();
-            CurrentTransaction =
-                await TodoListContext.Database.BeginTransactionAsync();
-        }
-
-        public async Task DisposeAsync()
-        {
-            await CurrentTransaction?.RollbackAsync()!;
-
-            await TodoListContext.DisposeAsync();
-
-            if (DockerEnvironment is not null)
-            {
-                await DockerEnvironment.Down();
-                await DockerEnvironment.DisposeAsync();
-            }
         }
     }
 }

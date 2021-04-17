@@ -15,7 +15,7 @@ namespace Domain.Todos.Errors
 
         private string TodoId { get; }
 
-        public override IDictionary Data => new Dictionary<string, string>()
+        public override IDictionary Data => new Dictionary<string, string>
         {
             {"TodoId", TodoId}
         };

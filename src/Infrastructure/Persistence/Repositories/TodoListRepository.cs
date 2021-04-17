@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Repositories;
 using Domain.Todos.Entities;
@@ -27,7 +28,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public Task<TodoList?> GetByTodoId(TodoId todoId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public async Task Save(TodoList todoList)

@@ -19,8 +19,8 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
 {
     public class CreateTodoListTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private readonly CustomWebApplicationFactory<Startup> _factory;
         private readonly Mock<ICreateTodoListUseCase> _createTodoListUseCaseMock;
+        private readonly CustomWebApplicationFactory<Startup> _factory;
 
         public CreateTodoListTest(CustomWebApplicationFactory<Startup> factory)
         {

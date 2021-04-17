@@ -7,9 +7,9 @@ namespace Domain.Shared.Entities
     {
         protected readonly List<DomainEvent> Events;
 
-        public IEnumerable<DomainEvent> DomainEvents => Events;
-
         protected Aggregate() =>
             Events = new List<DomainEvent>();
+
+        public IEnumerable<DomainEvent> DomainEvents => Events;
     }
 }

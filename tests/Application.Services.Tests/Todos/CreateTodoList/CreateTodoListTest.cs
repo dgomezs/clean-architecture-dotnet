@@ -12,14 +12,14 @@ using Domain.Todos.ValueObjects;
 using Xunit;
 using static Application.Services.Extensions.EitherExtensions;
 
-namespace Application.Services.Tests.CreateTodoList
+namespace Application.Services.Tests.TodoList.CreateTodoList
 {
     public class CreateTodoListTest
     {
         private readonly ICreateTodoListUseCase _createTodoListUseCase;
-        private readonly InMemoryTodoListRepository _todoListRepository;
-        private readonly AutoMock _mock;
         private readonly InMemoryEventPublisher _eventPublisher;
+        private readonly AutoMock _mock;
+        private readonly InMemoryTodoListRepository _todoListRepository;
 
         public CreateTodoListTest()
         {
@@ -63,18 +63,6 @@ namespace Application.Services.Tests.CreateTodoList
         }
 
 
-        private Task<TodoListId> CreateTodoList(CreateTodoListCommand createTodoListRequest)
-        {
-            return _createTodoListUseCase.Invoke(createTodoListRequest);
-        }
-
-        private async Task<TodoListId> CreateTodoListWithError(CreateTodoListCommand createTodoListRequest)
-        {
-            var result = await _createTodoListUseCase.InvokeWithErrors(createTodoListRequest);
-            return result.ToThrowException();
-        }
-
-
         [Fact]
         public async Task Should_not_create_new_todolist_when_one_by_same_name_exists()
         {
@@ -91,6 +79,16 @@ namespace Application.Services.Tests.CreateTodoList
             Assert.Equal(createTodoListRequest.TodoListName.Name, exceptionData["TodoListName"]);
         }
 
+        private Task<TodoListId> CreateTodoList(CreateTodoListCommand createTodoListRequest)
+        {
+            return _createTodoListUseCase.Invoke(createTodoListRequest);
+        }
+
+        private async Task<TodoListId> CreateTodoListWithError(CreateTodoListCommand createTodoListRequest)
+        {
+            var result = await _createTodoListUseCase.InvokeWithErrors(createTodoListRequest);
+            return result.ToThrowException();
+        }
 
         private async Task ArrangeTodoListDoesNotExist(TodoListName todoListName)
         {

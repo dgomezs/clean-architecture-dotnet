@@ -8,21 +8,20 @@ using Application.Services.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;
 using Domain.Shared.Errors;
 using Domain.Shared.Events;
-using Domain.Todos.Entities;
 using Domain.Todos.Events;
 using Domain.Todos.ValueObjects;
 using FluentAssertions;
 using Xunit;
 
-namespace Application.Services.Tests.AddTodoToList
+namespace Application.Services.Tests.TodoList.AddTodoToList
 {
     public class AddTodoToListTest
     {
-        private AutoMock _mock;
-        private readonly InMemoryTodoListRepository _todoListRepository;
-        private readonly ICreateTodoListUseCase _createTodoListUseCase;
         private readonly IAddTodoUseCase _addTodoUseCase;
+        private readonly ICreateTodoListUseCase _createTodoListUseCase;
         private readonly InMemoryEventPublisher _eventPublisher;
+        private readonly AutoMock _mock;
+        private readonly InMemoryTodoListRepository _todoListRepository;
 
         public AddTodoToListTest()
         {
@@ -93,18 +92,17 @@ namespace Application.Services.Tests.AddTodoToList
             var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
             var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
 
-            for (var i = 0; i < TodoList.MaxNumberOfTodosNotDoneAllowed; i++)
-            {
+            for (var i = 0; i < Domain.Todos.Entities.TodoList.MaxNumberOfTodosNotDoneAllowed; i++)
                 await _addTodoUseCase.Invoke(new AddTodoCommand(todoListId,
                     MockDataGenerator.CreateTodoDescription()));
-            }
 
             var addTodoCommand = new AddTodoCommand(todoListId, MockDataGenerator.CreateTodoDescription());
             // act / assert
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _addTodoUseCase.Invoke(addTodoCommand));
             var exceptionData = exception.Data;
-            Assert.Equal(TodoList.MaxNumberOfTodosNotDoneAllowed.ToString(), exceptionData["CurrentNumberOfTodos"]);
+            Assert.Equal(Domain.Todos.Entities.TodoList.MaxNumberOfTodosNotDoneAllowed.ToString(),
+                exceptionData["CurrentNumberOfTodos"]);
         }
 
 

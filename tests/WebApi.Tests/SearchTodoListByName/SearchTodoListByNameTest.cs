@@ -19,9 +19,9 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.SearchTodoListByName
 {
     public class SearchTodoListByNameTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
+        private const string TodoListsSearchByName = "todo-lists/search/by-name";
         private readonly CustomWebApplicationFactory<Startup> _factory;
         private readonly Mock<ISearchByNameTodoListUseCase> _searchByNameTodoListUseCase;
-        private const string TodoListsSearchByName = "todo-lists/search/by-name";
 
         public SearchTodoListByNameTest(CustomWebApplicationFactory<Startup> factory)
         {

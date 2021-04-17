@@ -7,8 +7,8 @@ namespace Domain.Todos.ValueObjects
 {
     public record TodoListName
     {
-        public string Name { get; }
         private TodoListName(string name) => Name = name;
+        public string Name { get; }
 
         public static TodoListName Create(string name)
         {

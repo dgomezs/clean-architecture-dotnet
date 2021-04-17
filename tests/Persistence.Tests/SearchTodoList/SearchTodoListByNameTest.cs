@@ -13,8 +13,8 @@ namespace Persistence.Tests.SearchTodoList
     [Collection("DB")]
     public class SearchTodoListByNameTest
     {
-        private readonly ITodoListRepository _todoListRepository;
         private readonly ISearchByNameTodoListUseCase _searchByNameTodoListUseCase;
+        private readonly ITodoListRepository _todoListRepository;
 
         public SearchTodoListByNameTest(DbFixture dbFixture)
         {
@@ -42,9 +42,7 @@ namespace Persistence.Tests.SearchTodoList
         private async Task PersistTodoList(List<TodoList> todoListsToBeFound)
         {
             foreach (var todoList in todoListsToBeFound)
-            {
                 await _todoListRepository.Save(todoList);
-            }
         }
     }
 }

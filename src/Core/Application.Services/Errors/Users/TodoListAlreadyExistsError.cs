@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Domain.Users.ValueObjects;
 
-namespace Application.Services.Errors.User
+namespace Application.Services.Errors.Users
 {
     public record UserAlreadyExistsError : EntityAlreadyExistsError
     {
