@@ -1,11 +1,9 @@
 ﻿namespace Domain.Users.ValueObjects
 {
-    public class EmailAddress
+    public record EmailAddress
     {
-        private EmailAddress(string email)
-        {
+        private EmailAddress(string email) =>
             Email = email;
-        }
 
         public string Email { get; }
 

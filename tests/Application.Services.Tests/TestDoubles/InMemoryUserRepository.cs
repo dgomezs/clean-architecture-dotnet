@@ -21,7 +21,7 @@ namespace Application.Services.Tests.TestDoubles
             }
         }
 
-        private Task<Domain.Users.User?> GetByEmail(EmailAddress email)
+        public Task<Domain.Users.User?> GetByEmail(EmailAddress email)
         {
             return Task.FromResult(_users.Values.SingleOrDefault(t => t.Email.Equals(email)));
         }

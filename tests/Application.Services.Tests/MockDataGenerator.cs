@@ -5,6 +5,7 @@ using Application.Services.UseCases.CreateUser;
 using Bogus;
 using Domain.Todos.Entities;
 using Domain.Todos.ValueObjects;
+using Domain.Users.ValueObjects;
 
 namespace Application.Services.Tests
 {
@@ -48,11 +49,20 @@ namespace Application.Services.Tests
             return new(CreateTodoDescription());
         }
 
-        public static CreateUserCommand CreateUser()
+        public static CreateUserCommand CreateUserCommand()
         {
             var generator = new Faker();
-            return CreateUserCommand.Create(generator.Person.FirstName, generator.Person.LastName,
+            return UseCases.CreateUser.CreateUserCommand.Create(generator.Person.FirstName,
+                generator.Person.LastName,
                 generator.Person.Email);
+        }
+
+        public static CreateUserCommand CreateUserCommand(EmailAddress email)
+        {
+            var generator = new Faker();
+            return UseCases.CreateUser.CreateUserCommand.Create(generator.Person.FirstName,
+                generator.Person.LastName,
+                email.Email);
         }
     }
 }
