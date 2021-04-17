@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Domain.Errors;
+using Domain.Shared.Errors;
 using LanguageExt;
 
 namespace Application.Services.Extensions

@@ -1,4 +1,4 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Todos.ValueObjects;
 
 namespace Application.Services.UseCases.MarkTodoAsDone
 {

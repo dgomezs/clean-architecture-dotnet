@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Application.Services.Repositories;
 using Application.Services.UseCases.SearchTodoListByName;
 using Autofac;
-using Domain.Entities;
+using Domain.Todos.Entities;
 using Persistence.Tests.FakeData;
 using Persistence.Tests.Fixtures;
 using Xunit;

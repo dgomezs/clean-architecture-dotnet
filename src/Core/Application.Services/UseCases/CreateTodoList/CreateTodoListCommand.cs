@@ -1,5 +1,5 @@
 ﻿using Ardalis.GuardClauses;
-using Domain.ValueObjects;
+using Domain.Todos.ValueObjects;
 
 namespace Application.Services.UseCases.CreateTodoList
 {
@@ -10,7 +10,7 @@ namespace Application.Services.UseCases.CreateTodoList
 
         public TodoListName TodoListName { get; }
 
-        public static CreateTodoListCommand Create(string name1) =>
-            new(TodoListName.Create(name1));
+        public static CreateTodoListCommand Create(string name) =>
+            new(TodoListName.Create(name));
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Domain.Events;
+using Domain.Shared.Events;
 
 namespace Application.Services.Events
 {

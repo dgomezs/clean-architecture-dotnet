@@ -13,6 +13,7 @@ namespace Application.Services.Tests
                 cfg.RegisterModule(new ApplicationServicesModule());
                 cfg.RegisterInstance(new InMemoryTodoListRepository()).AsSelf().AsImplementedInterfaces();
                 cfg.RegisterInstance(new InMemoryEventPublisher()).AsSelf().AsImplementedInterfaces();
+                cfg.RegisterInstance(new InMemoryUserRepository()).AsSelf().AsImplementedInterfaces();
             });
         }
     }

@@ -3,9 +3,9 @@ using Application.Services.Errors.TodoList;
 using Application.Services.Events;
 using Application.Services.Extensions;
 using Application.Services.Repositories;
-using Domain.Entities;
-using Domain.Errors;
-using Domain.ValueObjects;
+using Domain.Shared.Errors;
+using Domain.Todos.Entities;
+using Domain.Todos.ValueObjects;
 using LanguageExt;
 
 namespace Application.Services.UseCases.CreateTodoList

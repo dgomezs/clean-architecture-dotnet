@@ -38,4 +38,8 @@
     <ProjectReference Include="..\..\src\Core\Application.Services\Application.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TodoList" />
+  </ItemGroup>
+
 </Project>

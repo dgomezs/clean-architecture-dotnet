@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Application.Services.UseCases.CreateTodoList;
+using Application.Services.UseCases.CreateUser;
 using Bogus;
-using Domain.Entities;
-using Domain.ValueObjects;
+using Domain.Todos.Entities;
+using Domain.Todos.ValueObjects;
 
 namespace Application.Services.Tests
 {
@@ -45,6 +46,13 @@ namespace Application.Services.Tests
         private static Todo CreateTodoNotDone()
         {
             return new(CreateTodoDescription());
+        }
+
+        public static CreateUserCommand CreateUser()
+        {
+            var generator = new Faker();
+            return CreateUserCommand.Create(generator.Person.FirstName, generator.Person.LastName,
+                generator.Person.Email);
         }
     }
 }

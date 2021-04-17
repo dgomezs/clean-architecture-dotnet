@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Domain.ValueObjects;
+using Domain.Todos.ValueObjects;
 
 namespace Application.Services.Errors.TodoList
 {

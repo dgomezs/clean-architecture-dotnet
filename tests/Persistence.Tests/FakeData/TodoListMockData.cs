@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Bogus;
-using Domain.Entities;
-using Domain.ValueObjects;
+using Domain.Todos.Entities;
+using Domain.Todos.ValueObjects;
 
 namespace Persistence.Tests.FakeData
 {

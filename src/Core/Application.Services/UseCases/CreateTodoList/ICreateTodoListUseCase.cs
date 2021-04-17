@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Domain.Entities;
-using Domain.Errors;
-using Domain.ValueObjects;
+using Domain.Shared.Errors;
+using Domain.Todos.ValueObjects;
 using LanguageExt;
 
 namespace Application.Services.UseCases.CreateTodoList

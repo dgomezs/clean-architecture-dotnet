@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Domain.Errors;
+using Domain.Shared.Errors;
 
 namespace WebApi
 {

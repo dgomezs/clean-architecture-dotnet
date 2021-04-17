@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Domain.ValueObjects;
+﻿using Domain.Todos.ValueObjects;
 
 namespace Application.Services.UseCases.AddTodo
 {

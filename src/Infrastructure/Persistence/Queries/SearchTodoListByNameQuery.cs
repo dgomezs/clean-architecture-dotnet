@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Queries;
 using Application.Services.UseCases.SearchTodoListByName;
-using Domain.Entities;
+using Domain.Todos.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Queries

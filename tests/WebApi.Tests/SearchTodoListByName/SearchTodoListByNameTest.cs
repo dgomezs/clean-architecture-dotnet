@@ -7,7 +7,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Application.Services.UseCases.SearchTodoListByName;
 using CleanArchitecture.TodoList.WebApi.Tests.Config;
-using Domain.Errors;
+using Domain.Shared.Errors;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

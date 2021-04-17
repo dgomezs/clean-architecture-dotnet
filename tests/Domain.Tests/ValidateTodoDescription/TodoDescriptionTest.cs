@@ -1,6 +1,6 @@
 ﻿using Bogus;
-using Domain.Errors;
-using Domain.ValueObjects;
+using Domain.Shared.Errors;
+using Domain.Todos.ValueObjects;
 using Xunit;
 
 namespace Domain.Tests.ValidateTodoDescription

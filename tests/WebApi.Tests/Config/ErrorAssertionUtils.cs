@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Domain.Errors;
+using Domain.Shared.Errors;
 using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using WebApi;

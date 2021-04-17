@@ -1,5 +1,5 @@
 ﻿using System;
-using Domain.Errors;
+using Domain.Shared.Errors;
 using FluentValidation;
 using LanguageExt;
 using static LanguageExt.Prelude;

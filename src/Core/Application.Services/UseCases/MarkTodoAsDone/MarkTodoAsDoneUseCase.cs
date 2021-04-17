@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Application.Services.Errors.TodoList;
 using Application.Services.Repositories;
-using Domain.Errors;
+using Domain.Shared.Errors;
 
 namespace Application.Services.UseCases.MarkTodoAsDone
 {

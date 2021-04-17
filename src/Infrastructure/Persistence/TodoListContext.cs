@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Todos.Entities;
 using Infrastructure.Persistence.EfConfigurations;
 using Microsoft.EntityFrameworkCore;
 

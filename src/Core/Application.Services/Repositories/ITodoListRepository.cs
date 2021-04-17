@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Domain.Entities;
-using Domain.ValueObjects;
+using Domain.Todos.Entities;
+using Domain.Todos.ValueObjects;
 
 namespace Application.Services.Repositories
 {

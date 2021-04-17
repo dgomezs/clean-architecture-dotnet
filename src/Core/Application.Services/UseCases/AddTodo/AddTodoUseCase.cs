@@ -2,8 +2,8 @@
 using Application.Services.Errors.TodoList;
 using Application.Services.Events;
 using Application.Services.Repositories;
-using Domain.Errors;
-using Domain.ValueObjects;
+using Domain.Shared.Errors;
+using Domain.Todos.ValueObjects;
 
 namespace Application.Services.UseCases.AddTodo
 {

@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Repositories;
-using Domain.Entities;
-using Domain.ValueObjects;
+using Domain.Todos.Entities;
+using Domain.Todos.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories

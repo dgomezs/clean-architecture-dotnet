@@ -1,4 +1,4 @@
-﻿using Domain.Errors;
+﻿using Domain.Shared.Errors;
 
 namespace Application.Services.Errors
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net;
 using Application.Services.Errors;
-using Domain.Errors;
+using Domain.Shared.Errors;
 using FluentValidation;
 
 namespace WebApi
