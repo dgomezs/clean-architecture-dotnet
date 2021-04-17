@@ -23,10 +23,8 @@ namespace Application.Services.UseCases.CreateTodoList
             _domainEventPublisher = domainEventPublisher;
         }
 
-        public async Task<TodoListId> Invoke(CreateTodoListCommand createTodoListCommand)
-        {
-            return await InvokeWithErrors(createTodoListCommand).ToThrowException();
-        }
+        public async Task<TodoListId> Invoke(CreateTodoListCommand createTodoListCommand) =>
+            await InvokeWithErrors(createTodoListCommand).ToThrowException();
 
         public async Task<Either<Error, TodoListId>> InvokeWithErrors(
             CreateTodoListCommand createTodoListCommand)
