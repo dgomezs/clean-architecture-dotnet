@@ -6,13 +6,13 @@ namespace Application.Services.UseCases.CreateUser
     {
         private CreateUserCommand(PersonName name, EmailAddress email)
         {
-            UserName = name;
+            Name = name;
             Email = email;
         }
 
         public EmailAddress Email { get; }
 
-        public PersonName UserName { get; }
+        public PersonName Name { get; }
 
 
         public static CreateUserCommand Create(string firstName, string lastName, string email)

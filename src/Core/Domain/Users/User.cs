@@ -5,19 +5,22 @@ namespace Domain.Users
 {
     public class User
     {
-        public User(EmailAddress email)
+        public User(EmailAddress email, PersonName name)
         {
             Email = email;
+            Name = name;
             Id = new UserId(Guid.NewGuid());
         }
 
-        public User(UserId userId, EmailAddress userEmail)
+        public User(UserId userId, EmailAddress userEmail, PersonName name)
         {
             Id = userId;
             Email = userEmail;
+            Name = name;
         }
 
         public EmailAddress Email { get; }
         public UserId Id { get; }
+        public PersonName Name { get; }
     }
 }

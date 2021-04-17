@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Repositories;
-using Domain.Todos.Entities;
 using Domain.Users.ValueObjects;
 
 namespace Application.Services.Tests.TestDoubles
@@ -36,7 +35,7 @@ namespace Application.Services.Tests.TestDoubles
         {
             var id = user.Id ?? throw new Exception();
             _users.Remove(id);
-            _users.Add(id, new Domain.Users.User(user.Id, user.Email));
+            _users.Add(id, new Domain.Users.User(user.Id, user.Email, user.Name));
             return Task.CompletedTask;
         }
     }

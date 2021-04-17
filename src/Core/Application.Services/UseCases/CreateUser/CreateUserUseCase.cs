@@ -14,7 +14,7 @@ namespace Application.Services.UseCases.CreateUser
 
         public async Task<UserId> Invoke(CreateUserCommand createUserCommand)
         {
-            var user = new User(createUserCommand.Email);
+            var user = new User(createUserCommand.Email, createUserCommand.Name);
             await _userRepository.Save(user);
             return user.Id;
         }

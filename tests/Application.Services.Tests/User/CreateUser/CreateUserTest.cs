@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.UseCases.CreateUser;
 using Autofac.Extras.Moq;
@@ -36,8 +37,9 @@ namespace Application.Services.Tests.User.CreateUser
 
         private async Task AssertUserExists(UserId userId, CreateUserCommand createUserCommand)
         {
-            var createdUser = await _userRepository.GetById(userId);
+            var createdUser = await _userRepository.GetById(userId) ?? throw new Exception();
             Assert.Equal(createUserCommand.Email, createdUser.Email);
+            Assert.Equal(createUserCommand.Name, createdUser.Name);
         }
 
         private async Task ArrangeUserDoesNotExist(EmailAddress email)
