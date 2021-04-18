@@ -7,7 +7,7 @@ namespace Domain.Todos.ValueObjects
 {
     public record TodoListName
     {
-        private TodoListName(string name) => Name = name;
+        private TodoListName(string name) => Name = name.Trim();
         public string Name { get; }
 
         public static TodoListName Create(string name)

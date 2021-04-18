@@ -36,14 +36,14 @@ namespace Domain.Todos.Entities
 
         public IEnumerable<Todo> Todos => _todos;
 
-        public bool CanAddTodo()
+        private bool MaxNumberOfTodosReached()
         {
-            return _todos.Count < MaxNumberOfTodosNotDoneAllowed;
+            return _todos.Count >= MaxNumberOfTodosNotDoneAllowed;
         }
 
         public TodoId AddTodo(TodoDescription todoDescription)
         {
-            if (!CanAddTodo())
+            if (MaxNumberOfTodosReached())
                 throw new DomainException(new MaxNumberOfTodosUnDoneReachedError(Name, _todos.Count));
 
             var newTodo = new Todo(todoDescription);

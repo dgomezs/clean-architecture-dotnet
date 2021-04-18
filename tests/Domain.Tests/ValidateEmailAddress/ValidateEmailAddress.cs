@@ -15,7 +15,7 @@ namespace Domain.Tests.ValidateEmailAddress
         [InlineData("other.email-with-hyphen@example.com")]
         [InlineData("fully-qualified-domain@example.com")]
         [InlineData("user.name+tag+sorting@example.com")]
-        [InlineData("example-indeed@strange-example.com ")]
+        [InlineData("example-indeed@strange-example.com")]
         [InlineData("example-indeed@strange-example.inininini")]
         [InlineData("_______@example.com")]
         public void Should_create_a_email_address_when_the_address_is_valid(string validEmailAddress)

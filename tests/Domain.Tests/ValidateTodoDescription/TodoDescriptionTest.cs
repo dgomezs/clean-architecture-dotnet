@@ -46,7 +46,6 @@ namespace Domain.Tests.ValidateTodoDescription
             var todoDescription = TodoDescription.Create(inputDescription);
             // assert
             Assert.Equal(expectedDescription, todoDescription.Description);
-            // assert
         }
 
         private static void AssertTodoDescriptionName(string invalidName)

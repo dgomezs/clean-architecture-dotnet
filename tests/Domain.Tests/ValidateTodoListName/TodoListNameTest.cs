@@ -43,5 +43,17 @@ namespace Domain.Tests.ValidateTodoListName
             Assert.True(result.IsFail);
             Assert.True(result.MapFail(r => r.ErrorKey).Equals(ErrorCodes.InvalidTodoListName));
         }
+
+        [Fact]
+        public void Should_trim_beginning_and_end()
+        {
+            // arrange
+            var expectedName = "ok todo list name";
+            var inputDescription = $"  {expectedName}   ";
+            // act
+            var todoListName = TodoListName.Create(inputDescription);
+            // assert
+            Assert.Equal(expectedName, todoListName.Name);
+        }
     }
 }
