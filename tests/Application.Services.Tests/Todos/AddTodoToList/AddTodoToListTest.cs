@@ -10,6 +10,7 @@ using Domain.Shared.Errors;
 using Domain.Shared.Events;
 using Domain.Todos.Events;
 using Domain.Todos.ValueObjects;
+using FakeTestData;
 using FluentAssertions;
 using Xunit;
 
@@ -36,9 +37,9 @@ namespace Application.Services.Tests.TodoList.AddTodoToList
         public async Task Should_add_todo_when_list_exists_and_max_number_todos_not_reached()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
+            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand();
             var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
-            var todoDescription = MockDataGenerator.CreateTodoDescription();
+            var todoDescription = TodoListFakeData.CreateTodoDescription();
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
             // act
             var todoId = await _addTodoUseCase.Invoke(addTodoCommand);
@@ -53,9 +54,9 @@ namespace Application.Services.Tests.TodoList.AddTodoToList
         public async Task Should_publish_todo_added_event_when_adding_a_todo_successfully()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
+            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand();
             var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
-            var todoDescription = MockDataGenerator.CreateTodoDescription();
+            var todoDescription = TodoListFakeData.CreateTodoDescription();
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
             _eventPublisher.ClearEvents();
             // act
@@ -75,9 +76,9 @@ namespace Application.Services.Tests.TodoList.AddTodoToList
         public async Task Should_throw_an_error_when_todo_list_does_not_exist()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
+            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand();
             var todoListId = await ArrangeTodoListDoesNotExist(createTodoListRequest);
-            var addTodoCommand = new AddTodoCommand(todoListId, MockDataGenerator.CreateTodoDescription());
+            var addTodoCommand = new AddTodoCommand(todoListId, TodoListFakeData.CreateTodoDescription());
             // act / assert
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _addTodoUseCase.Invoke(addTodoCommand));
@@ -89,14 +90,14 @@ namespace Application.Services.Tests.TodoList.AddTodoToList
         public async Task Should_throw_an_error_when_adding_todo_and_list_already_has_maximum_number()
         {
             // arrange
-            var createTodoListRequest = MockDataGenerator.CreateTodoListCommand();
+            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand();
             var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
 
             for (var i = 0; i < Domain.Todos.Entities.TodoList.MaxNumberOfTodosNotDoneAllowed; i++)
                 await _addTodoUseCase.Invoke(new AddTodoCommand(todoListId,
-                    MockDataGenerator.CreateTodoDescription()));
+                    TodoListFakeData.CreateTodoDescription()));
 
-            var addTodoCommand = new AddTodoCommand(todoListId, MockDataGenerator.CreateTodoDescription());
+            var addTodoCommand = new AddTodoCommand(todoListId, TodoListFakeData.CreateTodoDescription());
             // act / assert
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _addTodoUseCase.Invoke(addTodoCommand));

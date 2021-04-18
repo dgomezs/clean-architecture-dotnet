@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.Todos.UseCases.MarkTodoAsDone;
 using Autofac.Extras.Moq;
+using FakeTestData;
 using Xunit;
 
-namespace Application.Services.Tests.TodoList.MarkTodoAsDone
+namespace Application.Services.Tests.Todos.MarkTodoAsDone
 {
     public class MarkTodoAsDoneTest
     {
-        private readonly InMemoryEventPublisher _eventPublisher;
         private readonly IMarkTodoDoneUseCase _markTodoDoneUseCase;
         private readonly AutoMock _mock;
         private readonly InMemoryTodoListRepository _todoListRepository;
@@ -19,7 +19,6 @@ namespace Application.Services.Tests.TodoList.MarkTodoAsDone
         {
             _mock = DiConfig.GetMock();
             _todoListRepository = _mock.Create<InMemoryTodoListRepository>();
-            _eventPublisher = _mock.Create<InMemoryEventPublisher>();
             _markTodoDoneUseCase = _mock.Create<IMarkTodoDoneUseCase>();
         }
 
@@ -41,7 +40,7 @@ namespace Application.Services.Tests.TodoList.MarkTodoAsDone
         private async Task<Domain.Todos.Entities.TodoList> ArrangeTodoListExistsWithTodosNotDone(
             int numberOfTodosNotDone)
         {
-            var todoList = MockDataGenerator.CreateTodoListWithNumberTodosNotDone(numberOfTodosNotDone);
+            var todoList = TodoListFakeData.CreateTodoListWithNumberTodosNotDone(numberOfTodosNotDone);
             await _todoListRepository.Save(todoList);
             return todoList;
         }

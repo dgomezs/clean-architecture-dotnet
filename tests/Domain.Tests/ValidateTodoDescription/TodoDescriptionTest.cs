@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Domain.Shared.Errors;
 using Domain.Todos.ValueObjects;
+using FakeTestData;
 using Xunit;
 
 namespace Domain.Tests.ValidateTodoDescription
@@ -29,11 +30,8 @@ namespace Domain.Tests.ValidateTodoDescription
         [Fact]
         public void Should_throw_a_validation_exception_for_very_long_descriptions()
         {
-            // arrange
-            var faker = new Faker();
-            // act
             // assert
-            AssertTodoDescriptionName(faker.Random.AlphaNumeric(251));
+            AssertTodoDescriptionName(StringFakeData.GenerateRandomString(251));
         }
         
         [Fact]

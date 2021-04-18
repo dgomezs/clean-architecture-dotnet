@@ -4,7 +4,7 @@ using Application.Services.Todos.Repositories;
 using Application.Services.Todos.UseCases.SearchTodoListByName;
 using Autofac;
 using Domain.Todos.Entities;
-using Persistence.Tests.FakeData;
+using FakeTestData;
 using Persistence.Tests.Fixtures;
 using Xunit;
 
@@ -29,8 +29,8 @@ namespace Persistence.Tests.SearchTodoList
             const string startingBy = "sh";
             const string nonStartingBy = "pr";
             const int size = 5;
-            var todoListsToBeFound = TodoListMockData.CreateTodoList(startingBy, size);
-            var todoListNotToBeFound = TodoListMockData.CreateTodoList(nonStartingBy, size);
+            var todoListsToBeFound = TodoListFakeData.CreateTodoList(startingBy, size);
+            var todoListNotToBeFound = TodoListFakeData.CreateTodoList(nonStartingBy, size);
             await PersistTodoList(todoListsToBeFound);
             await PersistTodoList(todoListNotToBeFound);
             // act

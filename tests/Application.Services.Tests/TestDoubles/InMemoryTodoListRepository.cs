@@ -13,6 +13,7 @@ namespace Application.Services.Tests.TestDoubles
 
         public Task<Domain.Todos.Entities.TodoList?> GetByName(TodoListName todoListName)
         {
+            // TODO compare slugify strings
             return Task.FromResult(_todoLists.Values.SingleOrDefault(t => t.Name.Equals(todoListName)));
         }
 

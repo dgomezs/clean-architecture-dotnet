@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="Ardalis.Result" Version="3.0.2" />
       <PackageReference Include="Autofac.Extras.Moq" Version="6.0.0" />
       <PackageReference Include="Bogus" Version="33.0.2" />
       <PackageReference Include="FluentAssertions" Version="5.10.3" />
@@ -36,6 +35,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\App\App.csproj" />
     <ProjectReference Include="..\..\src\Core\Application.Services\Application.Services.csproj" />
+    <ProjectReference Include="..\FakeTestData\FakeTestData.csproj" />
   </ItemGroup>
 
   <ItemGroup>

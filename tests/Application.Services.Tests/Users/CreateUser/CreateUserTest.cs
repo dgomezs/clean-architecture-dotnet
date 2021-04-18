@@ -27,7 +27,7 @@ namespace Application.Services.Tests.User.CreateUser
         public async Task Should_create_new_user_when_it_does_not_exist()
         {
             // arrange
-            var createUserCommand = MockDataGenerator.CreateUserCommand();
+            var createUserCommand = FakeCommandGenerator.FakeCreateUserCommand();
             await ArrangeUserDoesNotExist(createUserCommand.Email);
             // act
             var userId = await _createUserUseCase.Invoke(createUserCommand);
@@ -40,7 +40,7 @@ namespace Application.Services.Tests.User.CreateUser
         {
             // arrange
             var existingUser = await CreateUser();
-            var createUserCommand = MockDataGenerator.CreateUserCommand(existingUser.Email);
+            var createUserCommand = FakeCommandGenerator.FakeCreateUserCommand(existingUser.Email);
             // act
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _createUserUseCase.Invoke(createUserCommand));
@@ -53,7 +53,7 @@ namespace Application.Services.Tests.User.CreateUser
 
         private async Task<Domain.Users.User> CreateUser()
         {
-            var createUserCommand = MockDataGenerator.CreateUserCommand();
+            var createUserCommand = FakeCommandGenerator.FakeCreateUserCommand();
             await ArrangeUserDoesNotExist(createUserCommand.Email);
             // act
             var userId = await _createUserUseCase.Invoke(createUserCommand);

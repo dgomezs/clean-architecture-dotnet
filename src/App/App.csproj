@@ -12,7 +12,6 @@
     <ItemGroup>
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0"/>
         <PackageReference Include="AutofacSerilogIntegration" Version="5.0.0"/>
-        <PackageReference Include="Bogus" Version="33.0.2"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" PrivateAssets="all" Version="5.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0"/>
