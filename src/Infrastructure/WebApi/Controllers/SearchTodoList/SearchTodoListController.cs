@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Application.Services.UseCases.SearchTodoListByName;
+using Application.Services.Todos.UseCases.SearchTodoListByName;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 

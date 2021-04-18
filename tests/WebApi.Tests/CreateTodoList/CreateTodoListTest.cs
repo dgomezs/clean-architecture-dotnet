@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Application.Services.UseCases.CreateTodoList;
+using Application.Services.Todos.UseCases.CreateTodoList;
 using CleanArchitecture.TodoList.WebApi.Tests.Config;
 using Domain.Shared.Errors;
 using Domain.Todos.ValueObjects;

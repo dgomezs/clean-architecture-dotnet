@@ -1,4 +1,4 @@
-﻿using Application.Services.Events;
+﻿using Application.Services.Shared.Events;
 using Autofac;
 
 namespace Application.Services

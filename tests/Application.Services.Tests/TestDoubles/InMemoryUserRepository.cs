@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Services.Repositories;
+using Application.Services.Users.Repositories;
 using Domain.Users.ValueObjects;
 
 namespace Application.Services.Tests.TestDoubles

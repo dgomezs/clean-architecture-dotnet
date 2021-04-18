@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using Application.Services.Errors;
+using Application.Services.Shared.Errors;
 using Domain.Shared.Errors;
 using FluentValidation;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Services.Repositories;
+using Application.Services.Todos.Repositories;
 using Autofac;
 using Persistence.Tests.FakeData;
 using Persistence.Tests.Fixtures;

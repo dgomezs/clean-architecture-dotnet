@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Application.Services.Repositories;
-using Application.Services.UseCases.SearchTodoListByName;
+using Application.Services.Todos.Repositories;
+using Application.Services.Todos.UseCases.SearchTodoListByName;
 using Autofac;
 using Domain.Todos.Entities;
 using Persistence.Tests.FakeData;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Application.Services.UseCases.CreateTodoList;
-using Application.Services.UseCases.CreateUser;
+using Application.Services.Todos.UseCases.CreateTodoList;
+using Application.Services.Users.UseCases.CreateUser;
 using Bogus;
 using Domain.Todos.Entities;
 using Domain.Todos.ValueObjects;
@@ -13,7 +13,7 @@ namespace Application.Services.Tests
     {
         public static CreateTodoListCommand CreateTodoListCommand()
         {
-            return UseCases.CreateTodoList.CreateTodoListCommand.Create(CreateTodoListName().Name);
+            return Todos.UseCases.CreateTodoList.CreateTodoListCommand.Create(CreateTodoListName().Name);
         }
 
         public static TodoDescription CreateTodoDescription()
@@ -53,7 +53,7 @@ namespace Application.Services.Tests
         public static CreateUserCommand CreateUserCommand()
         {
             var generator = new Faker();
-            return UseCases.CreateUser.CreateUserCommand.Create(generator.Person.FirstName,
+            return Users.UseCases.CreateUser.CreateUserCommand.Create(generator.Person.FirstName,
                 generator.Person.LastName,
                 generator.Person.Email);
         }
@@ -61,7 +61,7 @@ namespace Application.Services.Tests
         public static CreateUserCommand CreateUserCommand(EmailAddress email)
         {
             var generator = new Faker();
-            return UseCases.CreateUser.CreateUserCommand.Create(generator.Person.FirstName,
+            return Users.UseCases.CreateUser.CreateUserCommand.Create(generator.Person.FirstName,
                 generator.Person.LastName,
                 email.Email);
         }

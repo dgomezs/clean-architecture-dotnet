@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
-using Application.Services.UseCases.CreateTodoList;
+using Application.Services.Todos.UseCases.CreateTodoList;
 using Autofac.Extras.Moq;
 using Domain.Shared.Errors;
 using Domain.Shared.Events;
 using Domain.Todos.Events;
 using Domain.Todos.ValueObjects;
 using Xunit;
-using static Application.Services.Extensions.EitherExtensions;
+using static Application.Services.Shared.Extensions.EitherExtensions;
 
 namespace Application.Services.Tests.TodoList.CreateTodoList
 {

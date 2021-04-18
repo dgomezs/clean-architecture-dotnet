@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
-using Application.Services.UseCases.CreateUser;
+using Application.Services.Users.UseCases.CreateUser;
 using Autofac.Extras.Moq;
 using Domain.Shared.Errors;
 using Domain.Users.ValueObjects;

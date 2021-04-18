@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Services.Queries;
-using Application.Services.UseCases.SearchTodoListByName;
+using Application.Services.Todos.Queries;
+using Application.Services.Todos.UseCases.SearchTodoListByName;
 using Domain.Todos.Entities;
 using Microsoft.EntityFrameworkCore;
 

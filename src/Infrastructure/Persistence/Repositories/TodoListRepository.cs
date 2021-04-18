@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Services.Repositories;
+using Application.Services.Todos.Repositories;
 using Domain.Todos.Entities;
 using Domain.Todos.ValueObjects;
 using Microsoft.EntityFrameworkCore;

@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Application.Services.UseCases.SearchTodoListByName;
+using Application.Services.Todos.UseCases.SearchTodoListByName;
 using CleanArchitecture.TodoList.WebApi.Tests.Config;
 using Domain.Shared.Errors;
 using FluentAssertions;

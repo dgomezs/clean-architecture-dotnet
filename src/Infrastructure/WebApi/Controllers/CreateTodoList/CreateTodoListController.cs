@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Application.Services.UseCases.CreateTodoList;
+using Application.Services.Todos.UseCases.CreateTodoList;
 using Domain.Todos.ValueObjects;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using static Application.Services.Extensions.EitherExtensions;
+using static Application.Services.Shared.Extensions.EitherExtensions;
 
 namespace WebApi.Controllers.CreateTodoList
 {
