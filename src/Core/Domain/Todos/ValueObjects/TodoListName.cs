@@ -10,11 +10,11 @@ namespace Domain.Todos.ValueObjects
         private TodoListName(string name) => Name = name.Trim();
         public string Name { get; }
 
-        public static TodoListName Create(string name)
+        public static TodoListName Create(string? name)
         {
             try
             {
-                var result = new TodoListName(name);
+                var result = new TodoListName(name ?? "");
                 var validator = new TodoListNameValidator();
                 validator.ValidateAndThrow(result.Name);
                 return result;

@@ -11,11 +11,11 @@ namespace Domain.Todos.ValueObjects
 
         public string Description { get; }
 
-        public static TodoDescription Create(string description)
+        public static TodoDescription Create(string? description)
         {
             try
             {
-                var result = new TodoDescription(description);
+                var result = new TodoDescription(description ?? "");
                 var validator = new TodoDescriptionValidator();
                 validator.ValidateAndThrow(result.Description);
                 return result;

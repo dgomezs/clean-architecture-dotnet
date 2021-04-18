@@ -1,20 +1,46 @@
-﻿namespace Domain.Users.ValueObjects
+﻿using System;
+using Domain.Shared.Errors;
+using FluentValidation;
+
+namespace Domain.Users.ValueObjects
 {
     public record PersonName
     {
         private PersonName(string firstName, string lastName)
         {
-            FirstName = firstName;
-            LastName = lastName;
+            FirstName = firstName.Trim();
+            LastName = lastName.Trim();
         }
 
         public string LastName { get; }
 
         public string FirstName { get; }
 
-        public static PersonName Create(string firstName, string lastName)
+        public static PersonName Create(string? firstName, string? lastName)
         {
-            return new(firstName, lastName);
+            try
+            {
+                var result = new PersonName(firstName ?? "", lastName ?? "");
+                var validator = new PersonNameValidator();
+                validator.ValidateAndThrow(result);
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw ValidationUtils.MapException(e, ErrorCodes.InvalidPersonName);
+            }
+        }
+    }
+
+    public class PersonNameValidator : AbstractValidator<PersonName>
+    {
+        public PersonNameValidator()
+        {
+            RuleFor(n => n.FirstName)
+                .NotEmpty().WithName(nameof(PersonName.FirstName));
+
+            RuleFor(n => n.LastName)
+                .NotEmpty().WithName(nameof(PersonName.LastName));
         }
     }
 }

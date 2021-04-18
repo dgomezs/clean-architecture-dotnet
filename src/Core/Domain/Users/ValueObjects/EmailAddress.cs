@@ -11,13 +11,14 @@ namespace Domain.Users.ValueObjects
 
         public string Value { get; }
 
-        public static EmailAddress Create(string email)
+        public static EmailAddress Create(string? email)
         {
             try
             {
+                var result = new EmailAddress(email ?? "");
                 var validator = new EmailAddressValidator();
-                validator.ValidateAndThrow(email);
-                return new EmailAddress(email);
+                validator.ValidateAndThrow(result.Value);
+                return result;
             }
             catch (Exception ex)
             {
