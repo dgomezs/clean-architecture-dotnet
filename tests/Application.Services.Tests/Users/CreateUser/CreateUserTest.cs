@@ -46,7 +46,7 @@ namespace Application.Services.Tests.User.CreateUser
                 _createUserUseCase.Invoke(createUserCommand));
             // assert
             var exceptionData = exception.Data;
-            Assert.Equal(existingUser.Email.Email, exceptionData["Email"]);
+            Assert.Equal(existingUser.Email.Value, exceptionData["Email"]);
         }
 
         // TODO add cases for invalid names and email

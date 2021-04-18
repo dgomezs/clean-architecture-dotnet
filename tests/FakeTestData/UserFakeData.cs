@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Domain.Users;
 using Domain.Users.ValueObjects;
 
 namespace FakeTestData
@@ -16,6 +17,11 @@ namespace FakeTestData
         {
             var generator = new Faker();
             return EmailAddress.Create(generator.Person.Email);
+        }
+
+        public static User CreateUser()
+        {
+            return new User(CreateEmail(), CreatePersonName());
         }
     }
 }

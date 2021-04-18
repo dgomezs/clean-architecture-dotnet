@@ -7,9 +7,9 @@ namespace Domain.Users.ValueObjects
     public record EmailAddress
     {
         private EmailAddress(string email) =>
-            Email = email.ToLower().Trim();
+            Value = email.ToLower().Trim();
 
-        public string Email { get; }
+        public string Value { get; }
 
         public static EmailAddress Create(string email)
         {

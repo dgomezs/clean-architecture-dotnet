@@ -23,7 +23,7 @@ namespace Domain.Tests.ValidateEmailAddress
             // act
             var emailAddress = EmailAddress.Create(validEmailAddress);
             // assert
-            Assert.Equal(validEmailAddress, emailAddress.Email);
+            Assert.Equal(validEmailAddress, emailAddress.Value);
         }
 
         [Theory]
@@ -44,7 +44,7 @@ namespace Domain.Tests.ValidateEmailAddress
             string expectedEmailAddress)
         {
             var email = EmailAddress.Create(validEmailAddress);
-            Assert.Equal(expectedEmailAddress, email.Email);
+            Assert.Equal(expectedEmailAddress, email.Value);
         }
     }
 }

@@ -9,6 +9,8 @@ namespace Infrastructure.Persistence.EfConfigurations
     {
         public const string IdShadowProperty = "InternalId";
         public const string TodoListId = "TodoListId";
+        
+        // TODO add audit trail
 
         public void Configure(EntityTypeBuilder<Todo> todo)
         {

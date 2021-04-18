@@ -21,7 +21,7 @@ namespace Application.Services.Tests
 
             return CreateUserCommand.Create(personName.FirstName,
                 personName.LastName,
-                email.Email);
+                email.Value);
         }
 
         public static CreateUserCommand FakeCreateUserCommand(EmailAddress email)
@@ -29,7 +29,7 @@ namespace Application.Services.Tests
             var generator = new Faker();
             return CreateUserCommand.Create(generator.Person.FirstName,
                 generator.Person.LastName,
-                email.Email);
+                email.Value);
         }
     }
 }

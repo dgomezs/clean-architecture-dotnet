@@ -16,7 +16,7 @@ namespace Application.Services.Users.Errors
 
         public override IDictionary Data => new Dictionary<string, string>
         {
-            {"Email", _email.Email}
+            {"Email", _email.Value}
         };
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
+using Domain.Shared.Entities;
 using Domain.Users.ValueObjects;
 
 namespace Domain.Users
 {
-    public class User
+    public class User : Entity
     {
         public User(EmailAddress email, PersonName name)
         {
