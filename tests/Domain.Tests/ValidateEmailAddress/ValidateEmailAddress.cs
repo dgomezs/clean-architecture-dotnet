@@ -37,5 +37,14 @@ namespace Domain.Tests.ValidateEmailAddress
             var exception = Assert.Throws<DomainException>(() => EmailAddress.Create(invalidEmailAddress));
             Assert.Equal(ErrorCodes.InvalidEmailAddress, exception.ErrorKey);
         }
+
+        [Theory]
+        [InlineData(" David@test.com ", "david@test.com")]
+        public void Should_be_lowered_case_and_without_spaces(string validEmailAddress,
+            string expectedEmailAddress)
+        {
+            var email = EmailAddress.Create(validEmailAddress);
+            Assert.Equal(expectedEmailAddress, email.Email);
+        }
     }
 }

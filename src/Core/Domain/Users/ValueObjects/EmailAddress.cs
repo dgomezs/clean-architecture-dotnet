@@ -7,7 +7,7 @@ namespace Domain.Users.ValueObjects
     public record EmailAddress
     {
         private EmailAddress(string email) =>
-            Email = email;
+            Email = email.ToLower().Trim();
 
         public string Email { get; }
 
