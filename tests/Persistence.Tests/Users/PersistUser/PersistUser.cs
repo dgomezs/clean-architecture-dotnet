@@ -26,6 +26,7 @@ namespace Persistence.Tests.Users.PersistUser
             // assert
             var persistedUser = await _userRepository.GetByEmail(user.Email) ?? throw new Exception();
             Assert.Equal(user.Email, persistedUser.Email);
+            Assert.Equal(user.Name, persistedUser.Name);
         }
     }
 }

@@ -4,9 +4,6 @@
     EXEC ('CREATE SCHEMA [todos] AUTHORIZATION [dbo]');
 GO
 
--- TODO add audit trail
-
-
 CREATE TABLE [todos].[User]
 (
     [InternalId] BIGINT PRIMARY KEY IDENTITY (1,1),
