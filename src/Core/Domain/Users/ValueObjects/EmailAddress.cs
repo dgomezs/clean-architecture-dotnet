@@ -1,4 +1,8 @@
-﻿namespace Domain.Users.ValueObjects
+﻿using System;
+using Domain.Shared.Errors;
+using FluentValidation;
+
+namespace Domain.Users.ValueObjects
 {
     public record EmailAddress
     {
@@ -9,7 +13,25 @@
 
         public static EmailAddress Create(string email)
         {
-            return new(email);
+            try
+            {
+                var validator = new EmailAddressValidator();
+                validator.ValidateAndThrow(email);
+                return new EmailAddress(email);
+            }
+            catch (Exception ex)
+            {
+                throw ValidationUtils.MapException(ex, ErrorCodes.InvalidEmailAddress);
+            }
+        }
+    }
+
+    public class EmailAddressValidator : AbstractValidator<string>
+    {
+        public EmailAddressValidator()
+        {
+            RuleFor(n => n)
+                .EmailAddress().WithName("Email");
         }
     }
 }
