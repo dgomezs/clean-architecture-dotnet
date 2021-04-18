@@ -39,7 +39,7 @@ namespace Application.Services.Tests.TodoList.AddTodoToList
             // arrange
             var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand();
             var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
-            var todoDescription = TodoListFakeData.CreateTodoDescription();
+            var todoDescription = TodosFakeData.CreateTodoDescription();
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
             // act
             var todoId = await _addTodoUseCase.Invoke(addTodoCommand);
@@ -56,7 +56,7 @@ namespace Application.Services.Tests.TodoList.AddTodoToList
             // arrange
             var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand();
             var todoListId = await ArrangeTodoListExistWithNoTodos(createTodoListRequest);
-            var todoDescription = TodoListFakeData.CreateTodoDescription();
+            var todoDescription = TodosFakeData.CreateTodoDescription();
             var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
             _eventPublisher.ClearEvents();
             // act
@@ -78,7 +78,7 @@ namespace Application.Services.Tests.TodoList.AddTodoToList
             // arrange
             var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand();
             var todoListId = await ArrangeTodoListDoesNotExist(createTodoListRequest);
-            var addTodoCommand = new AddTodoCommand(todoListId, TodoListFakeData.CreateTodoDescription());
+            var addTodoCommand = new AddTodoCommand(todoListId, TodosFakeData.CreateTodoDescription());
             // act / assert
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _addTodoUseCase.Invoke(addTodoCommand));
@@ -95,9 +95,9 @@ namespace Application.Services.Tests.TodoList.AddTodoToList
 
             for (var i = 0; i < Domain.Todos.Entities.TodoList.MaxNumberOfTodosNotDoneAllowed; i++)
                 await _addTodoUseCase.Invoke(new AddTodoCommand(todoListId,
-                    TodoListFakeData.CreateTodoDescription()));
+                    TodosFakeData.CreateTodoDescription()));
 
-            var addTodoCommand = new AddTodoCommand(todoListId, TodoListFakeData.CreateTodoDescription());
+            var addTodoCommand = new AddTodoCommand(todoListId, TodosFakeData.CreateTodoDescription());
             // act / assert
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _addTodoUseCase.Invoke(addTodoCommand));
