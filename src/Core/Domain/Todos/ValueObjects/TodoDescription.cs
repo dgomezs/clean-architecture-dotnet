@@ -7,7 +7,7 @@ namespace Domain.Todos.ValueObjects
     public record TodoDescription
     {
         private TodoDescription(string description) =>
-            Description = description;
+            Description = description.Trim();
 
         public string Description { get; }
 

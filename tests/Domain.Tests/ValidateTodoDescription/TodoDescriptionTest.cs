@@ -35,6 +35,19 @@ namespace Domain.Tests.ValidateTodoDescription
             // assert
             AssertTodoDescriptionName(faker.Random.AlphaNumeric(251));
         }
+        
+        [Fact]
+        public void Should_trim_begining_and_end()
+        {
+            // arrange
+            var expectedDescription = "ok description";
+            var inputDescription = $"  {expectedDescription}   ";
+            // act
+            var todoDescription = TodoDescription.Create(inputDescription);
+            // assert
+            Assert.Equal(expectedDescription, todoDescription.Description);
+            // assert
+        }
 
         private static void AssertTodoDescriptionName(string invalidName)
         {
