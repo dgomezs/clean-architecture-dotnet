@@ -64,7 +64,7 @@ namespace Domain.Tests.ValidatePersonName
 
         [Theory]
         [InlineData(" John ", "John", " J. Smith", "J. Smith")]
-        public void Should_trim_first_last_names(string firstName, string expectedFirstName, string lastName,
+        public void Should_trim_first_and_last_names(string firstName, string expectedFirstName, string lastName,
             string expectedLastName)
         {
             // act
