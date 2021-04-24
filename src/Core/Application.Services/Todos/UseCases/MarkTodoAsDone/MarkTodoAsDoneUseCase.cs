@@ -17,7 +17,7 @@ namespace Application.Services.Todos.UseCases.MarkTodoAsDone
             var todoId = markTodoDoneCommand.TodoId;
             var todoList = await _todoListRepository.GetByTodoId(todoId)
                            ?? throw new DomainException(
-                               new TodoListWithTodoNotFound(todoId));
+                               new TodoListDoesNotExistsError(todoId));
             todoList.MarkAsDone(todoId);
             await _todoListRepository.Save(todoList);
         }
