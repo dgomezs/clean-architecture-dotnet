@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.Todos.UseCases.CreateTodoList;
+using Application.Services.Users.Errors;
 using Application.Services.Users.UseCases.CreateUser;
 using Autofac.Extras.Moq;
 using Domain.Shared.Errors;
@@ -79,8 +80,10 @@ namespace Application.Services.Tests.Todos.CreateTodoList
             // act
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _createTodoListUseCase.Invoke(createTodoListRequest));
+            
             var exceptionData = exception.Data;
-            // Assert.Equal(createTodoListRequest.TodoListName.Name, exceptionData["TodoListName"]);
+            Assert.Equal(UserDoesNotExistError.UserDoesNotExists, exception.ErrorKey);
+            Assert.Equal(createTodoListRequest.OwnerId.Value.ToString(), exceptionData["UserId"]);
         }
 
 

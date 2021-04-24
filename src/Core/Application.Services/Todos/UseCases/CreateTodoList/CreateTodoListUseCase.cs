@@ -3,6 +3,7 @@ using Application.Services.Shared.Events;
 using Application.Services.Shared.Extensions;
 using Application.Services.Todos.Errors;
 using Application.Services.Todos.Repositories;
+using Application.Services.Users.Errors;
 using Application.Services.Users.Repositories;
 using Domain.Shared.Errors;
 using Domain.Todos.Entities;
@@ -35,7 +36,8 @@ namespace Application.Services.Todos.UseCases.CreateTodoList
             var existingOwner = await _userRepository.GetById(createTodoListCommand.OwnerId);
             var todoListName = createTodoListCommand.TodoListName;
             if (existingOwner is null)
-                return new TodoListAlreadyExistsError(todoListName);
+                return new UserDoesNotExistError(createTodoListCommand.OwnerId);
+
             var todoList = await _todoListRepository.GetByName(createTodoListCommand.OwnerId, todoListName);
             if (todoList is not null)
                 return new TodoListAlreadyExistsError(todoListName);

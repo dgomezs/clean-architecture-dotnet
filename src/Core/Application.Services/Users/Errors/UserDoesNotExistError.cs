@@ -5,18 +5,18 @@ using Domain.Users.ValueObjects;
 
 namespace Application.Services.Users.Errors
 {
-    public record UserAlreadyExistsError : EntityAlreadyExistsError
+    public record UserDoesNotExistError : EntityAlreadyExistsError
     {
-        public const string UserAlreadyExists = "UserAlreadyExists";
-        private readonly EmailAddress _email;
+        public const string UserDoesNotExists = "UserDoesNotExists";
+        private UserId _userId;
 
-        public UserAlreadyExistsError(EmailAddress email) : base(UserAlreadyExists,
+        public UserDoesNotExistError(UserId userId) : base(UserDoesNotExists,
             "User already exists") =>
-            _email = email;
+            _userId = userId;
 
         public override IDictionary Data => new Dictionary<string, string>
         {
-            {"Email", _email.Value}
+            {"UserId", _userId.Value.ToString()}
         };
     }
 }
