@@ -42,25 +42,25 @@ namespace Application.Services.Tests.Todos.AddTodoToList
         public async Task Should_add_todo_when_list_exists_and_max_number_todos_not_reached()
         {
             // arrange
-            var todoListId = await ArrangeTodoListExistWithNoTodos();
+            var todoList = await ArrangeTodoListExistWithNoTodos();
             var todoDescription = TodosFakeData.CreateTodoDescription();
-            var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
+            var addTodoCommand = CreateAddTodoCommand(todoList, todoDescription);
             // act
             var todoId = await _addTodoUseCase.Invoke(addTodoCommand);
             // assert
             Assert.NotNull(todoId);
-            var todoList = await _todoListRepository.GetById(todoListId) ?? throw new Exception();
-            todoList.Todos.Should().Contain(t => todoId.Equals(t.Id));
-            todoList.Todos.Should().Contain(t => todoDescription.Equals(t.Description));
+            var todoListAfterAddingTodo = await GetById(todoList.Id);
+            todoListAfterAddingTodo.Todos.Should().Contain(t => todoId.Equals(t.Id));
+            todoListAfterAddingTodo.Todos.Should().Contain(t => todoDescription.Equals(t.Description));
         }
 
         [Fact]
         public async Task Should_publish_todo_added_event_when_adding_a_todo_successfully()
         {
             // arrange
-            var todoListId = await ArrangeTodoListExistWithNoTodos();
+            var todoList = await ArrangeTodoListExistWithNoTodos();
             var todoDescription = TodosFakeData.CreateTodoDescription();
-            var addTodoCommand = new AddTodoCommand(todoListId, todoDescription);
+            var addTodoCommand = new AddTodoCommand(todoList.OwnerId, todoList.Id, todoDescription);
             _eventPublisher.ClearEvents();
             // act
             await _addTodoUseCase.Invoke(addTodoCommand);
@@ -71,7 +71,7 @@ namespace Application.Services.Tests.Todos.AddTodoToList
             Assert.True(eDomainEvent is TodoAddedToListEvent);
             var (todoListId1, todo) = (TodoAddedToListEvent) eDomainEvent;
             Assert.Equal(todoDescription, todo.Description);
-            Assert.Equal(todoListId, todoListId1);
+            Assert.Equal(todoList.Id, todoListId1);
         }
 
 
@@ -79,8 +79,9 @@ namespace Application.Services.Tests.Todos.AddTodoToList
         public async Task Should_throw_an_error_when_todo_list_does_not_exist()
         {
             // arrange
+            var userId = await CreateUser();
             var todoListId = await ArrangeTodoListDoesNotExist();
-            var addTodoCommand = new AddTodoCommand(todoListId, TodosFakeData.CreateTodoDescription());
+            var addTodoCommand = new AddTodoCommand(userId, todoListId, TodosFakeData.CreateTodoDescription());
             // act / assert
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _addTodoUseCase.Invoke(addTodoCommand));
@@ -92,13 +93,13 @@ namespace Application.Services.Tests.Todos.AddTodoToList
         public async Task Should_throw_an_error_when_adding_todo_and_list_already_has_maximum_number()
         {
             // arrange
-            var todoListId = await ArrangeTodoListExistWithNoTodos();
+            var todoList = await ArrangeTodoListExistWithNoTodos();
 
             for (var i = 0; i < TodoList.MaxNumberOfTodosNotDoneAllowed; i++)
-                await _addTodoUseCase.Invoke(new AddTodoCommand(todoListId,
+                await _addTodoUseCase.Invoke(CreateAddTodoCommand(todoList,
                     TodosFakeData.CreateTodoDescription()));
 
-            var addTodoCommand = new AddTodoCommand(todoListId, TodosFakeData.CreateTodoDescription());
+            var addTodoCommand = CreateAddTodoCommand(todoList, TodosFakeData.CreateTodoDescription());
             // act / assert
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _addTodoUseCase.Invoke(addTodoCommand));
@@ -108,14 +109,15 @@ namespace Application.Services.Tests.Todos.AddTodoToList
         }
 
 
-        private async Task<TodoListId> ArrangeTodoListExistWithNoTodos()
+        private async Task<TodoList> ArrangeTodoListExistWithNoTodos()
         {
             var ownerId = await CreateUser();
             var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand(ownerId);
             await _todoListRepository.RemoveByName(ownerId, createTodoListRequest.TodoListName);
-            return await _createTodoListUseCase.Invoke(createTodoListRequest);
+            var todoListId = await _createTodoListUseCase.Invoke(createTodoListRequest);
+            return await GetById(todoListId);
         }
-        
+
 
         private async Task<TodoListId> ArrangeTodoListDoesNotExist()
         {
@@ -127,6 +129,16 @@ namespace Application.Services.Tests.Todos.AddTodoToList
         private Task<UserId> CreateUser()
         {
             return _createUserUseCase.Invoke(FakeCommandGenerator.FakeCreateUserCommand());
+        }
+
+        private async Task<TodoList> GetById(TodoListId todoListId)
+        {
+            return await _todoListRepository.GetById(todoListId) ?? throw new Exception();
+        }
+
+        private static AddTodoCommand CreateAddTodoCommand(TodoList todoList, TodoDescription todoDescription)
+        {
+            return new(todoList.OwnerId, todoList.Id, todoDescription);
         }
     }
 }
