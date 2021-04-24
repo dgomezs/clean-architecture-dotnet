@@ -51,7 +51,7 @@ namespace Application.Services.Tests.User.CreateUser
 
         // TODO add cases for invalid names and email
 
-        private async Task<Domain.Users.User> CreateUser()
+        private async Task<Domain.Users.Entities.User> CreateUser()
         {
             var createUserCommand = FakeCommandGenerator.FakeCreateUserCommand();
             await ArrangeUserDoesNotExist(createUserCommand.Email);

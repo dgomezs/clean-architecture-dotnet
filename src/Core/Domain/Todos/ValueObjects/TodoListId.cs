@@ -8,5 +8,9 @@ namespace Domain.Todos.ValueObjects
         public TodoListId(Guid value) : base(value)
         {
         }
+
+        public TodoListId()
+        {
+        }
     }
 }

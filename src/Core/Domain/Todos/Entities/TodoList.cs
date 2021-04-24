@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Ardalis.GuardClauses;
 using Domain.Shared.Entities;
@@ -24,7 +23,7 @@ namespace Domain.Todos.Entities
 
         public TodoList(TodoListName name)
         {
-            Id = new TodoListId(Guid.NewGuid());
+            Id = new TodoListId();
             Name = Guard.Against.Null(name, nameof(name));
             Events.Add(new TodoListCreatedEvent(this));
             _todos = new List<Todo>();

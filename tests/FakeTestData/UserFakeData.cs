@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Domain.Users;
+using Domain.Users.Entities;
 using Domain.Users.ValueObjects;
 
 namespace FakeTestData

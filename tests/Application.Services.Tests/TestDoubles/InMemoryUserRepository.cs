@@ -9,18 +9,18 @@ namespace Application.Services.Tests.TestDoubles
 {
     public class InMemoryUserRepository : IUserRepository
     {
-        private readonly Dictionary<UserId, Domain.Users.User> _users = new();
+        private readonly Dictionary<UserId, Domain.Users.Entities.User> _users = new();
 
-        public Task<Domain.Users.User?> GetByEmail(EmailAddress email)
+        public Task<Domain.Users.Entities.User?> GetByEmail(EmailAddress email)
         {
             return Task.FromResult(_users.Values.SingleOrDefault(t => t.Email.Equals(email)));
         }
 
-        public Task Save(Domain.Users.User user)
+        public Task Save(Domain.Users.Entities.User user)
         {
             var id = user.Id ?? throw new Exception();
             _users.Remove(id);
-            _users.Add(id, new Domain.Users.User(user.Id, user.Email, user.Name));
+            _users.Add(id, new Domain.Users.Entities.User(user.Id, user.Email, user.Name));
             return Task.CompletedTask;
         }
 
@@ -32,7 +32,7 @@ namespace Application.Services.Tests.TestDoubles
                 _users.Remove(id);
         }
 
-        public Task<Domain.Users.User?> GetById(UserId userId)
+        public Task<Domain.Users.Entities.User?> GetById(UserId userId)
         {
             return Task.FromResult(_users.Values.SingleOrDefault(t => t.Id.Equals(userId)));
         }

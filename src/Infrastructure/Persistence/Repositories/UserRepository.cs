@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Application.Services.Users.Repositories;
 using Domain.Users;
+using Domain.Users.Entities;
 using Domain.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Domain.Users;
+using Domain.Users.Entities;
 using Domain.Users.ValueObjects;
 
 namespace Application.Services.Users.Repositories

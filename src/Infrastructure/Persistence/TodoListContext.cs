@@ -1,5 +1,6 @@
 ﻿using Domain.Todos.Entities;
 using Domain.Users;
+using Domain.Users.Entities;
 using Infrastructure.Persistence.EfConfigurations;
 using Microsoft.EntityFrameworkCore;
 

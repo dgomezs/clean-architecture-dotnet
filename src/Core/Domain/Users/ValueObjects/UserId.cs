@@ -8,5 +8,9 @@ namespace Domain.Users.ValueObjects
         public UserId(Guid value) : base(value)
         {
         }
+
+        public UserId()
+        {
+        }
     }
 }

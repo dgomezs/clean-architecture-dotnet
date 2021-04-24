@@ -9,7 +9,7 @@ namespace Domain.Todos.Entities
     {
         public Todo(TodoDescription description)
         {
-            Id = new TodoId(Guid.NewGuid());
+            Id = new TodoId();
             Description = Guard.Against.Null(description, nameof(description));
             Done = false;
         }

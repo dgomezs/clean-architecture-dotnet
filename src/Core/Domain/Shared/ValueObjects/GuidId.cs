@@ -8,6 +8,7 @@ namespace Domain.Shared.ValueObjects
         public GuidId(Guid value) =>
             Value = Guard.Against.Null(value, nameof(value));
 
+        public GuidId() => Value = Guid.NewGuid();
         public Guid Value { get; }
     }
 }
