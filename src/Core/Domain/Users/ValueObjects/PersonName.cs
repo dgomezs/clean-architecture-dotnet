@@ -37,9 +37,27 @@ namespace Domain.Users.ValueObjects
         public PersonNameValidator()
         {
             RuleFor(n => n.FirstName)
-                .NotEmpty().WithName(nameof(PersonName.FirstName));
+                .SetValidator(new FirstNameValidator());
 
             RuleFor(n => n.LastName)
+                .SetValidator(new LastNameValidator());
+        }
+    }
+
+    public class FirstNameValidator : AbstractValidator<string>
+    {
+        public FirstNameValidator()
+        {
+            RuleFor(n => n)
+                .NotEmpty().WithName(nameof(PersonName.FirstName));
+        }
+    }
+
+    public class LastNameValidator : AbstractValidator<string>
+    {
+        public LastNameValidator()
+        {
+            RuleFor(n => n)
                 .NotEmpty().WithName(nameof(PersonName.LastName));
         }
     }
