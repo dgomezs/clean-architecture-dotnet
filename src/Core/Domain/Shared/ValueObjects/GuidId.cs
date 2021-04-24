@@ -3,12 +3,12 @@ using Ardalis.GuardClauses;
 
 namespace Domain.Shared.ValueObjects
 {
-    public record GuidId
+    public abstract record GuidId
     {
-        public GuidId(Guid value) =>
+        protected GuidId(Guid value) =>
             Value = Guard.Against.Null(value, nameof(value));
 
-        public GuidId() => Value = Guid.NewGuid();
+        protected GuidId() => Value = Guid.NewGuid();
         public Guid Value { get; }
     }
 }
