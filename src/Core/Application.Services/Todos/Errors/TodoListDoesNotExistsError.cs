@@ -9,16 +9,17 @@ namespace Application.Services.Todos.Errors
     public record TodoListDoesNotExistsError : EntityNotFoundError
     {
         public const string TodoListDoesNotExist = "TodoListDoesNotExist";
+        private const string ErrorMessage = "Todo list does not exists";
         private readonly TodoListId? _todoListId;
         private readonly TodoId? _todoId;
 
         public TodoListDoesNotExistsError(TodoListId todoListId) : base(TodoListDoesNotExist,
-            "Todo list does not exists") =>
+            ErrorMessage) =>
             (_todoListId, _todoId) = (todoListId, null);
 
 
         public TodoListDoesNotExistsError(TodoId todo) : base(TodoListDoesNotExist,
-            "Todo list does not exists") =>
+            ErrorMessage) =>
             (_todoListId, _todoId) = (null, todo);
 
         public override IDictionary Data => (_todoId, _todoListId) switch

@@ -7,7 +7,7 @@ namespace Infrastructure.Persistence.EfConfigurations
 {
     public class TodoListConfig : IEntityTypeConfiguration<TodoList>
     {
-        public const string IdShadowProperty = "InternalId";
+        private const string IdShadowProperty = "InternalId";
 
         public void Configure(EntityTypeBuilder<TodoList> todoList)
         {
