@@ -35,7 +35,7 @@ namespace Domain.Tests.ValidateTodoDescription
         }
         
         [Fact]
-        public void Should_trim_begining_and_end()
+        public void Should_trim_beginning_and_end()
         {
             // arrange
             var expectedDescription = "ok description";
