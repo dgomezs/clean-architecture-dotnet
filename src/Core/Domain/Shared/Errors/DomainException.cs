@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Ardalis.GuardClauses;
 using FluentValidation.Results;
 
 namespace Domain.Shared.Errors
@@ -12,33 +13,17 @@ namespace Domain.Shared.Errors
         private List<Error> _errors = new();
 
         public DomainException(Error mainError) : base(mainError.Message) =>
-            MainError = mainError;
-
-        public DomainException(string errorKey, string errorMessage) : base(errorMessage) =>
-            MainError = new Error(errorKey, errorMessage);
-
-        public DomainException(string errorKey, string errorMessage, IEnumerable<Error> errors) : base(
-            errorMessage)
-        {
-            MainError = new Error(errorKey, errorMessage);
-            _errors = errors.ToList();
-        }
+            MainError = Guard.Against.Null(mainError, nameof(mainError));
 
         public DomainException(string errorKey, IEnumerable<ValidationFailure> errors)
         {
             MainError = new ValidationError(errorKey);
-            _errors = errors.Select(x => new ValidationError(x)).ToList<Error>();
+            _errors = Guard.Against.Null(errors, nameof(errors))
+                .Select(x => new ValidationError(x)).ToList<Error>();
         }
 
         public DomainException(string errorKey) =>
             MainError = new Error(errorKey);
-
-        public DomainException(string errorKey, IEnumerable<Error> errors)
-            => (MainError, _errors) = (new Error(errorKey), errors.ToList());
-
-        public DomainException(Error error, Exception innerException) : base(
-            error.Message, innerException) => MainError = error;
-
 
         public DomainException(Error mainError, IEnumerable<Error> errors) : base(mainError.Message)
             => (MainError, _errors) = (mainError, errors.ToList());
