@@ -70,6 +70,19 @@ namespace Application.Services.Tests.Todos.CreateTodoList
             Assert.Equal(todoListName, todoListCreatedEvent.TodoList.Name);
         }
 
+        [Fact]
+        public async Task Should_not_create_todo_list_when_user_does_not_exist()
+        {
+            // arrange
+            var ownerId = new UserId();
+            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand(ownerId);
+            // act
+            var exception = await Assert.ThrowsAsync<DomainException>(() =>
+                _createTodoListUseCase.Invoke(createTodoListRequest));
+            var exceptionData = exception.Data;
+            // Assert.Equal(createTodoListRequest.TodoListName.Name, exceptionData["TodoListName"]);
+        }
+
 
         [Fact]
         public async Task Should_not_create_new_todolist_when_one_by_same_name_exists()

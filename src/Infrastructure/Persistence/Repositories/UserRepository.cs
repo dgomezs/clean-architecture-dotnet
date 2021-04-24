@@ -27,5 +27,10 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await _todoListContext.Users.Where(_ => email.Equals(_.Email)).SingleOrDefaultAsync();
         }
+
+        public async Task<User?> GetById(UserId userId)
+        {
+            return await _todoListContext.Users.Where(_ => userId.Equals(_.Id)).SingleOrDefaultAsync();
+        }
     }
 }
