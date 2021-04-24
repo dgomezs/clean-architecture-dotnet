@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Ardalis.GuardClauses;
 
 namespace Domain.Shared.Errors
 {
@@ -6,21 +7,21 @@ namespace Domain.Shared.Errors
     {
         public Error(string errorKey, string propertyName, string message)
         {
-            ErrorKey = errorKey;
-            PropertyName = propertyName;
-            Message = message;
+            ErrorKey = Guard.Against.NullOrEmpty(errorKey, nameof(errorKey));
+            PropertyName = Guard.Against.NullOrEmpty(propertyName, nameof(propertyName));
+            Message = Guard.Against.NullOrEmpty(message, nameof(message));
         }
 
         public Error(string errorKey, string message)
         {
-            ErrorKey = errorKey;
-            Message = message;
+            ErrorKey = Guard.Against.NullOrEmpty(errorKey, nameof(errorKey));
+            Message = Guard.Against.NullOrEmpty(message, nameof(message));
             PropertyName = null;
         }
 
         public Error(string errorKey)
         {
-            ErrorKey = errorKey;
+            ErrorKey = Guard.Against.NullOrEmpty(errorKey, nameof(errorKey));
             Message = "";
             PropertyName = null;
         }
