@@ -25,5 +25,10 @@ namespace Application.Services.Tests.TestDoubles
             if (id is not null)
                 Elements.Remove(id);
         }
+
+        public void RemoveById(UserId userId)
+        {
+            Elements.Remove(userId);
+        }
     }
 }

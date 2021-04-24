@@ -27,6 +27,7 @@ namespace Application.Services.Tests.Todos.AddTodoToList
         private readonly AutoMock _mock;
         private readonly InMemoryTodoListRepository _todoListRepository;
         private readonly ICreateUserUseCase _createUserUseCase;
+        private readonly InMemoryUserRepository _userRepository;
 
         public AddTodoToListTest()
         {
@@ -36,6 +37,7 @@ namespace Application.Services.Tests.Todos.AddTodoToList
             _createTodoListUseCase = _mock.Create<ICreateTodoListUseCase>();
             _addTodoUseCase = _mock.Create<IAddTodoUseCase>();
             _createUserUseCase = _mock.Create<ICreateUserUseCase>();
+            _userRepository = _mock.Create<InMemoryUserRepository>();
         }
 
         [Fact]
@@ -106,6 +108,26 @@ namespace Application.Services.Tests.Todos.AddTodoToList
             var exceptionData = exception.Data;
             Assert.Equal(TodoList.MaxNumberOfTodosNotDoneAllowed.ToString(),
                 exceptionData["CurrentNumberOfTodos"]);
+        }
+
+        [Fact]
+        public async Task Should_throw_an_error_when_owner_does_not_exist()
+        {
+            // arrange
+            var todoList = await ArrangeTodoListExistWithNoTodos();
+            var ownerId = todoList.OwnerId;
+            RemoveUser(ownerId);
+            var addTodoCommand = CreateAddTodoCommand(todoList, TodosFakeData.CreateTodoDescription());
+            // act / assert
+            var exception = await Assert.ThrowsAsync<DomainException>(() =>
+                _addTodoUseCase.Invoke(addTodoCommand));
+            var exceptionData = exception.Data;
+            Assert.Equal(ownerId.Value.ToString(), exceptionData["UserId"]);
+        }
+
+        private void RemoveUser(UserId userId)
+        {
+            _userRepository.RemoveById(userId);
         }
 
 

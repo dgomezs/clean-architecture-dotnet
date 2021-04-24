@@ -3,7 +3,7 @@ using Domain.Users.ValueObjects;
 
 namespace Application.Services.Todos.UseCases.AddTodo
 {
-    public record AddTodoCommand (UserId TodoListOwnerId, TodoListId TodoListId, TodoDescription TodoDescription)
+    public record AddTodoCommand (UserId OwnerId, TodoListId TodoListId, TodoDescription TodoDescription)
     {
         
     }
