@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Application.Services.Todos.Errors;
 using Ardalis.GuardClauses;
 using Domain.Shared.Entities;
 using Domain.Shared.Errors;
 using Domain.Todos.Errors;
 using Domain.Todos.Events;
+using Domain.Todos.TodoValidationRules;
 using Domain.Todos.ValueObjects;
 using Domain.Users.ValueObjects;
 using LanguageExt;
@@ -14,7 +14,6 @@ namespace Domain.Todos.Entities
 {
     public class TodoList : Aggregate
     {
-        public const int MaxNumberOfTodosNotDoneAllowed = 5;
         private readonly List<Todo> _todos;
 
         public TodoList(UserId ownerId, TodoListName name, TodoListId id, List<Todo> todos)
@@ -56,22 +55,19 @@ namespace Domain.Todos.Entities
             return newTodo.Id;
         }
 
-        private bool CanUserAddTodo(UserId userId)
-        {
-            return OwnerId.Equals(userId);
-        }
 
         private Validation<Error, Unit> CanTodoBeAdded(UserId userId)
         {
-            if (!CanUserAddTodo(userId))
+            var validationRules = new List<IAddTodoValidationRule>
             {
-                return new UserNotAllowedToAddTodoError(userId);
-            }
+                new OnlyOwnerCanAddTodos(userId),
+                new MaxNumberOfTodosReached()
+            };
 
-            if (MaxNumberOfTodosReached())
-                return new MaxNumberOfTodosUnDoneReachedError(Name, _todos.Count);
-
-            return Unit.Default;
+            var errors = validationRules.Select(_ => _.CanTodoBeAdded(this)).Where(_ => _ is not null).ToList();
+            return errors.Any()
+                ? Validation<Error, Unit>.Fail(errors.ToSeq())
+                : Validation<Error, Unit>.Success(Unit.Default);
         }
 
 
@@ -80,11 +76,6 @@ namespace Domain.Todos.Entities
             var todo = _todos.FirstOrDefault(t => todoId.Equals(t.Id)) ??
                        throw new DomainException(new TodoNotFoundError(todoId));
             todo.MarkAsDone();
-        }
-
-        private bool MaxNumberOfTodosReached()
-        {
-            return _todos.Count >= MaxNumberOfTodosNotDoneAllowed;
         }
     }
 }

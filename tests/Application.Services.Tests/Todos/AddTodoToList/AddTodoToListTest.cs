@@ -28,6 +28,8 @@ namespace Application.Services.Tests.Todos.AddTodoToList
         private readonly InMemoryTodoListRepository _todoListRepository;
         private readonly ICreateUserUseCase _createUserUseCase;
         private readonly InMemoryUserRepository _userRepository;
+        private const int MaxNumberOfTodosNotDoneAllowed = 5;
+
 
         public AddTodoToListTest()
         {
@@ -97,7 +99,7 @@ namespace Application.Services.Tests.Todos.AddTodoToList
             // arrange
             var todoList = await ArrangeTodoListExistWithNoTodos();
 
-            for (var i = 0; i < TodoList.MaxNumberOfTodosNotDoneAllowed; i++)
+            for (var i = 0; i < MaxNumberOfTodosNotDoneAllowed; i++)
                 await _addTodoUseCase.Invoke(CreateAddTodoCommand(todoList,
                     TodosFakeData.CreateTodoDescription()));
 
@@ -106,7 +108,7 @@ namespace Application.Services.Tests.Todos.AddTodoToList
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _addTodoUseCase.Invoke(addTodoCommand));
             var exceptionData = exception.Data;
-            Assert.Equal(TodoList.MaxNumberOfTodosNotDoneAllowed.ToString(),
+            Assert.Equal(MaxNumberOfTodosNotDoneAllowed.ToString(),
                 exceptionData["CurrentNumberOfTodos"]);
         }
 
