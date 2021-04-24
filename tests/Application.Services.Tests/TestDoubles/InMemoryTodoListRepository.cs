@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Todos.Repositories;
+using Domain.Todos.Entities;
 using Domain.Todos.ValueObjects;
 
 namespace Application.Services.Tests.TestDoubles
@@ -18,8 +20,20 @@ namespace Application.Services.Tests.TestDoubles
         protected override TodoListId GetId(Domain.Todos.Entities.TodoList todoList) =>
             todoList.Id;
 
-        protected override Domain.Todos.Entities.TodoList Clone(Domain.Todos.Entities.TodoList todoList) =>
-            new(todoList.Name, todoList.Id, todoList.Todos.ToList());
+        protected override Domain.Todos.Entities.TodoList Copy(Domain.Todos.Entities.TodoList todoList) =>
+            new(TodoListName.Create(todoList.Name.Name), new TodoListId(todoList.Id.Value),
+                Copy(todoList.Todos.ToList()));
+
+        private static List<Todo> Copy(IEnumerable<Todo> todos)
+        {
+            return todos.Select(Copy).ToList();
+        }
+
+        private static Todo Copy(Todo todoList)
+        {
+            return new(new TodoId(todoList.Id.Value), TodoDescription.Create(todoList.Description.Description),
+                todoList.Done);
+        }
 
         public Task<Domain.Todos.Entities.TodoList?> GetByTodoId(TodoId todoId)
         {

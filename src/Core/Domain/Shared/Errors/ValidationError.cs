@@ -4,11 +4,6 @@ namespace Domain.Shared.Errors
 {
     public record ValidationError : Error
     {
-        public ValidationError(string errorKey, string propertyName, string message) : base(errorKey,
-            propertyName, message)
-        {
-        }
-
         public ValidationError(string errorKey, string message) : base(errorKey, message)
         {
         }

@@ -7,7 +7,7 @@ using Domain.Shared.Errors;
 using Domain.Users.ValueObjects;
 using Xunit;
 
-namespace Application.Services.Tests.User.CreateUser
+namespace Application.Services.Tests.Users.CreateUser
 {
     public class CreateUserTest
     {

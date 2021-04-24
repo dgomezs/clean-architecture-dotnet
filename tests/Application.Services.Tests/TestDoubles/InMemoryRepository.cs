@@ -15,18 +15,18 @@ namespace Application.Services.Tests.TestDoubles
         {
             var id = GetId(value);
             Elements.Remove(id);
-            Elements.Add(id, Clone(value));
+            Elements.Add(id, Copy(value));
             return Task.CompletedTask;
         }
 
         protected abstract TKey GetId(TVal value);
-        protected abstract TVal Clone(TVal value);
+        protected abstract TVal Copy(TVal value);
 
         public Task<TVal?> GetById(TKey id)
         {
             var valueOrDefault = Elements.GetValueOrDefault(id);
-            Elements.Clear(); // force the entity to be saved again
-            return Task.FromResult(valueOrDefault);
+            // Return a copy of the value so we simulate the full creation of the object as if it was done from a persistence store
+            return Task.FromResult(valueOrDefault != null ? Copy(valueOrDefault) : null);
         }
     }
 }
