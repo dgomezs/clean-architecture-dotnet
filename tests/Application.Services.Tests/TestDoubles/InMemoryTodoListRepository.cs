@@ -1,43 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Todos.Repositories;
 using Domain.Todos.ValueObjects;
 
 namespace Application.Services.Tests.TestDoubles
 {
-    public class InMemoryTodoListRepository : ITodoListRepository
+    public class InMemoryTodoListRepository : InMemoryRepository<TodoListId, Domain.Todos.Entities.TodoList>,
+        ITodoListRepository
     {
-        private readonly Dictionary<TodoListId, Domain.Todos.Entities.TodoList> _todoLists = new();
-
         public Task<Domain.Todos.Entities.TodoList?> GetByName(TodoListName todoListName)
         {
             // TODO compare slugify strings
-            return Task.FromResult(_todoLists.Values.SingleOrDefault(t => t.Name.Equals(todoListName)));
+            return Task.FromResult(Elements.Values.SingleOrDefault(t => t.Name.Equals(todoListName)));
         }
 
-        public Task Save(Domain.Todos.Entities.TodoList todoList)
-        {
-            var id = todoList.Id ?? throw new Exception();
-            _todoLists.Remove(id);
-            _todoLists.Add(id,
-                new Domain.Todos.Entities.TodoList(todoList.Name, todoList.Id, todoList.Todos.ToList()));
-            return Task.CompletedTask;
-        }
 
-        public Task<Domain.Todos.Entities.TodoList?> GetById(TodoListId id)
-        {
-            var valueOrDefault = _todoLists.GetValueOrDefault(id);
-            _todoLists.Clear(); // force the entity to be saved again
-            return Task.FromResult(valueOrDefault);
-        }
+        protected override TodoListId GetId(Domain.Todos.Entities.TodoList todoList) =>
+            todoList.Id;
+
+        protected override Domain.Todos.Entities.TodoList Clone(Domain.Todos.Entities.TodoList todoList) =>
+            new(todoList.Name, todoList.Id, todoList.Todos.ToList());
 
         public Task<Domain.Todos.Entities.TodoList?> GetByTodoId(TodoId todoId)
         {
             var valueOrDefault =
-                _todoLists.Values.SingleOrDefault(l => l.Todos.Exists(t => todoId.Equals(t.Id)));
-            _todoLists.Clear(); // force the entity to be saved again
+                Elements.Values.SingleOrDefault(l => l.Todos.Exists(t => todoId.Equals(t.Id)));
+            Elements.Clear(); // force the entity to be saved again
             return Task.FromResult(valueOrDefault);
         }
 
@@ -46,7 +34,7 @@ namespace Application.Services.Tests.TestDoubles
             var todoLists = await GetByName(todoListName);
             var id = todoLists?.Id;
             if (id is not null)
-                _todoLists.Remove(id);
+                Elements.Remove(id);
         }
     }
 }
