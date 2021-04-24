@@ -4,14 +4,15 @@ using System.Linq;
 using Bogus;
 using Domain.Todos.Entities;
 using Domain.Todos.ValueObjects;
+using Domain.Users.ValueObjects;
 
 namespace FakeTestData
 {
     public static class TodoListFakeData
     {
-        public static TodoList CreateTodoList(int numberOfTodos = 0, int numberOfTodosDone = 0)
+        public static TodoList CreateTodoList(UserId ownerId, int numberOfTodos = 0, int numberOfTodosDone = 0)
         {
-            var todoList = CreateTodoList("", 1, numberOfTodos)
+            var todoList = CreateTodoList(ownerId, "", 1, numberOfTodos)
                 .First();
 
             var ids = todoList.Todos.ToList().GetRange(0, numberOfTodosDone).Select(_ => _.Id);
@@ -30,14 +31,15 @@ namespace FakeTestData
 
         private static TodoListId CreateTodoListId()
         {
-            return new(Guid.NewGuid());
+            return new();
         }
 
 
-        public static List<TodoList> CreateTodoList(string namePrefix, int count, int numberOfTodos = 0)
+        public static List<TodoList> CreateTodoList(UserId ownerId, string namePrefix, int count,
+            int numberOfTodos = 0)
         {
             var todoListName = TodoListNameFaker(namePrefix);
-            return Enumerable.Range(0, count).Select(_ => new TodoList(todoListName.Generate(),
+            return Enumerable.Range(0, count).Select(_ => new TodoList(ownerId, todoListName.Generate(),
                 new TodoListId(Guid.NewGuid()), TodosFakeData.CreateTodos(numberOfTodos))).ToList();
         }
 
@@ -48,13 +50,13 @@ namespace FakeTestData
         }
 
 
-        public static TodoList CreateTodoListWithNumberTodosNotDone(
+        public static TodoList CreateTodoListWithNumberTodosNotDone(UserId ownerId,
             int numberOfTodosNotDone)
         {
             var todos = Enumerable.Range(0, numberOfTodosNotDone)
                 .Select(x => TodosFakeData.CreateTodoNotDone()).ToList();
 
-            return new TodoList(CreateTodoListName(), CreateTodoListId(), todos);
+            return new TodoList(ownerId, CreateTodoListName(), CreateTodoListId(), todos);
         }
     }
 }

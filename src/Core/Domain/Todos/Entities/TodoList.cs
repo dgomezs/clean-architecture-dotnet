@@ -15,16 +15,18 @@ namespace Domain.Todos.Entities
         public const int MaxNumberOfTodosNotDoneAllowed = 5;
         private readonly List<Todo> _todos;
 
-        public TodoList(TodoListName name, TodoListId id, List<Todo> todos)
+        public TodoList(UserId ownerId, TodoListName name, TodoListId id, List<Todo> todos)
         {
+            OwnerId = Guard.Against.Null(ownerId, nameof(ownerId));
             Name = Guard.Against.Null(name, nameof(name));
             Id = Guard.Against.Null(id, nameof(id));
             _todos = Guard.Against.Null(todos, nameof(todos));
         }
 
-        public TodoList(TodoListName name)
+        public TodoList(UserId ownerId, TodoListName name)
         {
             Id = new TodoListId();
+            OwnerId = Guard.Against.Null(ownerId, nameof(ownerId));
             Name = Guard.Against.Null(name, nameof(name));
             Events.Add(new TodoListCreatedEvent(this));
             _todos = new List<Todo>();
@@ -35,7 +37,7 @@ namespace Domain.Todos.Entities
         public TodoListId Id { get; }
 
         public IEnumerable<Todo> Todos => _todos;
-        public UserId OwnerId { get; set; }
+        public UserId OwnerId { get; }
 
         private bool MaxNumberOfTodosReached()
         {

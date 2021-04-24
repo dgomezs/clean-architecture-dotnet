@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.Todos.UseCases.MarkTodoAsDone;
 using Autofac.Extras.Moq;
+using Domain.Todos.Entities;
+using Domain.Users.ValueObjects;
 using FakeTestData;
 using Xunit;
 
@@ -37,10 +39,11 @@ namespace Application.Services.Tests.Todos.MarkTodoAsDone
             Assert.True(todoAfterUpdate.Done);
         }
 
-        private async Task<Domain.Todos.Entities.TodoList> ArrangeTodoListExistsWithTodosNotDone(
+        private async Task<TodoList> ArrangeTodoListExistsWithTodosNotDone(
             int numberOfTodosNotDone)
         {
-            var todoList = TodoListFakeData.CreateTodoListWithNumberTodosNotDone(numberOfTodosNotDone);
+            var todoList =
+                TodoListFakeData.CreateTodoListWithNumberTodosNotDone(new UserId(), numberOfTodosNotDone);
             await _todoListRepository.Save(todoList);
             return todoList;
         }

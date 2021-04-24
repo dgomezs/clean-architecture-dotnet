@@ -23,7 +23,7 @@ namespace Application.Services.Tests.TestDoubles
             todoList.Id;
 
         protected override TodoList Copy(TodoList todoList) =>
-            new(TodoListName.Create(todoList.Name.Name), new TodoListId(todoList.Id.Value),
+            new(todoList.OwnerId,TodoListName.Create(todoList.Name.Name), new TodoListId(todoList.Id.Value),
                 Copy(todoList.Todos.ToList()));
 
         private static List<Todo> Copy(IEnumerable<Todo> todos)

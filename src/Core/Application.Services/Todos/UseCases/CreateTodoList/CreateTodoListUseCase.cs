@@ -34,7 +34,7 @@ namespace Application.Services.Todos.UseCases.CreateTodoList
             if (todoList is not null)
                 return new TodoListAlreadyExistsError(todoListName);
 
-            var result = new TodoList(todoListName);
+            var result = new TodoList(createTodoListCommand.OwnerId, todoListName);
             await _todoListRepository.Save(result);
 
             await _domainEventPublisher.PublishEvents(result.DomainEvents);
