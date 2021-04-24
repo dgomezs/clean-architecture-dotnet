@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Application.Services.Todos.UseCases.CreateTodoList;
 using Domain.Todos.ValueObjects;
+using Domain.Users.ValueObjects;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using static Application.Services.Shared.Extensions.EitherExtensions;
@@ -24,8 +25,9 @@ namespace WebApi.Controllers.CreateTodoList
         {
             var validator = new RestCreateTodoListRequestValidator();
             await validator.ValidateAndThrowAsync(createTodoListRequest);
+            // TODO add owner id from authentication
             TodoListId result = await _createTodoListUseCase.InvokeWithErrors(
-                CreateTodoListCommand.Create(createTodoListRequest.Name)).ToThrowException();
+                CreateTodoListCommand.Create(new UserId(), createTodoListRequest.Name)).ToThrowException();
             return result.Value.ToString();
         }
     }

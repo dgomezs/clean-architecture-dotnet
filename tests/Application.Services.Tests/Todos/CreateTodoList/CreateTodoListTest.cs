@@ -4,15 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.Todos.UseCases.CreateTodoList;
+using Application.Services.Users.UseCases.CreateUser;
 using Autofac.Extras.Moq;
 using Domain.Shared.Errors;
 using Domain.Shared.Events;
+using Domain.Todos.Entities;
 using Domain.Todos.Events;
 using Domain.Todos.ValueObjects;
+using Domain.Users.ValueObjects;
 using Xunit;
 using static Application.Services.Shared.Extensions.EitherExtensions;
 
-namespace Application.Services.Tests.TodoList.CreateTodoList
+namespace Application.Services.Tests.Todos.CreateTodoList
 {
     public class CreateTodoListTest
     {
@@ -20,6 +23,7 @@ namespace Application.Services.Tests.TodoList.CreateTodoList
         private readonly InMemoryEventPublisher _eventPublisher;
         private readonly AutoMock _mock;
         private readonly InMemoryTodoListRepository _todoListRepository;
+        private readonly ICreateUserUseCase _createUserUseCase;
 
         public CreateTodoListTest()
         {
@@ -27,30 +31,34 @@ namespace Application.Services.Tests.TodoList.CreateTodoList
             _todoListRepository = _mock.Create<InMemoryTodoListRepository>();
             _eventPublisher = _mock.Create<InMemoryEventPublisher>();
             _createTodoListUseCase = _mock.Create<ICreateTodoListUseCase>();
+            _createUserUseCase = _mock.Create<ICreateUserUseCase>();
         }
 
         [Fact]
-        public async Task Should_create_new_todolist_when_does_not_exist()
+        public async Task Should_create_new_todolist_when_the_list_does_not_exist()
         {
             // arrange
-            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand();
+            var ownerId = await CreateUser();
+            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand(ownerId);
             var todoListName = createTodoListRequest.TodoListName;
-            await ArrangeTodoListDoesNotExist(todoListName);
+            await ArrangeTodoListDoesNotExist(ownerId, todoListName);
             // act
             var id = await CreateTodoListWithError(createTodoListRequest);
             // assert
-            var todoList = await _todoListRepository.GetById(id) ?? throw new Exception();
+            var todoList = await GetById(id);
             Assert.Equal(todoListName, todoList.Name);
             Assert.Equal(id, todoList.Id);
+            Assert.Equal(ownerId, todoList.OwnerId);
         }
 
         [Fact]
         public async Task Should_publish_created_todo_list_event_when_a_new_todo_list_is_created()
         {
             // arrange
-            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand();
+            var ownerId = await CreateUser();
+            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand(ownerId);
             var todoListName = createTodoListRequest.TodoListName;
-            await ArrangeTodoListDoesNotExist(todoListName);
+            await ArrangeTodoListDoesNotExist(ownerId, todoListName);
             // act
             var id = await CreateTodoList(createTodoListRequest);
             // assert
@@ -67,8 +75,9 @@ namespace Application.Services.Tests.TodoList.CreateTodoList
         public async Task Should_not_create_new_todolist_when_one_by_same_name_exists()
         {
             // arrange
-            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand();
-            await ArrangeTodoListDoesNotExist(createTodoListRequest.TodoListName);
+            var ownerId = await CreateUser();
+            var createTodoListRequest = FakeCommandGenerator.FakeCreateTodoListCommand(ownerId);
+            await ArrangeTodoListDoesNotExist(ownerId, createTodoListRequest.TodoListName);
             await _createTodoListUseCase.Invoke(createTodoListRequest);
 
             // act
@@ -90,9 +99,17 @@ namespace Application.Services.Tests.TodoList.CreateTodoList
             return result.ToThrowException();
         }
 
-        private async Task ArrangeTodoListDoesNotExist(TodoListName todoListName)
+        private async Task ArrangeTodoListDoesNotExist(UserId ownerId, TodoListName todoListName)
         {
-            await _todoListRepository.RemoveByName(todoListName);
+            await _todoListRepository.RemoveByName(ownerId, todoListName);
         }
+
+        private Task<UserId> CreateUser()
+        {
+            return _createUserUseCase.Invoke(FakeCommandGenerator.FakeCreateUserCommand());
+        }
+
+        private async Task<TodoList> GetById(TodoListId id) =>
+            await _todoListRepository.GetById(id) ?? throw new Exception();
     }
 }

@@ -8,7 +8,7 @@ using FakeTestData;
 using Persistence.Tests.Fixtures;
 using Xunit;
 
-namespace Persistence.Tests.SearchTodoList
+namespace Persistence.Tests.Todos.SearchTodoList
 {
     [Collection("DB")]
     public class SearchTodoListByNameTest

@@ -8,9 +8,9 @@ namespace Application.Services.Tests
 {
     public static class FakeCommandGenerator
     {
-        public static CreateTodoListCommand FakeCreateTodoListCommand()
+        public static CreateTodoListCommand FakeCreateTodoListCommand(UserId userId)
         {
-            return CreateTodoListCommand.Create(TodoListFakeData
+            return CreateTodoListCommand.Create(userId, TodoListFakeData
                 .CreateTodoListName().Name);
         }
 

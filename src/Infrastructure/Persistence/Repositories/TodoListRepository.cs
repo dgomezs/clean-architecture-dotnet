@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Application.Services.Todos.Repositories;
 using Domain.Todos.Entities;
 using Domain.Todos.ValueObjects;
+using Domain.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories
@@ -18,6 +19,11 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<TodoList?> GetById(TodoListId id)
         {
             return await _todoListContext.TodoLists.Where(_ => id.Equals(_.Id)).SingleOrDefaultAsync();
+        }
+
+        public Task<TodoList?> GetByName(UserId ownerId, TodoListName todoListName)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<TodoList?> GetByName(TodoListName todoListName)

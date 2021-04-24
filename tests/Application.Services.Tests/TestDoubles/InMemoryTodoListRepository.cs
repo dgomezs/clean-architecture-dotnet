@@ -4,23 +4,25 @@ using System.Threading.Tasks;
 using Application.Services.Todos.Repositories;
 using Domain.Todos.Entities;
 using Domain.Todos.ValueObjects;
+using Domain.Users.ValueObjects;
 
 namespace Application.Services.Tests.TestDoubles
 {
-    public class InMemoryTodoListRepository : InMemoryRepository<TodoListId, Domain.Todos.Entities.TodoList>,
+    public class InMemoryTodoListRepository : InMemoryRepository<TodoListId, TodoList>,
         ITodoListRepository
     {
-        public Task<Domain.Todos.Entities.TodoList?> GetByName(TodoListName todoListName)
+        public Task<TodoList?> GetByName(UserId ownerId, TodoListName todoListName)
         {
             // TODO compare slugify strings
-            return Task.FromResult(Elements.Values.SingleOrDefault(t => t.Name.Equals(todoListName)));
+            return Task.FromResult(Elements.Values.SingleOrDefault(t => ownerId.Equals(t.OwnerId)
+                                                                        && todoListName.Equals(t.Name)));
         }
 
 
-        protected override TodoListId GetId(Domain.Todos.Entities.TodoList todoList) =>
+        protected override TodoListId GetId(TodoList todoList) =>
             todoList.Id;
 
-        protected override Domain.Todos.Entities.TodoList Copy(Domain.Todos.Entities.TodoList todoList) =>
+        protected override TodoList Copy(TodoList todoList) =>
             new(TodoListName.Create(todoList.Name.Name), new TodoListId(todoList.Id.Value),
                 Copy(todoList.Todos.ToList()));
 
@@ -35,7 +37,7 @@ namespace Application.Services.Tests.TestDoubles
                 todoList.Done);
         }
 
-        public Task<Domain.Todos.Entities.TodoList?> GetByTodoId(TodoId todoId)
+        public Task<TodoList?> GetByTodoId(TodoId todoId)
         {
             var valueOrDefault =
                 Elements.Values.SingleOrDefault(l => l.Todos.Exists(t => todoId.Equals(t.Id)));
@@ -43,12 +45,17 @@ namespace Application.Services.Tests.TestDoubles
             return Task.FromResult(valueOrDefault);
         }
 
-        public async Task RemoveByName(TodoListName todoListName)
+        public async Task RemoveByName(UserId ownerId, TodoListName todoListName)
         {
-            var todoLists = await GetByName(todoListName);
+            var todoLists = await GetByName(ownerId, todoListName);
             var id = todoLists?.Id;
             if (id is not null)
                 Elements.Remove(id);
+        }
+
+        public async Task RemoveById(TodoListId id)
+        {
+            Elements.Remove(id);
         }
     }
 }

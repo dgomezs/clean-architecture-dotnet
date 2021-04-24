@@ -6,6 +6,7 @@ using Domain.Shared.Errors;
 using Domain.Todos.Errors;
 using Domain.Todos.Events;
 using Domain.Todos.ValueObjects;
+using Domain.Users.ValueObjects;
 
 namespace Domain.Todos.Entities
 {
@@ -34,6 +35,7 @@ namespace Domain.Todos.Entities
         public TodoListId Id { get; }
 
         public IEnumerable<Todo> Todos => _todos;
+        public UserId OwnerId { get; set; }
 
         private bool MaxNumberOfTodosReached()
         {

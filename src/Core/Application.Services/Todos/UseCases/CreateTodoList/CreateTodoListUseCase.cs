@@ -30,7 +30,7 @@ namespace Application.Services.Todos.UseCases.CreateTodoList
             CreateTodoListCommand createTodoListCommand)
         {
             var todoListName = createTodoListCommand.TodoListName;
-            var todoList = await _todoListRepository.GetByName(todoListName);
+            var todoList = await _todoListRepository.GetByName(createTodoListCommand.OwnerId, todoListName);
             if (todoList is not null)
                 return new TodoListAlreadyExistsError(todoListName);
 
