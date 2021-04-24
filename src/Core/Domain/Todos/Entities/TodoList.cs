@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Application.Services.Todos.Errors;
 using Ardalis.GuardClauses;
 using Domain.Shared.Entities;
 using Domain.Shared.Errors;
@@ -7,6 +8,7 @@ using Domain.Todos.Errors;
 using Domain.Todos.Events;
 using Domain.Todos.ValueObjects;
 using Domain.Users.ValueObjects;
+using LanguageExt;
 
 namespace Domain.Todos.Entities
 {
@@ -39,27 +41,50 @@ namespace Domain.Todos.Entities
         public IEnumerable<Todo> Todos => _todos;
         public UserId OwnerId { get; }
 
-        private bool MaxNumberOfTodosReached()
+        public TodoId AddTodo(UserId userId, TodoDescription todoDescription)
         {
-            return _todos.Count >= MaxNumberOfTodosNotDoneAllowed;
+            return CanTodoBeAdded(userId).Match(
+                Fail: ex => throw DomainException.FromSeqErrors(ex),
+                Succ: _ => AddTodo(todoDescription));
         }
 
-        public TodoId AddTodo(TodoDescription todoDescription)
+        private TodoId AddTodo(TodoDescription todoDescription)
         {
-            if (MaxNumberOfTodosReached())
-                throw new DomainException(new MaxNumberOfTodosUnDoneReachedError(Name, _todos.Count));
-
             var newTodo = new Todo(todoDescription);
             _todos.Add(newTodo);
             Events.Add(new TodoAddedToListEvent(Id, newTodo));
             return newTodo.Id;
         }
 
+        private bool CanUserAddTodo(UserId userId)
+        {
+            return OwnerId.Equals(userId);
+        }
+
+        private Validation<Error, Unit> CanTodoBeAdded(UserId userId)
+        {
+            if (!CanUserAddTodo(userId))
+            {
+                return new UserNotAllowedToAddTodoError(userId);
+            }
+
+            if (MaxNumberOfTodosReached())
+                return new MaxNumberOfTodosUnDoneReachedError(Name, _todos.Count);
+
+            return Unit.Default;
+        }
+
+
         public void MarkAsDone(TodoId todoId)
         {
             var todo = _todos.FirstOrDefault(t => todoId.Equals(t.Id)) ??
                        throw new DomainException(new TodoNotFoundError(todoId));
             todo.MarkAsDone();
+        }
+
+        private bool MaxNumberOfTodosReached()
+        {
+            return _todos.Count >= MaxNumberOfTodosNotDoneAllowed;
         }
     }
 }

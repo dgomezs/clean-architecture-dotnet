@@ -125,6 +125,21 @@ namespace Application.Services.Tests.Todos.AddTodoToList
             Assert.Equal(ownerId.Value.ToString(), exceptionData["UserId"]);
         }
 
+        [Fact]
+        public async Task Should_throw_an_error_when_user_different_than_owner_adds_todo()
+        {
+            // arrange
+            var todoList = await ArrangeTodoListExistWithNoTodos();
+            var userDifferentThanOwner = await CreateUser();
+            var addTodoCommand = new AddTodoCommand(userDifferentThanOwner, todoList.Id,
+                TodosFakeData.CreateTodoDescription());
+            // act / assert
+            var exception = await Assert.ThrowsAsync<DomainException>(() =>
+                _addTodoUseCase.Invoke(addTodoCommand));
+            var exceptionData = exception.Data;
+            Assert.Equal(userDifferentThanOwner.Value.ToString(), exceptionData["UserId"]);
+        }
+
         private void RemoveUser(UserId userId)
         {
             _userRepository.RemoveById(userId);

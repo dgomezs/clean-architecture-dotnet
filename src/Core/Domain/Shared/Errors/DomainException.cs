@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ardalis.GuardClauses;
 using FluentValidation.Results;
+using LanguageExt;
 
 namespace Domain.Shared.Errors
 {
@@ -22,11 +23,26 @@ namespace Domain.Shared.Errors
                 .Select(x => new ValidationError(x)).ToList<Error>();
         }
 
+        public DomainException() => MainError = new Error(ErrorCodes.UnexpectedError);
+
         public DomainException(string errorKey) =>
             MainError = new Error(errorKey);
 
         public DomainException(Error mainError, IEnumerable<Error> errors) : base(mainError.Message)
             => (MainError, _errors) = (mainError, errors.ToList());
+
+
+        public static DomainException FromSeqErrors(Seq<Error> errors)
+        {
+            return errors.Case switch
+            {
+                EmptyCase<Error> => new DomainException(),
+                HeadCase<Error> headCase => new DomainException(headCase.Head),
+                HeadTailCase<Error> headTailCase => throw new DomainException(headTailCase.Head,
+                    headTailCase.Tail),
+                _ => new DomainException()
+            };
+        }
 
 
         public string ErrorKey => MainError.ErrorKey;

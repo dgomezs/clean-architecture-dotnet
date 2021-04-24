@@ -33,7 +33,7 @@ namespace Application.Services.Todos.UseCases.AddTodo
                                new TodoListDoesNotExistsError(addTodoCommand.TodoListId));
 
 
-            var todoId = todoList.AddTodo(addTodoCommand.TodoDescription);
+            var todoId = todoList.AddTodo(owner.Id, addTodoCommand.TodoDescription);
 
             await _todoListRepository.Save(todoList);
             await _domainEventPublisher.PublishEvents(todoList.DomainEvents);
