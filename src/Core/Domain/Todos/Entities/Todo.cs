@@ -26,9 +26,7 @@ namespace Domain.Todos.Entities
         public TodoId Id { get; }
         public TodoDescription Description { get; }
 
-        public void MarkAsDone()
-        {
+        public void MarkAsDone() =>
             Done = true;
-        }
     }
 }

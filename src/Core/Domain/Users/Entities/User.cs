@@ -6,14 +6,14 @@ namespace Domain.Users.Entities
 {
     public class User : Entity
     {
-        public User(EmailAddress email, PersonName name)
+        public User(PersonName name, EmailAddress email)
         {
             Email = Guard.Against.Null(email, nameof(email));
             Name = Guard.Against.Null(name, nameof(name));
             Id = new UserId();
         }
 
-        public User(UserId userId, EmailAddress email, PersonName name)
+        public User(UserId userId, PersonName name, EmailAddress email)
         {
             Id = Guard.Against.Null(userId, nameof(userId));
             Email = Guard.Against.Null(email, nameof(email));

@@ -20,7 +20,7 @@ namespace Application.Services.Tests.TestDoubles
         {
             var id = user.Id ?? throw new Exception();
             _users.Remove(id);
-            _users.Add(id, new Domain.Users.Entities.User(user.Id, user.Email, user.Name));
+            _users.Add(id, new Domain.Users.Entities.User(user.Id, user.Name, user.Email));
             return Task.CompletedTask;
         }
 

@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using Domain.Users;
 using Domain.Users.Entities;
 using Domain.Users.ValueObjects;
 
@@ -22,7 +21,7 @@ namespace FakeTestData
 
         public static User CreateUser()
         {
-            return new User(CreateEmail(), CreatePersonName());
+            return new User(CreatePersonName(), CreateEmail());
         }
     }
 }
