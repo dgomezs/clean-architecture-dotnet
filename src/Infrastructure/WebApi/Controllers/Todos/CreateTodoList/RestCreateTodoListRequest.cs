@@ -3,12 +3,8 @@ using FluentValidation;
 
 namespace WebApi.Controllers.CreateTodoList
 {
-    public class RestCreateTodoListRequest
+    public record RestCreateTodoListRequest (string Name)
     {
-        public RestCreateTodoListRequest(string name) =>
-            Name = name;
-
-        public string Name { get; }
     }
 
     public class RestCreateTodoListRequestValidator : AbstractValidator<RestCreateTodoListRequest>

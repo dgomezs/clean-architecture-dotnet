@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Domain.Shared.Errors;
 using Domain.Users.ValueObjects;
 
-namespace Application.Services.Todos.Errors
+namespace Domain.Todos.Errors
 {
     public record UserNotAllowedToAddTodoError : Error
     {

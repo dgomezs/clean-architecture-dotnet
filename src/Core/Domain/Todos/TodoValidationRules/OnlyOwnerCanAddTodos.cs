@@ -1,6 +1,6 @@
-﻿using Application.Services.Todos.Errors;
-using Domain.Shared.Errors;
+﻿using Domain.Shared.Errors;
 using Domain.Todos.Entities;
+using Domain.Todos.Errors;
 using Domain.Users.ValueObjects;
 
 namespace Domain.Todos.TodoValidationRules

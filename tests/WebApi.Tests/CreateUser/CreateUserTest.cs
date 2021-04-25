@@ -3,21 +3,22 @@ using System.Threading.Tasks;
 using Application.Services.Users.UseCases.CreateUser;
 using CleanArchitecture.TodoList.WebApi.Tests.Config;
 using Domain.Users.ValueObjects;
+using FakeTestData;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using WebApi.Controllers.CreateTodoList;
+using WebApi.Controllers.Users;
 using Xunit;
 
 namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
 {
-    public class CreateUser : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class CreateUserTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly Mock<ICreateUserUseCase> _createUserUseCase;
         private readonly CustomWebApplicationFactory<Startup> _factory;
 
-        public CreateUser(CustomWebApplicationFactory<Startup> factory)
+        public CreateUserTest(CustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
             _createUserUseCase = new Mock<ICreateUserUseCase>();
@@ -28,9 +29,13 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
         {
             // Arrange
             var expectedId = new UserId();
-            MockControllerResponse(expectedId);
+            var email = UserFakeData.CreateEmail().Value;
+            var personName = UserFakeData.CreatePersonName();
+            RestCreateUserRequest createUserRequest = new(personName.FirstName, personName.LastName, email);
+
+            MockControllerResponse(expectedId, createUserRequest);
             // act
-            var response = await SendCreateUserCommand("todoList");
+            var response = await SendCreateUserCommand(createUserRequest);
 
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -39,14 +44,12 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
         }
 
 
-        private async Task<HttpResponseMessage> SendCreateUserCommand(string todoListName)
+        private async Task<HttpResponseMessage> SendCreateUserCommand(RestCreateUserRequest createUserRequest)
         {
             var client = ConfigureClient();
-            RestCreateTodoListRequest createTodoListRequest = new(todoListName);
-
             // Act
-            var stringContent = ContentHelper.GetStringContent(createTodoListRequest);
-            var response = await client.PostAsync("/todo-lists", stringContent);
+            var stringContent = ContentHelper.GetStringContent(createUserRequest);
+            var response = await client.PostAsync("/users", stringContent);
             return response;
         }
 
@@ -62,10 +65,16 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
                 .CreateClient();
         }
 
-        private void MockControllerResponse(UserId expectedId)
+        private void MockControllerResponse(UserId expectedId, RestCreateUserRequest restCreateUserRequest)
         {
+            var (firstName, lastName, email) = restCreateUserRequest;
+
             _createUserUseCase.Setup(m =>
-                    m.Invoke(It.IsAny<CreateUserCommand>()))
+                    m.Invoke(It.Is<CreateUserCommand>(c =>
+                        email.Equals(c.Email.Value)
+                        && firstName.Equals(c.Name.FirstName)
+                        && lastName.Equals(c.Name.LastName)
+                    )))
                 .ReturnsAsync(expectedId);
         }
     }
