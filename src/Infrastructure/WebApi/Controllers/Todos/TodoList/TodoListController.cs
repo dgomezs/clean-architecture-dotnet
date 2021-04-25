@@ -13,22 +13,16 @@ namespace WebApi.Controllers.Todos.TodoList
     [ApiController]
     public class TodoListController
     {
-        private readonly ICreateTodoListUseCase _createTodoListUseCase;
-
-        public TodoListController(
-            ICreateTodoListUseCase createTodoListUseCase) =>
-            _createTodoListUseCase = createTodoListUseCase;
-
-
         [HttpPost]
         public async Task<string> CreateTodoList(
+            [FromServices] ICreateTodoListUseCase createTodoListUseCase,
             [FromHeader(Name = "OwnerId")] string ownerIdValue,
             [FromBody] RestCreateTodoListRequest createTodoListRequest)
         {
             var ownerId = new UserId(new Guid(Guard.Against.NullOrEmpty(ownerIdValue, nameof(ownerIdValue))));
 
             // TODO add owner id from authentication
-            TodoListId result = await _createTodoListUseCase.InvokeWithErrors(
+            TodoListId result = await createTodoListUseCase.InvokeWithErrors(
                     CreateTodoListCommand.Create(ownerId, createTodoListRequest.Name))
                 .ToThrowException();
             return result.Value.ToString();

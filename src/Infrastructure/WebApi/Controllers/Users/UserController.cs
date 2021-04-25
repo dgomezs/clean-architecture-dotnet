@@ -9,19 +9,13 @@ namespace WebApi.Controllers.Users
     [ApiController]
     public class UserController
     {
-        private readonly ICreateUserUseCase _createUserUseCase;
-
-        public UserController(
-            ICreateUserUseCase createUserUseCase) =>
-            _createUserUseCase = createUserUseCase;
-
-
         [HttpPost]
         public async Task<string> CreateUser(
+            [FromServices] ICreateUserUseCase createUserUseCase,
             [FromBody] RestCreateUserRequest createUserRequest)
         {
             var (firstName, lastName, email) = createUserRequest;
-            UserId result = await _createUserUseCase.Invoke(
+            UserId result = await createUserUseCase.Invoke(
                 CreateUserCommand.Create(firstName, lastName,
                     email));
             return result.Value.ToString();

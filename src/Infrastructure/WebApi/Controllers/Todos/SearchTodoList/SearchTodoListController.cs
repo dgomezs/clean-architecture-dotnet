@@ -13,15 +13,9 @@ namespace WebApi.Controllers.Todos.SearchTodoList
     [ApiController]
     public class SearchTodoListController
     {
-        private readonly ISearchByNameTodoListUseCase _searchByNameTodoListUseCase;
-
-        public SearchTodoListController(
-            ISearchByNameTodoListUseCase searchByNameTodoListUseCase) =>
-            _searchByNameTodoListUseCase = searchByNameTodoListUseCase;
-
-
         [HttpGet("search/by-name")]
         public async Task<List<TodoListReadModel>> SearchByName(
+            [FromServices] ISearchByNameTodoListUseCase searchByNameTodoListUseCase,
             [FromHeader(Name = "OwnerId")] string ownerIdValue,
             [FromQuery] string? name)
         {
@@ -29,7 +23,7 @@ namespace WebApi.Controllers.Todos.SearchTodoList
             var nameValue = name ?? "";
             await validator.ValidateAndThrowAsync(nameValue);
             var ownerId = new UserId(new Guid(Guard.Against.NullOrEmpty(ownerIdValue, nameof(ownerIdValue))));
-            return await _searchByNameTodoListUseCase.SearchByName(ownerId, nameValue);
+            return await searchByNameTodoListUseCase.SearchByName(ownerId, nameValue);
         }
     }
 
