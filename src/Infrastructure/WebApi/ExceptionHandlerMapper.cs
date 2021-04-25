@@ -4,6 +4,7 @@ using System.Net;
 using Application.Services.Shared.Errors;
 using Domain.Shared.Errors;
 using FluentValidation;
+using LanguageExt;
 
 namespace WebApi
 {
@@ -37,10 +38,18 @@ namespace WebApi
 
         private static RestErrorResponse HandleFluentValidationException(ValidationException vException)
         {
-            return new((int) HttpStatusCode.BadRequest,
-                vException.Errors.Select(x =>
-                    new Error(x.ErrorCode, x.PropertyName, x.ErrorMessage)),
-                vException.Message);
+            return vException.Errors.Select(x =>
+                    new Error(x.ErrorCode, x.PropertyName, x.ErrorMessage)).ToSeq().Case switch
+                {
+                    EmptyCase<Error> => new RestErrorResponse(),
+                    HeadCase<Error> headCase => new RestErrorResponse((int) HttpStatusCode.BadRequest,
+                        headCase.Head.ErrorKey,
+                        headCase.Head.Message),
+                    HeadTailCase<Error> headTailCase => new RestErrorResponse((int) HttpStatusCode.BadRequest,
+                        headTailCase.Head.ErrorKey,
+                        headTailCase.Tail, headTailCase.Head.Message),
+                    _ => new RestErrorResponse()
+                };
         }
 
         private static HttpStatusCode GetStatusCode(Error appException)

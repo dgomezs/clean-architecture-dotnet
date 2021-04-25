@@ -5,6 +5,7 @@ using Autofac;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
+using Persistence.Tests.Helpers;
 using Serilog;
 using Serilog.Extensions.Logging;
 using TestEnvironment.Docker;
@@ -80,7 +81,7 @@ namespace Persistence.Tests.Fixtures
             cfg.RegisterInstance(Config).AsSelf().AsImplementedInterfaces();
             cfg.RegisterModule(new PersistenceModule());
             cfg.RegisterModule(new ApplicationServicesModule());
-
+            cfg.RegisterModule(new PersistenceTestModule());
             return cfg.Build();
         }
 

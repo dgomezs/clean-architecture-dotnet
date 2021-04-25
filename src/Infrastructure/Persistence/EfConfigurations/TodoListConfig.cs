@@ -1,5 +1,6 @@
 ﻿using Domain.Todos.Entities;
 using Domain.Todos.ValueObjects;
+using Domain.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,13 +9,24 @@ namespace Infrastructure.Persistence.EfConfigurations
     public class TodoListConfig : IEntityTypeConfiguration<TodoList>
     {
         private const string IdShadowProperty = "InternalId";
+        public const string InternalOwnerId = "InternalOwnerId";
+        public const string TodolistTable = "TodoList";
 
         public void Configure(EntityTypeBuilder<TodoList> todoList)
         {
-            todoList.ToTable("TodoList");
+            todoList.ToTable(TodolistTable);
 
             todoList.Property<long>(IdShadowProperty)
                 .HasColumnType("long").ValueGeneratedOnAdd();
+
+            todoList.Property<long>(InternalOwnerId)
+                .HasColumnName("InternalOwnerId")
+                .IsRequired();
+
+            todoList.Property(t => t.OwnerId)
+                .HasConversion(v => v.Value,
+                    v => new UserId(v))
+                .IsRequired();
 
             todoList.Property(t => t.Id)
                 .IsRequired()
@@ -34,7 +46,6 @@ namespace Infrastructure.Persistence.EfConfigurations
                 .HasForeignKey(TodoConfig.TodoListId)
                 .HasPrincipalKey(IdShadowProperty)
                 .IsRequired();
-
 
             todoList.Metadata
                 .FindNavigation("Todos")

@@ -1,5 +1,4 @@
 ﻿using Domain.Todos.Entities;
-using Domain.Users;
 using Domain.Users.Entities;
 using Infrastructure.Persistence.EfConfigurations;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +10,14 @@ namespace Infrastructure.Persistence
         public TodoListContext(DbContextOptions options) : base(options) =>
             ChangeTracker.LazyLoadingEnabled = false;
 
+        public const string Schema = "todos";
+
         public DbSet<TodoList> TodoLists { get; set; }
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("todos");
+            modelBuilder.HasDefaultSchema(Schema);
 
             modelBuilder.ApplyConfiguration(new UserConfig());
             modelBuilder.ApplyConfiguration(new TodoConfig());

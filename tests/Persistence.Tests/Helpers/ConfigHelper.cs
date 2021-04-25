@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Persistence.Tests.Fixtures;
 
-namespace Persistence.Tests
+namespace Persistence.Tests.Helpers
 {
     public static class ConfigHelper
     {

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Application.Services.Todos.UseCases.SearchTodoListByName;
 using CleanArchitecture.TodoList.WebApi.Tests.Config;
 using Domain.Shared.Errors;
+using Domain.Users.ValueObjects;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,9 +37,10 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.SearchTodoListByName
             // arrange
             const string name = "todo";
             var expectedTodoLists = CreateExpectedTodoLists();
-            MockControllerResponse(name, expectedTodoLists);
+            var ownerId = new UserId();
+            MockControllerResponse(ownerId, name, expectedTodoLists);
             // act
-            var response = await SearchTodoLists(name);
+            var response = await SearchTodoLists(ownerId, name);
             var foundTodoLists = await response.Content.ReadFromJsonAsync<List<TodoListReadModel>>() ??
                                  throw new Exception();
 
@@ -47,22 +49,22 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.SearchTodoListByName
         }
 
         [Theory]
-        [InlineData(null, "NotNullValidator", "")]
-        [InlineData("", "None", "")]
-        public async Task Should_return_error_if_name_is_invalid(string invalidName, string errorKey,
-            string errorMessage)
+        [InlineData(null, "NotEmptyValidator")]
+        [InlineData("", "NotEmptyValidator")]
+        public async Task Should_return_error_if_name_is_invalid(string invalidName, string errorKey)
         {
+            var ownerId = new UserId();
             var expectedTodoList = new List<TodoListReadModel>();
-            MockControllerResponse(invalidName, expectedTodoList);
+            MockControllerResponse(ownerId, invalidName, expectedTodoList);
             // act
-            var response = await SearchTodoLists(invalidName);
+            var response = await SearchTodoLists(ownerId, invalidName);
             // arrange
-            var error = new Error(errorKey, errorMessage);
-
+            var error = new Error(errorKey, "Name", "'Name' must not be empty.");
             var expectedErrorResponse = new RestErrorResponse((int) HttpStatusCode.BadRequest,
                 error.ErrorKey, new List<Error>(), error.Message);
             // assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            await ErrorAssertionUtils.AssertError(response, expectedErrorResponse);
         }
 
 
@@ -85,17 +87,17 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.SearchTodoListByName
             return result;
         }
 
-        private async Task<HttpResponseMessage> SearchTodoLists(string name)
+        private async Task<HttpResponseMessage> SearchTodoLists(UserId ownerId, string name)
         {
             var client = ConfigureClient();
-
+            client.DefaultRequestHeaders.Add("OwnerId", ownerId.Value.ToString());
             return await client.GetAsync($"/{TodoListsSearchByName}?name={name}");
         }
 
 
-        private void MockControllerResponse(string name, List<TodoListReadModel> result)
+        private void MockControllerResponse(UserId ownerId, string name, List<TodoListReadModel> result)
         {
-            _searchByNameTodoListUseCase.Setup(m => m.SearchByName(name))
+            _searchByNameTodoListUseCase.Setup(m => m.SearchByName(ownerId, name))
                 .ReturnsAsync(result);
         }
     }

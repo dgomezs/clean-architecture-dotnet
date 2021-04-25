@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Services.Todos.UseCases.SearchTodoListByName;
+using Ardalis.GuardClauses;
+using Domain.Users.ValueObjects;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,11 +22,14 @@ namespace WebApi.Controllers.SearchTodoList
 
         [HttpGet("search/by-name")]
         public async Task<List<TodoListReadModel>> SearchByName(
-            [FromQuery] string name)
+            [FromHeader(Name = "OwnerId")] string ownerIdValue,
+            [FromQuery] string? name)
         {
             var validator = new SearchByNameValidator();
-            await validator.ValidateAndThrowAsync(name);
-            return await _searchByNameTodoListUseCase.SearchByName(name);
+            var nameValue = name ?? "";
+            await validator.ValidateAndThrowAsync(nameValue);
+            var ownerId = new UserId(new Guid(Guard.Against.NullOrEmpty(ownerIdValue, nameof(ownerIdValue))));
+            return await _searchByNameTodoListUseCase.SearchByName(ownerId, nameValue);
         }
     }
 
@@ -33,7 +39,7 @@ namespace WebApi.Controllers.SearchTodoList
         {
             RuleFor(r => r)
                 .NotEmpty()
-                .NotNull();
+                .NotNull().WithName("Name").WithMessage("Invalid name");
         }
     }
 }

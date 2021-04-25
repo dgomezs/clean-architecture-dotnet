@@ -22,8 +22,7 @@ namespace Infrastructure.Persistence.EfConfigurations
 
             user.Property<long>(IdShadowProperty)
                 .HasColumnType("long").ValueGeneratedOnAdd();
-
-
+            
             user.Property(t => t.Id)
                 .IsRequired()
                 .HasConversion(v => v.Value,
@@ -42,7 +41,6 @@ namespace Infrastructure.Persistence.EfConfigurations
                 .HasConversion(
                     v => JsonSerializer.Serialize(v, jsonConfig),
                     v => JsonSerializer.Deserialize<PersonName>(v, jsonConfig));
-
             user
                 .HasKey(IdShadowProperty);
         }

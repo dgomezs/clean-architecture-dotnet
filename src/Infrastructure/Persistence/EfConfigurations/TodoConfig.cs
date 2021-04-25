@@ -9,10 +9,11 @@ namespace Infrastructure.Persistence.EfConfigurations
     {
         private const string IdShadowProperty = "InternalId";
         public const string TodoListId = "TodoListId";
+        public const string TodoTable = "Todo";
 
         public void Configure(EntityTypeBuilder<Todo> todo)
         {
-            todo.ToTable("Todo");
+            todo.ToTable(TodoTable);
 
             todo.Property<long>(IdShadowProperty)
                 .HasColumnType("long").ValueGeneratedOnAdd();

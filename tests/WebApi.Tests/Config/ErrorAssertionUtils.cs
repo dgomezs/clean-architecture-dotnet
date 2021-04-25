@@ -36,10 +36,10 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
             int expectedHttpStatusCode)
         {
             response.StatusCode.Should().Be(expectedHttpStatusCode);
-            var body = JToken.Parse(await response.Content.ReadAsStringAsync());
+            var body = JToken.Parse(await response.Content.ReadAsStringAsync()).ToString();
             var expectedResult = ExpectedErrorResult(errorKey, errorMessage,
-                expectedHttpStatusCode, errors);
-            body.Should().BeEquivalentTo(expectedResult);
+                expectedHttpStatusCode, errors).ToString();
+            expectedResult.Should().Be(body);
         }
     }
 }

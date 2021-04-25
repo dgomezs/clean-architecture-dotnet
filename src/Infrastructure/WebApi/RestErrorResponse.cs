@@ -1,26 +1,30 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using Domain.Shared.Errors;
 
 namespace WebApi
 {
     public record RestErrorResponse
     {
+        private const string UnexpectedServerError = "UnexpectedServerError";
+
         public RestErrorResponse(int code, string errorKey,
             IEnumerable<Error> errors,
             string message) =>
             (Status, ErrorKey, Errors, Message) = (code, errorKey, errors, message);
 
-        public RestErrorResponse(int code,
-            IEnumerable<Error> errors,
-            string message) =>
-            (Status, Errors, Message) = (code, errors, message);
-
         public RestErrorResponse(int code, string errorKey,
             string message) =>
             (Status, ErrorKey, Message) = (code, errorKey, message);
 
+
         public RestErrorResponse(int code, string message) =>
-            (Status, Message) = (code, message);
+            (ErrorKey, Status, Message) = (UnexpectedServerError, code, message);
+
+        public RestErrorResponse() =>
+            (ErrorKey, Status, Message) = (UnexpectedServerError, (int) HttpStatusCode.InternalServerError,
+                UnexpectedServerError);
+
 
         public string Message { get; }
 
@@ -28,6 +32,6 @@ namespace WebApi
 
         public IEnumerable<Error> Errors { get; } = new List<Error>();
 
-        public string? ErrorKey { get; }
+        public string ErrorKey { get; }
     }
 }

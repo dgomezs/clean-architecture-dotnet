@@ -17,10 +17,13 @@ GO
 
 CREATE TABLE [todos].[TodoList]
 (
-    [InternalId] BIGINT PRIMARY KEY IDENTITY (1,1),
-    [Id]         UNIQUEIDENTIFIER NOT NULL,
-    [Name]       NVARCHAR(50)     NOT NULL,
-    [CreatedAt]  DATETIME2 DEFAULT SYSUTCDATETIME(),
+    [InternalId]      BIGINT PRIMARY KEY IDENTITY (1,1),
+    [Id]              UNIQUEIDENTIFIER NOT NULL,
+    [InternalOwnerId] BIGINT           NOT NULL,
+    [OwnerId]         UNIQUEIDENTIFIER NOT NULL,
+    [Name]            NVARCHAR(50)     NOT NULL,
+    [CreatedAt]       DATETIME2 DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT FK_TodoList_InternalOwnerId_User_InternalId FOREIGN KEY (InternalOwnerId) REFERENCES [todos].[User] (InternalId)
 )
 GO
 
@@ -32,7 +35,7 @@ CREATE TABLE [todos].[Todo]
     [TodoListId]  BIGINT           NOT NULL,
     [Done]        BIT              NOT NULL,
     [CreatedAt]   DATETIME2 DEFAULT SYSUTCDATETIME(),
-    CONSTRAINT FK_Todo_TodoList_TodoList_InternalId FOREIGN KEY (TodoListId) REFERENCES [todos].[TodoList] (InternalId)
+    CONSTRAINT FK_Todo_TodoListId_TodoList_InternalId FOREIGN KEY (TodoListId) REFERENCES [todos].[TodoList] (InternalId)
 )
 GO
 
