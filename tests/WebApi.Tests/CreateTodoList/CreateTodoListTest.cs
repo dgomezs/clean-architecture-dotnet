@@ -31,13 +31,13 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
         }
 
         [Fact]
-        public async Task Should_return_id_of_a_new_list()
+        public async Task Should_create_new_list_when_no_errors()
         {
             // Arrange
             var expectedId = new TodoListId();
             const string listName = "todoList";
             var ownerId = new UserId();
-            MockControllerResponse(expectedId, ownerId, listName);
+            MockSuccessfulUseCaseResponse(expectedId, ownerId, listName);
             // act
             var response = await SendCreateTodoListCommand(ownerId, listName);
 
@@ -48,13 +48,13 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
         }
 
         [Fact]
-        public async Task Should_return_error_if_todo_list_already_exists()
+        public async Task Should_return_error_when_use_case_fails()
         {
             // arrange
             var error = new Error("TestingErrorKey", "ErrorMessage");
             const string listName = "todoList";
             var ownerId = new UserId();
-            var expectedErrorResponse = MockControllerErrorResponse(error, ownerId, listName);
+            var expectedErrorResponse = MockFailUseCaseResponse(error, ownerId, listName);
 
             // act
             var response = await SendCreateTodoListCommand(ownerId, listName);
@@ -62,7 +62,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
             await ErrorAssertionUtils.AssertError(response, expectedErrorResponse);
         }
 
-        private RestErrorResponse MockControllerErrorResponse(Error error, UserId ownerId, string listName)
+        private RestErrorResponse MockFailUseCaseResponse(Error error, UserId ownerId, string listName)
         {
             var expectedErrorResponse = new RestErrorResponse((int) HttpStatusCode.InternalServerError,
                 error.ErrorKey, error.Message);
@@ -100,7 +100,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
                 .CreateClient();
         }
 
-        private void MockControllerResponse(TodoListId expectedId, UserId ownerId, string listName)
+        private void MockSuccessfulUseCaseResponse(TodoListId expectedId, UserId ownerId, string listName)
         {
             _createTodoListUseCaseMock.Setup(m =>
                     m.Invoke(It.Is(Match(ownerId, listName))))

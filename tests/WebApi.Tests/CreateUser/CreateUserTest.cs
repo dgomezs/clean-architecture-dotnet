@@ -32,7 +32,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
         }
 
         [Fact]
-        public async Task Should_return_id_of_a_user()
+        public async Task Should_create_user_when_no_errors()
         {
             // Arrange
             var expectedId = new UserId();
@@ -40,7 +40,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
             var personName = UserFakeData.CreatePersonName();
             RestCreateUserRequest createUserRequest = new(personName.FirstName, personName.LastName, email);
 
-            MockControllerResponse(expectedId, createUserRequest);
+            MockSuccessfulUseCaseResponse(expectedId, createUserRequest);
             // act
             var response = await SendCreateUserCommand(createUserRequest);
             // Assert
@@ -61,7 +61,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
             // arrange
             var expectedId = new UserId();
             RestCreateUserRequest createUserRequest = new(firstName, lastName, email);
-            MockControllerResponse(expectedId, createUserRequest);
+            MockSuccessfulUseCaseResponse(expectedId, createUserRequest);
             // act
             var response = await SendCreateUserCommand(createUserRequest);
             // assert
@@ -77,7 +77,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
             var userAlreadyExistsError = new UserAlreadyExistsError(EmailAddress.Create(email));
             var expectedException = new DomainException(userAlreadyExistsError);
 
-            MockControllerErrorResponse(createUserRequest, expectedException);
+            MockFailUseCaseResponse(createUserRequest, expectedException);
             // act
             var response = await SendCreateUserCommand(createUserRequest);
             // assert
@@ -102,13 +102,14 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
                 {
                     builder.ConfigureTestServices(services =>
                     {
-                        services.AddScoped(x => _createUserUseCase.Object);
+                        services.AddScoped(_ => _createUserUseCase.Object);
                     });
                 })
                 .CreateClient();
         }
 
-        private void MockControllerResponse(UserId expectedId, RestCreateUserRequest restCreateUserRequest)
+        private void MockSuccessfulUseCaseResponse(UserId expectedId,
+            RestCreateUserRequest restCreateUserRequest)
         {
             var (firstName, lastName, email) = restCreateUserRequest;
 
@@ -127,7 +128,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
                 && lastName.Equals(c.Name.LastName);
         }
 
-        private void MockControllerErrorResponse(RestCreateUserRequest restCreateUserRequest,
+        private void MockFailUseCaseResponse(RestCreateUserRequest restCreateUserRequest,
             Exception exception)
         {
             var (firstName, lastName, email) = restCreateUserRequest;
