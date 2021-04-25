@@ -15,9 +15,10 @@ namespace WebApi.Controllers.Users
             [FromBody] RestCreateUserRequest createUserRequest)
         {
             var (firstName, lastName, email) = createUserRequest;
+            var createUserCommand = CreateUserCommand.Create(firstName, lastName,
+                email);
             UserId result = await createUserUseCase.Invoke(
-                CreateUserCommand.Create(firstName, lastName,
-                    email));
+                createUserCommand);
             return result.Value.ToString();
         }
     }

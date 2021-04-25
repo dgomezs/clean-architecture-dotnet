@@ -83,8 +83,8 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateTodoList
 
             // Act
             var stringContent = ContentHelper.GetStringContent(createTodoListRequest);
-            stringContent.Headers.Add("OwnerId", ownerId.Value.ToString());
-            var response = await client.PostAsync("/todo-lists", stringContent);
+            stringContent.Headers.Add(ControllerTestingConstants.OwnerHeader, ownerId.Value.ToString());
+            var response = await client.PostAsync(ControllerTestingConstants.TodoListPath, stringContent);
             return response;
         }
 

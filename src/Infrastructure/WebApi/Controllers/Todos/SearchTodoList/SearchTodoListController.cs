@@ -19,11 +19,22 @@ namespace WebApi.Controllers.Todos.SearchTodoList
             [FromHeader(Name = "OwnerId")] string ownerIdValue,
             [FromQuery] string? name)
         {
+            var ownerId = ValidateOwnerId(ownerIdValue);
+            var nameValue = await ValidateName(name);
+            return await searchByNameTodoListUseCase.SearchByName(ownerId, nameValue);
+        }
+
+        private static UserId ValidateOwnerId(string ownerIdValue)
+        {
+            return new UserId(new Guid(Guard.Against.NullOrEmpty(ownerIdValue, nameof(ownerIdValue))));
+        }
+
+        private static async Task<string> ValidateName(string? name)
+        {
             var validator = new SearchByNameValidator();
             var nameValue = name ?? "";
             await validator.ValidateAndThrowAsync(nameValue);
-            var ownerId = new UserId(new Guid(Guard.Against.NullOrEmpty(ownerIdValue, nameof(ownerIdValue))));
-            return await searchByNameTodoListUseCase.SearchByName(ownerId, nameValue);
+            return nameValue;
         }
     }
 

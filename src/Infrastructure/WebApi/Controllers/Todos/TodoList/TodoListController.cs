@@ -22,8 +22,9 @@ namespace WebApi.Controllers.Todos.TodoList
             var ownerId = new UserId(new Guid(Guard.Against.NullOrEmpty(ownerIdValue, nameof(ownerIdValue))));
 
             // TODO add owner id from authentication
+            var createTodoListCommand = CreateTodoListCommand.Create(ownerId, createTodoListRequest.Name);
             TodoListId result = await createTodoListUseCase.InvokeWithErrors(
-                    CreateTodoListCommand.Create(ownerId, createTodoListRequest.Name))
+                    createTodoListCommand)
                 .ToThrowException();
             return result.Value.ToString();
         }

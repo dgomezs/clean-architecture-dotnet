@@ -92,7 +92,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
             var client = ConfigureClient();
             // Act
             var stringContent = ContentHelper.GetStringContent(createUserRequest);
-            var response = await client.PostAsync("/users", stringContent);
+            var response = await client.PostAsync(ControllerTestingConstants.UsersPath, stringContent);
             return response;
         }
 
@@ -128,7 +128,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
         }
 
         private void MockControllerErrorResponse(RestCreateUserRequest restCreateUserRequest,
-            DomainException exception)
+            Exception exception)
         {
             var (firstName, lastName, email) = restCreateUserRequest;
 

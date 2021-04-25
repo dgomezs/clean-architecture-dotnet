@@ -20,7 +20,6 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.SearchTodoListByName
 {
     public class SearchTodoListByNameTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private const string TodoListsSearchByName = "todo-lists/search/by-name";
         private readonly CustomWebApplicationFactory<Startup> _factory;
         private readonly Mock<ISearchByNameTodoListUseCase> _searchByNameTodoListUseCase;
 
@@ -91,7 +90,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.SearchTodoListByName
         {
             var client = ConfigureClient();
             client.DefaultRequestHeaders.Add("OwnerId", ownerId.Value.ToString());
-            return await client.GetAsync($"/{TodoListsSearchByName}?name={name}");
+            return await client.GetAsync($"{ControllerTestingConstants.TodoListsSearchByName}?name={name}");
         }
 
 
