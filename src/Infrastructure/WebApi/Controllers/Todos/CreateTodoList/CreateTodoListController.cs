@@ -6,6 +6,7 @@ using Domain.Todos.ValueObjects;
 using Domain.Users.ValueObjects;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Controllers.Todos.CreateTodoList;
 using static Application.Services.Shared.Extensions.EitherExtensions;
 
 namespace WebApi.Controllers.CreateTodoList
@@ -26,8 +27,6 @@ namespace WebApi.Controllers.CreateTodoList
             [FromHeader(Name = "OwnerId")] string ownerIdValue,
             [FromBody] RestCreateTodoListRequest createTodoListRequest)
         {
-            var validator = new RestCreateTodoListRequestValidator();
-            await validator.ValidateAndThrowAsync(createTodoListRequest);
             var ownerId = new UserId(new Guid(Guard.Against.NullOrEmpty(ownerIdValue, nameof(ownerIdValue))));
 
             // TODO add owner id from authentication
