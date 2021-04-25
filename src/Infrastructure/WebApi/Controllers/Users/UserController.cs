@@ -7,11 +7,11 @@ namespace WebApi.Controllers.Users
 {
     [Route("/users")]
     [ApiController]
-    public class CreateUserController
+    public class UserController
     {
         private readonly ICreateUserUseCase _createUserUseCase;
 
-        public CreateUserController(
+        public UserController(
             ICreateUserUseCase createUserUseCase) =>
             _createUserUseCase = createUserUseCase;
 

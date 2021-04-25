@@ -7,7 +7,7 @@ using Domain.Users.ValueObjects;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi.Controllers.SearchTodoList
+namespace WebApi.Controllers.Todos.SearchTodoList
 {
     [Route("/todo-lists")]
     [ApiController]

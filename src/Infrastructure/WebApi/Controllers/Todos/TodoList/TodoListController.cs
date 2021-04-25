@@ -4,20 +4,18 @@ using Application.Services.Todos.UseCases.CreateTodoList;
 using Ardalis.GuardClauses;
 using Domain.Todos.ValueObjects;
 using Domain.Users.ValueObjects;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Controllers.Todos.CreateTodoList;
 using static Application.Services.Shared.Extensions.EitherExtensions;
 
-namespace WebApi.Controllers.CreateTodoList
+namespace WebApi.Controllers.Todos.TodoList
 {
     [Route("/todo-lists")]
     [ApiController]
-    public class CreateTodoListController
+    public class TodoListController
     {
         private readonly ICreateTodoListUseCase _createTodoListUseCase;
 
-        public CreateTodoListController(
+        public TodoListController(
             ICreateTodoListUseCase createTodoListUseCase) =>
             _createTodoListUseCase = createTodoListUseCase;
 
