@@ -1,3 +1,4 @@
+
 # Clean Architecture and Domain Driven Design
 
 Starting point for Clean Architecture and Domain-Driven Design projects.
@@ -63,4 +64,7 @@ As the rule of Clean Architecture indicates layers point inwards in the diagram.
 - Persistence knows about the Application.Services
 
 ![Project structure](https://docs.google.com/drawings/d/e/2PACX-1vQF_JYDw08PLfhVI16qDfn6vNFJePFReCFCAi5Vv1Jgy_1K4IBWeUgtxHpzXeUH3UECZqVPiIMnn8mN/pub?w=960&h=720)
+
+
+## Secrets
 
