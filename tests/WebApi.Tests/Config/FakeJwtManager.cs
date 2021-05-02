@@ -9,7 +9,7 @@ using WebApi.Authorization;
 
 namespace CleanArchitecture.TodoList.WebApi.Tests.Config
 {
-    public class FakeJwtManager 
+    public class FakeJwtManager
     {
         public static string Issuer { get; } = Guid.NewGuid().ToString();
         public static string Audience { get; } = Guid.NewGuid().ToString();
@@ -29,15 +29,29 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
 
         public static string GenerateJwtToken(EmailAddress userEmailAddress, List<string> scopes)
         {
+            var claims = GetClaims(userEmailAddress, scopes);
+
+            return tokenHandler.WriteToken(new JwtSecurityToken(Issuer, Audience, claims, null,
+                DateTime.UtcNow.AddMinutes(10), SigningCredentials));
+        }
+
+        public static string GenerateExpiredJwtToken(EmailAddress userEmailAddress, List<string> scopes)
+        {
+            var claims = GetClaims(userEmailAddress, scopes);
+
+            return tokenHandler.WriteToken(new JwtSecurityToken(Issuer, Audience, claims, null,
+                DateTime.UtcNow.AddMinutes(-10), SigningCredentials));
+        }
+
+        private static List<Claim> GetClaims(EmailAddress userEmailAddress, List<string> scopes)
+        {
             var claims = new List<Claim>
             {
                 new Claim(type: ClaimsConstants.EmailClaim, value: userEmailAddress.Value,
                     ClaimValueTypes.String, Issuer),
                 new Claim(type: "scope", string.Join(" ", scopes), ClaimValueTypes.String, Issuer)
             };
-
-            return tokenHandler.WriteToken(new JwtSecurityToken(Issuer, Audience, claims, null,
-                DateTime.UtcNow.AddMinutes(10), SigningCredentials));
+            return claims;
         }
     }
 }

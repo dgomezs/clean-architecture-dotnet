@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Application.Services.Todos.UseCases.CreateTodoList;
 using Application.Services.Users.Repositories;
@@ -69,22 +71,87 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
             await ErrorAssertionUtils.AssertError(response, expectedErrorResponse);
         }
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("invalid-token")]
+        public async Task Should_not_authorize_requests_without_a_valid_token(string token)
+        {
+            // arrange
+            var expectedId = new TodoListId();
+            const string listName = "todoList";
+            var owner = UserFakeData.CreateUser();
+            MockSuccessfulUseCaseResponse(expectedId, owner, listName);
+            // act
+            var response =
+                await SendCreateTodoListCommand(listName, HttpRequestHelper.GetAuthHeader(token));
+            // assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Should_not_authorize_requests_with_an_expired_token()
+        {
+            // arrange
+            var expectedId = new TodoListId();
+            const string listName = "todoList";
+            var owner = UserFakeData.CreateUser();
+            MockSuccessfulUseCaseResponse(expectedId, owner, listName);
+
+            var authHeader = HttpRequestHelper.GetExpiredToken(owner.Email, CreateTodoListScope);
+            // act
+            var response =
+                await SendCreateTodoListCommand(listName, authHeader);
+            // assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("read:todo-lists")]
+        public async Task Should_not_authorize_requests_with_invalid_scopes(string scopes)
+        {
+            // arrange
+            var expectedId = new TodoListId();
+            const string listName = "todoList";
+            var owner = UserFakeData.CreateUser();
+            MockSuccessfulUseCaseResponse(expectedId, owner, listName);
+
+            var authHeader = HttpRequestHelper.GetToken(owner.Email, scopes.Split(",").ToList());
+            // act
+            var response =
+                await SendCreateTodoListCommand(listName, authHeader);
+            // assert
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        }
+
+
         private async Task<HttpResponseMessage> SendCreateTodoListCommand(EmailAddress ownerEmailAddress,
             string todoListName)
+        {
+            return await SendCreateTodoListCommand(todoListName, HttpRequestHelper.GetToken(
+                ownerEmailAddress, CreateTodoListScope));
+        }
+
+        private static List<string> CreateTodoListScope => new List<string>
+        {
+            Scopes.CreateTodoListsScope
+        };
+
+
+        private async Task<HttpResponseMessage> SendCreateTodoListCommand(string todoListName,
+            AuthenticationHeaderValue authHeader)
         {
             var client = ConfigureClient();
             RestCreateTodoListRequest createTodoListRequest = new(todoListName);
             var request = new HttpRequestMessage(HttpMethod.Post, ControllerTestingConstants.TodoListPath);
 
             request.Content = HttpRequestHelper.GetStringContent(createTodoListRequest);
-            request.Headers.Authorization = HttpRequestHelper.GetToken(ownerEmailAddress, new List<string>
-            {
-                Scopes.CreateTodoListsScope
-            });
+            request.Headers.Authorization = authHeader;
 
             var response = await client.SendAsync(request);
             return response;
         }
+
 
         private HttpClient ConfigureClient()
         {
@@ -115,6 +182,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
                 m.InvokeWithErrors(It.Is(Match(owner.Id, listName)))).ReturnsAsync(Left(error));
             return expectedErrorResponse;
         }
+
 
         private void MockSuccessfulUseCaseResponse(TodoListId expectedId, User owner, string listName)
         {
