@@ -17,9 +17,9 @@ using FakeTestData;
 using FluentAssertions;
 using Xunit;
 
-namespace Application.Services.Tests.Todos.AddTodoToList
+namespace Application.Services.Tests.Todos.AddTodo
 {
-    public class AddTodoToListTest
+    public class AddTodoTest
     {
         private readonly IAddTodoUseCase _addTodoUseCase;
         private readonly ICreateTodoListUseCase _createTodoListUseCase;
@@ -31,7 +31,7 @@ namespace Application.Services.Tests.Todos.AddTodoToList
         private const int MaxNumberOfTodosNotDoneAllowed = 5;
 
 
-        public AddTodoToListTest()
+        public AddTodoTest()
         {
             _mock = DiConfig.GetMock();
             _todoListRepository = _mock.Create<InMemoryTodoListRepository>();

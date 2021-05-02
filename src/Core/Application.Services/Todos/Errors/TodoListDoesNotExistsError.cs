@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Domain.Shared.Errors;
 using Domain.Todos.ValueObjects;
@@ -10,23 +9,22 @@ namespace Application.Services.Todos.Errors
     {
         public const string TodoListDoesNotExist = "TodoListDoesNotExist";
         private const string ErrorMessage = "Todo list does not exists";
-        private readonly TodoListId? _todoListId;
-        private readonly TodoId? _todoId;
+        private readonly string _todoListId;
+        private readonly string _todoId;
 
         public TodoListDoesNotExistsError(TodoListId todoListId) : base(TodoListDoesNotExist,
             ErrorMessage) =>
-            (_todoListId, _todoId) = (todoListId, null);
+            (_todoListId, _todoId) = (todoListId.Value.ToString(), string.Empty);
 
 
         public TodoListDoesNotExistsError(TodoId todo) : base(TodoListDoesNotExist,
             ErrorMessage) =>
-            (_todoListId, _todoId) = (null, todo);
+            (_todoListId, _todoId) = (string.Empty, todo.Value.ToString());
 
-        public override IDictionary Data => (_todoId, _todoListId) switch
+        public override IDictionary Data => new Dictionary<string, string>
         {
-            (_, null) => new Dictionary<string, string> {{"TodoId", _todoId.Value.ToString()}},
-            (null, _) => new Dictionary<string, string> {{"TodoListId", _todoListId.Value.ToString()}},
-            _ => throw new ArgumentOutOfRangeException()
+            {"TodoId", _todoId},
+            {"TodoListId", _todoListId}
         };
     }
 }

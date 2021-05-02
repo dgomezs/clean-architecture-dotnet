@@ -1,20 +1,26 @@
-﻿using System.Text.Json;
+﻿using System.Security.Claims;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using WebApi.Authorization;
 using WebApi.CustomConverters;
 
 namespace WebApi
 {
     public static class WebApiInstall
     {
+
         public static void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
@@ -47,6 +53,39 @@ namespace WebApi
             });
         }
 
+        public static void ConfigureAuthentication(IServiceCollection services, IAuthConfig authConfig)
+        {
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = authConfig.GetIssuer();
+                    options.Audience = authConfig.GetAudience();
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        NameClaimType = ClaimTypes.NameIdentifier
+                    };
+                });
+        }
+
+        public static void ConfigureAuthorization(IServiceCollection services, IAuthConfig authConfig)
+        {
+            services.AddAuthorization(options =>
+            {
+                foreach (var scope in Scopes.All)
+                {
+                    options.AddPolicy(scope,
+                        policy => policy.Requirements.Add(new HasScopeRequirement(scope,
+                            authConfig.GetIssuer())));
+                }
+            });
+            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+            services.AddScoped<IUserManager, UserManager>();
+        }
+
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseExceptionHandler(a => a.Run(async context =>
@@ -77,6 +116,10 @@ namespace WebApi
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.

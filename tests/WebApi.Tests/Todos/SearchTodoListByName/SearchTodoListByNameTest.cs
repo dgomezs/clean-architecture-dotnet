@@ -16,7 +16,7 @@ using Moq;
 using WebApi;
 using Xunit;
 
-namespace CleanArchitecture.TodoList.WebApi.Tests.SearchTodoListByName
+namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.SearchTodoListByName
 {
     public class SearchTodoListByNameTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {

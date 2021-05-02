@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApi;
+using WebApi.Authorization;
 
 namespace App
 {
@@ -22,7 +23,10 @@ namespace App
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var auth = new AuthConfig(Configuration);
             WebApiInstall.ConfigureServices(services);
+            WebApiInstall.ConfigureAuthorization(services, auth);
+            WebApiInstall.ConfigureAuthentication(services, auth);
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

@@ -8,15 +8,27 @@ namespace Application.Services.Users.Errors
     public record UserDoesNotExistError : EntityAlreadyExistsError
     {
         public const string UserDoesNotExists = "UserDoesNotExists";
-        private UserId _userId;
+        private readonly string _userId;
+        private readonly string _userEmailAddress;
 
         public UserDoesNotExistError(UserId userId) : base(UserDoesNotExists,
-            "User already exists") =>
-            _userId = userId;
+            "User does not exist")
+        {
+            _userId = userId.Value.ToString();
+            _userEmailAddress = string.Empty;
+        }
+
+        public UserDoesNotExistError(EmailAddress emailAddress) : base(UserDoesNotExists,
+            "User does not exist")
+        {
+            _userId = string.Empty;
+            _userEmailAddress = emailAddress.Value;
+        }
 
         public override IDictionary Data => new Dictionary<string, string>
         {
-            {"UserId", _userId.Value.ToString()}
+            {"UserId", _userId},
+            {"Email", _userEmailAddress},
         };
     }
 }

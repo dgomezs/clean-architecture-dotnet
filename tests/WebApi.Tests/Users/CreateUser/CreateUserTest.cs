@@ -18,7 +18,7 @@ using WebApi;
 using WebApi.Controllers.Users;
 using Xunit;
 
-namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
+namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
 {
     public class CreateUserTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -91,7 +91,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.CreateUser
         {
             var client = ConfigureClient();
             // Act
-            var stringContent = ContentHelper.GetStringContent(createUserRequest);
+            var stringContent = HttpRequestHelper.GetStringContent(createUserRequest);
             var response = await client.PostAsync(ControllerTestingConstants.UsersPath, stringContent);
             return response;
         }
