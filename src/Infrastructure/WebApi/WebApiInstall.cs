@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Text.Json;
+using Auth0.ManagementApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +15,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using WebApi.Auth;
+using WebApi.Auth.Auth0;
 using WebApi.Auth.Config;
 using WebApi.Auth.Scopes;
 using WebApi.Auth.UserManagement;
@@ -24,7 +26,6 @@ namespace WebApi
 {
     public static class WebApiInstall
     {
-
         public static void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
@@ -55,6 +56,13 @@ namespace WebApi
                     new OpenApiInfo {Title = "My API", Version = "v1"});
                 c.EnableAnnotations();
             });
+        }
+
+        public static void ConfigureAuth0(IServiceCollection services, Auth0Config config)
+        {
+            services.AddSingleton<IManagementConnection, HttpClientManagementConnection>();
+            //services.AddSingleton(new AuthTokenManagement(config));
+            services.AddScoped<IAuthService, Auth0Service>();
         }
 
         public static void ConfigureAuthentication(IServiceCollection services, IAuthConfig authConfig)

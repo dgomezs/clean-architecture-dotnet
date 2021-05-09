@@ -3,7 +3,8 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <RootNamespace>CleanArchitecture.TodoList.WebApi.Tests</RootNamespace>
-    </PropertyGroup>
+      <UserSecretsId>ba5f9490-310d-47b3-af07-a527af09ec8a</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Auth0.AuthenticationApi" Version="7.8.0" />
@@ -13,6 +14,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
         <PackageReference Include="Moq" Version="4.15.2" />
+        <PackageReference Include="NodaTime.Testing" Version="3.0.5" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <PrivateAssets>all</PrivateAssets>
