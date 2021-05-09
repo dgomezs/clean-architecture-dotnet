@@ -14,9 +14,9 @@ using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using WebApi;
 using WebApi.Auth.UserManagement;
 using WebApi.Controllers.Users;
+using WebApi.Errors;
 using Xunit;
 
 namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
@@ -38,21 +38,38 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
         public async Task Should_create_user_when_valid_data_and_exists_in_auth_system()
         {
             // Arrange
-            var expectedId = new UserId();
-            var email = UserFakeData.CreateEmail().Value;
-            var personName = UserFakeData.CreatePersonName();
-            RestCreateUserRequest createUserRequest = new(personName.FirstName, personName.LastName, email);
-
-            MockSuccessfulCreateUserResponse(expectedId, createUserRequest);
+            var createUserRequest = CreateUserRequest();
+            var expectedId = MockSuccessfulCreateUserResponse(createUserRequest);
+            MockUserHasSignedUp(createUserRequest);
             // act
             var response = await SendCreateUserCommand(createUserRequest);
 
             // Assert
-            _userManagerMock.Verify(m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(email)), Times.Once);
+            _userManagerMock.Verify(
+                m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(createUserRequest.Email)), Times.Once);
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             var body = await response.Content.ReadAsStringAsync();
             body.Should().Be(expectedId.Value.ToString());
         }
+
+        [Fact]
+        public async Task Should_return_validation_error_when_user_is_not_in_auth_system()
+        {
+            // arrange
+            var createUserRequest = CreateUserRequest();
+            MockUserHasNotSignedUpYet(createUserRequest);
+            
+            // act
+            var response = await SendCreateUserCommand(createUserRequest);
+
+            // assert
+            var userHasNotSignedUpError =
+                new UserHasNotSignedUpError(EmailAddress.Create(createUserRequest.Email));
+            var expectedErrorResponse = new RestErrorResponse((int) HttpStatusCode.BadRequest,
+                userHasNotSignedUpError.Code, new List<Error>(), userHasNotSignedUpError.Message);
+            await ErrorAssertionUtils.AssertError(response, expectedErrorResponse);
+        }
+
 
         [Theory]
         [InlineData("", "", "")]
@@ -64,9 +81,8 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
             string lastName, string email)
         {
             // arrange
-            var expectedId = new UserId();
             RestCreateUserRequest createUserRequest = new(firstName, lastName, email);
-            MockSuccessfulCreateUserResponse(expectedId, createUserRequest);
+            MockSuccessfulCreateUserResponse(createUserRequest);
             // act
             var response = await SendCreateUserCommand(createUserRequest);
             // assert
@@ -76,18 +92,18 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
         [Fact]
         public async Task Should_return_appropriate_error_code_when_creating_user_fails()
         {
-            var email = UserFakeData.CreateEmail().Value;
-            var personName = UserFakeData.CreatePersonName();
-            RestCreateUserRequest createUserRequest = new(personName.FirstName, personName.LastName, email);
-            var userAlreadyExistsError = new UserAlreadyExistsError(EmailAddress.Create(email));
+            var createUserRequest = CreateUserRequest();
+            var userAlreadyExistsError =
+                new UserAlreadyExistsError(EmailAddress.Create(createUserRequest.Email));
             var expectedException = new DomainException(userAlreadyExistsError);
 
             MockFailUseCaseResponse(createUserRequest, expectedException);
+            MockUserHasSignedUp(createUserRequest);
             // act
             var response = await SendCreateUserCommand(createUserRequest);
             // assert
             var expectedErrorResponse = new RestErrorResponse((int) HttpStatusCode.Conflict,
-                userAlreadyExistsError.ErrorKey, new List<Error>(), userAlreadyExistsError.Message);
+                userAlreadyExistsError.Code, new List<Error>(), userAlreadyExistsError.Message);
             await ErrorAssertionUtils.AssertError(response, expectedErrorResponse);
         }
 
@@ -114,19 +130,18 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
                 .CreateClient();
         }
 
-        private void MockSuccessfulCreateUserResponse(UserId expectedId,
-            RestCreateUserRequest restCreateUserRequest)
+        private UserId MockSuccessfulCreateUserResponse(RestCreateUserRequest restCreateUserRequest)
         {
             var (firstName, lastName, email) = restCreateUserRequest;
 
-            _userManagerMock.Setup(m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(email)))
-                .ReturnsAsync(true);
-
+            var expectedId = new UserId();
             _createUserUseCaseMock.Setup(m =>
                     m.Invoke(It.Is(MatchUser(email, firstName, lastName)
                     )))
                 .ReturnsAsync(expectedId);
+            return expectedId;
         }
+
 
         private static Expression<Func<CreateUserCommand, bool>> MatchUser(string email, string firstName,
             string lastName)
@@ -146,6 +161,26 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
                     m.Invoke(It.Is(MatchUser(email, firstName, lastName)
                     )))
                 .ThrowsAsync(exception);
+        }
+
+        private static RestCreateUserRequest CreateUserRequest()
+        {
+            var email = UserFakeData.CreateEmail().Value;
+            var personName = UserFakeData.CreatePersonName();
+            return new RestCreateUserRequest(personName.FirstName, personName.LastName, email);
+        }
+
+        private void MockUserHasNotSignedUpYet(RestCreateUserRequest createUserRequest)
+        {
+            _userManagerMock.Setup(m =>
+                    m.HasUserSignedUpInAuthSystem(EmailAddress.Create(createUserRequest.Email)))
+                .ReturnsAsync(false);
+        }
+
+        private void MockUserHasSignedUp(RestCreateUserRequest createUserRequest)
+        {
+            _userManagerMock.Setup(m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(createUserRequest.Email)))
+                .ReturnsAsync(true);
         }
     }
 }

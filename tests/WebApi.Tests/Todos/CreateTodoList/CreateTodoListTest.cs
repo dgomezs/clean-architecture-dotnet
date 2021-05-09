@@ -21,6 +21,7 @@ using Moq;
 using WebApi;
 using WebApi.Auth.Scopes;
 using WebApi.Controllers.Todos.TodoList;
+using WebApi.Errors;
 using Xunit;
 using static LanguageExt.Prelude;
 
@@ -165,7 +166,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         private RestErrorResponse MockFailCreateTodoListResponse(Error error, User owner, string listName)
         {
             var expectedErrorResponse = new RestErrorResponse((int) HttpStatusCode.InternalServerError,
-                error.ErrorKey, error.Message);
+                error.Code, error.Message);
 
             _userRepository.Setup(m => m.GetByEmail(owner.Email))
                 .ReturnsAsync(owner);
