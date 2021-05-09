@@ -28,7 +28,7 @@ namespace Domain.Tests.ValidateEmailAddress
 
         [Theory]
         [InlineData("")]
-        [InlineData("plainaddress")]
+        [InlineData("plainAddress")]
         [InlineData("#@%^%#$@#$@#.com")]
         [InlineData("@example.com")]
         public void Should_throw_an_error_when_the_address_is_invalid(string invalidEmailAddress)

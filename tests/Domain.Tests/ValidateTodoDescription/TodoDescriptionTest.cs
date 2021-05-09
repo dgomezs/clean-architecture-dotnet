@@ -1,5 +1,4 @@
-﻿using Bogus;
-using Domain.Shared.Errors;
+﻿using Domain.Shared.Errors;
 using Domain.Todos.ValueObjects;
 using FakeTestData;
 using Xunit;
@@ -38,7 +37,7 @@ namespace Domain.Tests.ValidateTodoDescription
         public void Should_trim_beginning_and_end()
         {
             // arrange
-            var expectedDescription = "ok description";
+            const string expectedDescription = "ok description";
             var inputDescription = $"  {expectedDescription}   ";
             // act
             var todoDescription = TodoDescription.Create(inputDescription);

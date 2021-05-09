@@ -38,7 +38,6 @@ namespace Domain.Tests.ValidateTodoListName
         [InlineData("this-is-a-very-long-validation-name-that-is-not-accepted")]
         public void Should_return_a_validation_exception_for_invalid_names(string invalidName)
         {
-            ;
             var result = TodoListName.CreateWithErrors(invalidName);
             Assert.True(result.IsFail);
             Assert.True(result.MapFail(r => r.ErrorKey).Equals(ErrorCodes.InvalidTodoListName));
@@ -48,7 +47,7 @@ namespace Domain.Tests.ValidateTodoListName
         public void Should_trim_beginning_and_end()
         {
             // arrange
-            var expectedName = "ok todo list name";
+            const string expectedName = "ok todo list name";
             var inputDescription = $"  {expectedName}   ";
             // act
             var todoListName = TodoListName.Create(inputDescription);

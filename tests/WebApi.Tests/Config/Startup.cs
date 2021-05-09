@@ -28,7 +28,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
                 })
                 .AddJwtBearer(options =>
                 {
-                    options.TokenValidationParameters = new TokenValidationParameters()
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         IssuerSigningKey = FakeJwtManager.SecurityKey,
                         ValidIssuer = FakeJwtManager.Issuer,

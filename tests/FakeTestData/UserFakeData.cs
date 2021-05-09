@@ -21,7 +21,7 @@ namespace FakeTestData
 
         public static User CreateUser()
         {
-            return new User(CreatePersonName(), CreateEmail());
+            return new(CreatePersonName(), CreateEmail());
         }
     }
 }

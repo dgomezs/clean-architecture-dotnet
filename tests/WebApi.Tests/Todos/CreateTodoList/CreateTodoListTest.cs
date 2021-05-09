@@ -53,10 +53,9 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         {
             // Arrange
             var owner = UserFakeData.CreateUser();
-            var expectedId = MockSuccessfulUseCaseResponse(owner, ListName);
+            var expectedId = MockSuccessfulCreateTodoListResponse(owner, ListName);
             // act
             var response = await SendCreateTodoListCommand(owner.Email, ListName);
-
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             var body = await response.Content.ReadAsStringAsync();
@@ -64,13 +63,13 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         }
 
         [Fact]
-        public async Task Should_return_error_when_use_case_fails()
+        public async Task Should_return_error_when_create_todo_list_fails()
         {
             // arrange
             var error = new Error("TestingErrorKey", "ErrorMessage");
             const string listName = "todoList";
             var owner = UserFakeData.CreateUser();
-            var expectedErrorResponse = MockFailUseCaseResponse(error, owner, listName);
+            var expectedErrorResponse = MockFailCreateTodoListResponse(error, owner, listName);
 
             // act
             var response = await SendCreateTodoListCommand(owner.Email, listName);
@@ -86,7 +85,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         {
             // arrange
             var owner = UserFakeData.CreateUser();
-            MockSuccessfulUseCaseResponse(owner, ListName);
+            MockSuccessfulCreateTodoListResponse(owner, ListName);
             // act
             var response =
                 await SendCreateTodoListCommand(ListName, HttpRequestHelper.GetAuthHeader(token));
@@ -99,7 +98,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         {
             // arrange
             var owner = UserFakeData.CreateUser();
-            MockSuccessfulUseCaseResponse(owner, ListName);
+            MockSuccessfulCreateTodoListResponse(owner, ListName);
 
             var authHeader = HttpRequestHelper.GetExpiredToken(owner.Email, CreateTodoListScope);
             // act
@@ -115,7 +114,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         {
             // arrange
             var owner = UserFakeData.CreateUser();
-            MockSuccessfulUseCaseResponse(owner, ListName);
+            MockSuccessfulCreateTodoListResponse(owner, ListName);
             var authHeader = HttpRequestHelper.GetToken(owner.Email, scopes.Split(",").ToList());
             // act
             var response =
@@ -138,9 +137,11 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         {
             var client = ConfigureClient();
             RestCreateTodoListRequest createTodoListRequest = new(todoListName);
-            var request = new HttpRequestMessage(HttpMethod.Post, ControllerTestingConstants.TodoListPath);
+            var request = new HttpRequestMessage(HttpMethod.Post, ControllerTestingConstants.TodoListPath)
+            {
+                Content = HttpRequestHelper.GetStringContent(createTodoListRequest)
+            };
 
-            request.Content = HttpRequestHelper.GetStringContent(createTodoListRequest);
             request.Headers.Authorization = authHeader;
 
             var response = await client.SendAsync(request);
@@ -161,7 +162,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
                 .CreateClient();
         }
 
-        private RestErrorResponse MockFailUseCaseResponse(Error error, User owner, string listName)
+        private RestErrorResponse MockFailCreateTodoListResponse(Error error, User owner, string listName)
         {
             var expectedErrorResponse = new RestErrorResponse((int) HttpStatusCode.InternalServerError,
                 error.ErrorKey, error.Message);
@@ -179,7 +180,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         }
 
 
-        private TodoListId MockSuccessfulUseCaseResponse(User owner, string listName)
+        private TodoListId MockSuccessfulCreateTodoListResponse(User owner, string listName)
         {
             var expectedId = new TodoListId();
             _userRepository.Setup(m => m.GetByEmail(owner.Email))
@@ -196,9 +197,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         }
 
 
-        private static Expression<Func<CreateTodoListCommand, bool>> Match(UserId ownerId, string listName)
-        {
-            return c => listName.Equals(c.TodoListName.Name) && ownerId.Equals(c.OwnerId);
-        }
+        private static Expression<Func<CreateTodoListCommand, bool>> Match(UserId ownerId, string listName) =>
+            c => listName.Equals(c.TodoListName.Name) && ownerId.Equals(c.OwnerId);
     }
 }

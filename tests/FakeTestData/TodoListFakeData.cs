@@ -54,7 +54,7 @@ namespace FakeTestData
             int numberOfTodosNotDone)
         {
             var todos = Enumerable.Range(0, numberOfTodosNotDone)
-                .Select(x => TodosFakeData.CreateTodoNotDone()).ToList();
+                .Select(_ => TodosFakeData.CreateTodoNotDone()).ToList();
 
             return new TodoList(ownerId, CreateTodoListName(), CreateTodoListId(), todos);
         }

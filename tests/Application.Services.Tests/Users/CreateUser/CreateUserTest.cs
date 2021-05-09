@@ -12,14 +12,13 @@ namespace Application.Services.Tests.Users.CreateUser
     public class CreateUserTest
     {
         private readonly ICreateUserUseCase _createUserUseCase;
-        private readonly AutoMock _mock;
         private readonly InMemoryUserRepository _userRepository;
 
         public CreateUserTest()
         {
-            _mock = DiConfig.GetMock();
-            _userRepository = _mock.Create<InMemoryUserRepository>();
-            _createUserUseCase = _mock.Create<ICreateUserUseCase>();
+            var mock = DiConfig.GetMock();
+            _userRepository = mock.Create<InMemoryUserRepository>();
+            _createUserUseCase = mock.Create<ICreateUserUseCase>();
         }
 
 

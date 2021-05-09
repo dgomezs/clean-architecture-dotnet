@@ -14,14 +14,13 @@ namespace Application.Services.Tests.Todos.MarkTodoAsDone
     public class MarkTodoAsDoneTest
     {
         private readonly IMarkTodoDoneUseCase _markTodoDoneUseCase;
-        private readonly AutoMock _mock;
         private readonly InMemoryTodoListRepository _todoListRepository;
 
         public MarkTodoAsDoneTest()
         {
-            _mock = DiConfig.GetMock();
-            _todoListRepository = _mock.Create<InMemoryTodoListRepository>();
-            _markTodoDoneUseCase = _mock.Create<IMarkTodoDoneUseCase>();
+            var mock = DiConfig.GetMock();
+            _todoListRepository = mock.Create<InMemoryTodoListRepository>();
+            _markTodoDoneUseCase = mock.Create<IMarkTodoDoneUseCase>();
         }
 
         [Fact]

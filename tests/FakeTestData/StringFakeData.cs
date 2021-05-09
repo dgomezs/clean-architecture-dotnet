@@ -6,7 +6,7 @@ namespace FakeTestData
     {
         public static string GenerateRandomString(int length)
         {
-            return new Faker().Random.AlphaNumeric(251);
+            return new Faker().Random.AlphaNumeric(length);
         }
     }
 }
