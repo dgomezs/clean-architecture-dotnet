@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using WebApi;
+using WebApi.Auth.UserManagement;
 using WebApi.Controllers.Users;
 using Xunit;
 
@@ -22,17 +23,19 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
 {
     public class CreateUserTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private readonly Mock<ICreateUserUseCase> _createUserUseCase;
+        private readonly Mock<ICreateUserUseCase> _createUserUseCaseMock;
         private readonly CustomWebApplicationFactory<Startup> _factory;
+        private readonly Mock<IUserManager> _userManagerMock;
 
         public CreateUserTest(CustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
-            _createUserUseCase = new Mock<ICreateUserUseCase>();
+            _createUserUseCaseMock = new Mock<ICreateUserUseCase>();
+            _userManagerMock = new Mock<IUserManager>();
         }
 
         [Fact]
-        public async Task Should_create_user_when_no_errors()
+        public async Task Should_create_user_when_valid_data_and_exists_in_auth_system()
         {
             // Arrange
             var expectedId = new UserId();
@@ -40,10 +43,12 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
             var personName = UserFakeData.CreatePersonName();
             RestCreateUserRequest createUserRequest = new(personName.FirstName, personName.LastName, email);
 
-            MockSuccessfulUseCaseResponse(expectedId, createUserRequest);
+            MockSuccessfulCreateUserResponse(expectedId, createUserRequest);
             // act
             var response = await SendCreateUserCommand(createUserRequest);
+
             // Assert
+            _userManagerMock.Verify(m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(email)), Times.Once);
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             var body = await response.Content.ReadAsStringAsync();
             body.Should().Be(expectedId.Value.ToString());
@@ -61,7 +66,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
             // arrange
             var expectedId = new UserId();
             RestCreateUserRequest createUserRequest = new(firstName, lastName, email);
-            MockSuccessfulUseCaseResponse(expectedId, createUserRequest);
+            MockSuccessfulCreateUserResponse(expectedId, createUserRequest);
             // act
             var response = await SendCreateUserCommand(createUserRequest);
             // assert
@@ -102,18 +107,22 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
                 {
                     builder.ConfigureTestServices(services =>
                     {
-                        services.AddScoped(_ => _createUserUseCase.Object);
+                        services.AddScoped(_ => _createUserUseCaseMock.Object);
+                        services.AddScoped(_ => _userManagerMock.Object);
                     });
                 })
                 .CreateClient();
         }
 
-        private void MockSuccessfulUseCaseResponse(UserId expectedId,
+        private void MockSuccessfulCreateUserResponse(UserId expectedId,
             RestCreateUserRequest restCreateUserRequest)
         {
             var (firstName, lastName, email) = restCreateUserRequest;
 
-            _createUserUseCase.Setup(m =>
+            _userManagerMock.Setup(m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(email)))
+                .ReturnsAsync(true);
+
+            _createUserUseCaseMock.Setup(m =>
                     m.Invoke(It.Is(MatchUser(email, firstName, lastName)
                     )))
                 .ReturnsAsync(expectedId);
@@ -133,7 +142,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
         {
             var (firstName, lastName, email) = restCreateUserRequest;
 
-            _createUserUseCase.Setup(m =>
+            _createUserUseCaseMock.Setup(m =>
                     m.Invoke(It.Is(MatchUser(email, firstName, lastName)
                     )))
                 .ThrowsAsync(exception);
