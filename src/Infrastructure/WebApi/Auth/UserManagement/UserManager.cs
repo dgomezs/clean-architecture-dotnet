@@ -6,7 +6,7 @@ using Application.Services.Users.Repositories;
 using Domain.Shared.Errors;
 using Domain.Users.ValueObjects;
 
-namespace WebApi.Auth
+namespace WebApi.Auth.UserManagement
 {
     public class UserManager : IUserManager
     {
@@ -34,10 +34,5 @@ namespace WebApi.Auth
         {
             return claimsPrincipal.Claims.FirstOrDefault(t => claim.Equals(t.Type))?.Value;
         }
-    }
-
-    public interface IUserManager
-    {
-        Task<UserId> GetUserId(ClaimsPrincipal claimsPrincipal);
     }
 }
