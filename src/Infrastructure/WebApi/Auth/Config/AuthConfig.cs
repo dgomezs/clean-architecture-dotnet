@@ -1,7 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using Microsoft.Extensions.Configuration;
 
-namespace WebApi.Authorization
+namespace WebApi.Auth.Config
 {
     public class AuthConfig : IAuthConfig
     {

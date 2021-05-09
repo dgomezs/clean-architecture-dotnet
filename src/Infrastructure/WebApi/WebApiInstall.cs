@@ -13,7 +13,9 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using WebApi.Authorization;
+using WebApi.Auth;
+using WebApi.Auth.Config;
+using WebApi.Auth.Scopes;
 using WebApi.CustomConverters;
 
 namespace WebApi

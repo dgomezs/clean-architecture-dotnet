@@ -8,7 +8,7 @@ using Domain.Todos.ValueObjects;
 using Domain.Users.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Authorization;
+using WebApi.Auth;
 using static Application.Services.Shared.Extensions.EitherExtensions;
 
 namespace WebApi.Controllers.Todos.TodoList

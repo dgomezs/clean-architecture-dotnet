@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WebApi.Authorization
+namespace WebApi.Auth.Scopes
 {
     public static class Scopes
     {

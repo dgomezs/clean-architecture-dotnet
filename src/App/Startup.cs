@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApi;
-using WebApi.Authorization;
+using WebApi.Auth.Config;
 
 namespace App
 {

@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Domain.Users.ValueObjects;
 using Microsoft.IdentityModel.Tokens;
-using WebApi.Authorization;
+using WebApi.Auth;
 
 namespace CleanArchitecture.TodoList.WebApi.Tests.Config
 {

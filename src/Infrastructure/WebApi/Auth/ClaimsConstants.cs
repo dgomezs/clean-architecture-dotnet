@@ -1,4 +1,4 @@
-﻿namespace WebApi.Authorization
+﻿namespace WebApi.Auth
 {
     public static class ClaimsConstants
     {

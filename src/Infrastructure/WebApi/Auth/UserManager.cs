@@ -6,7 +6,7 @@ using Application.Services.Users.Repositories;
 using Domain.Shared.Errors;
 using Domain.Users.ValueObjects;
 
-namespace WebApi.Authorization
+namespace WebApi.Auth
 {
     public class UserManager : IUserManager
     {

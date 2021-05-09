@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using WebApi;
-using WebApi.Authorization;
+using WebApi.Auth.Config;
 
 namespace CleanArchitecture.TodoList.WebApi.Tests.Config
 {
