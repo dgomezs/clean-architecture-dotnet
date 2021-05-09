@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Auth\Auth0" />
       <Folder Include="Controllers\Todos" />
     </ItemGroup>
 

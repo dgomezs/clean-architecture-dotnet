@@ -14,6 +14,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using WebApi.Auth;
 using WebApi.Auth.UserManagement;
 using WebApi.Controllers.Users;
 using WebApi.Errors;
@@ -25,13 +26,13 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
     {
         private readonly Mock<ICreateUserUseCase> _createUserUseCaseMock;
         private readonly CustomWebApplicationFactory<Startup> _factory;
-        private readonly Mock<IUserManager> _userManagerMock;
+        private readonly Mock<IAuthService> _authServices;
 
         public CreateUserTest(CustomWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
             _createUserUseCaseMock = new Mock<ICreateUserUseCase>();
-            _userManagerMock = new Mock<IUserManager>();
+            _authServices = new Mock<IAuthService>();
         }
 
         [Fact]
@@ -45,7 +46,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
             var response = await SendCreateUserCommand(createUserRequest);
 
             // Assert
-            _userManagerMock.Verify(
+            _authServices.Verify(
                 m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(createUserRequest.Email)), Times.Once);
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             var body = await response.Content.ReadAsStringAsync();
@@ -124,7 +125,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
                     builder.ConfigureTestServices(services =>
                     {
                         services.AddScoped(_ => _createUserUseCaseMock.Object);
-                        services.AddScoped(_ => _userManagerMock.Object);
+                        services.AddScoped(_ => _authServices.Object);
                     });
                 })
                 .CreateClient();
@@ -172,14 +173,14 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
 
         private void MockUserHasNotSignedUpYet(RestCreateUserRequest createUserRequest)
         {
-            _userManagerMock.Setup(m =>
+            _authServices.Setup(m =>
                     m.HasUserSignedUpInAuthSystem(EmailAddress.Create(createUserRequest.Email)))
                 .ReturnsAsync(false);
         }
 
         private void MockUserHasSignedUp(RestCreateUserRequest createUserRequest)
         {
-            _userManagerMock.Setup(m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(createUserRequest.Email)))
+            _authServices.Setup(m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(createUserRequest.Email)))
                 .ReturnsAsync(true);
         }
     }

@@ -4,6 +4,7 @@ using Application.Services.Users.UseCases.CreateUser;
 using Domain.Shared.Errors;
 using Domain.Users.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Auth;
 using WebApi.Auth.UserManagement;
 using WebApi.Errors;
 
@@ -16,7 +17,7 @@ namespace WebApi.Controllers.Users
         [HttpPost]
         public async Task<string> CreateUser(
             [FromServices] ICreateUserUseCase createUserUseCase,
-            [FromServices] IUserManager userManager,
+            [FromServices] IAuthService authManager,
             [FromBody] RestCreateUserRequest createUserRequest)
         {
             var (firstName, lastName, email) = createUserRequest;
@@ -24,7 +25,7 @@ namespace WebApi.Controllers.Users
                 email);
 
             var hasUserSignedUpInAuthSystem =
-                await userManager.HasUserSignedUpInAuthSystem(createUserCommand.Email);
+                await authManager.HasUserSignedUpInAuthSystem(createUserCommand.Email);
             if (!hasUserSignedUpInAuthSystem)
                 throw new DomainException(new UserHasNotSignedUpError(createUserCommand.Email));
 
