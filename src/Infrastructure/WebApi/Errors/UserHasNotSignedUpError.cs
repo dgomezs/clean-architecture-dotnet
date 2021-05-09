@@ -1,17 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Application.Services.Shared.Errors;
+using Domain.Shared.Errors;
 using Domain.Users.ValueObjects;
 
-namespace Application.Services.Users.Errors
+namespace WebApi.Errors
 {
-    public record UserAlreadyExistsError : EntityAlreadyExistsError
+    public record UserHasNotSignedUpError : EntityNotFoundError
     {
-        public const string UserAlreadyExists = "UserAlreadyExists";
+        public const string UserHasNotSignedUp = "UserHasNotSignedUp";
         private readonly string _email;
 
-        public UserAlreadyExistsError(EmailAddress email) : base(UserAlreadyExists,
-            "User already exists") =>
+        public UserHasNotSignedUpError(EmailAddress email) : base(UserHasNotSignedUp,
+            "User has not signed up") =>
             _email = email.Value;
 
         public override IDictionary Data => new Dictionary<string, string>

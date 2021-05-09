@@ -6,9 +6,9 @@ using Domain.Shared.Errors;
 using FluentValidation;
 using LanguageExt;
 
-namespace WebApi
+namespace WebApi.Errors
 {
-    public class ExceptionHandlerMapper
+    public static class ExceptionHandlerMapper
     {
         public static RestErrorResponse Map(Exception exception)
         {
@@ -43,10 +43,10 @@ namespace WebApi
                 {
                     EmptyCase<Error> => new RestErrorResponse(),
                     HeadCase<Error> headCase => new RestErrorResponse((int) HttpStatusCode.BadRequest,
-                        headCase.Head.ErrorKey,
+                        headCase.Head.Code,
                         headCase.Head.Message),
                     HeadTailCase<Error> headTailCase => new RestErrorResponse((int) HttpStatusCode.BadRequest,
-                        headTailCase.Head.ErrorKey,
+                        headTailCase.Head.Code,
                         headTailCase.Tail, headTailCase.Head.Message),
                     _ => new RestErrorResponse()
                 };
@@ -57,6 +57,7 @@ namespace WebApi
             return appException switch
             {
                 EntityAlreadyExistsError => HttpStatusCode.Conflict,
+                EntityNotFoundError => HttpStatusCode.BadRequest, // TODO changing this to NotFound gives an error while copying content stream
                 ValidationError => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError
             };

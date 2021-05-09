@@ -2,7 +2,7 @@
 {
     public record EntityNotFoundError : Error
     {
-        public EntityNotFoundError(string errorKey, string message) : base(errorKey, message)
+        protected EntityNotFoundError(string code, string message) : base(code, message)
         {
         }
     }

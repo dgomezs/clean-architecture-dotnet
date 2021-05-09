@@ -18,6 +18,7 @@ using WebApi.Auth.Config;
 using WebApi.Auth.Scopes;
 using WebApi.Auth.UserManagement;
 using WebApi.CustomConverters;
+using WebApi.Errors;
 
 namespace WebApi
 {

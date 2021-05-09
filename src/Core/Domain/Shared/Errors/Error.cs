@@ -5,29 +5,29 @@ namespace Domain.Shared.Errors
 {
     public record Error
     {
-        public Error(string errorKey, string propertyName, string message)
+        public Error(string code, string propertyName, string message)
         {
-            ErrorKey = Guard.Against.NullOrEmpty(errorKey, nameof(errorKey));
+            Code = Guard.Against.NullOrEmpty(code, nameof(code));
             PropertyName = Guard.Against.NullOrEmpty(propertyName, nameof(propertyName));
             Message = Guard.Against.NullOrEmpty(message, nameof(message));
         }
 
-        public Error(string errorKey, string message)
+        public Error(string code, string message)
         {
-            ErrorKey = Guard.Against.NullOrEmpty(errorKey, nameof(errorKey));
+            Code = Guard.Against.NullOrEmpty(code, nameof(code));
             Message = Guard.Against.NullOrEmpty(message, nameof(message));
             PropertyName = null;
         }
 
-        public Error(string errorKey)
+        public Error(string code)
         {
-            ErrorKey = Guard.Against.NullOrEmpty(errorKey, nameof(errorKey));
+            Code = Guard.Against.NullOrEmpty(code, nameof(code));
             Message = "";
             PropertyName = null;
         }
 
 
-        public string ErrorKey { get; }
+        public string Code { get; }
         public string? PropertyName { get; init; }
         public string Message { get; }
         public virtual IDictionary Data { get; }

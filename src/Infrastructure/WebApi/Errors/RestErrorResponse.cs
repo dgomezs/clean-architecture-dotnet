@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Domain.Shared.Errors;
 
-namespace WebApi
+namespace WebApi.Errors
 {
     public record RestErrorResponse
     {
@@ -11,18 +12,19 @@ namespace WebApi
         public RestErrorResponse(int code, string errorKey,
             IEnumerable<Error> errors,
             string message) =>
-            (Status, ErrorKey, Errors, Message) = (code, errorKey, errors, message);
+            (Status, Code, Errors, Message) = (code, errorKey,
+                errors.Select(e => new RestError(e.Code, e.Message, e.PropertyName)), message);
 
         public RestErrorResponse(int code, string errorKey,
             string message) =>
-            (Status, ErrorKey, Message) = (code, errorKey, message);
+            (Status, Code, Message) = (code, errorKey, message);
 
 
         public RestErrorResponse(int code, string message) =>
-            (ErrorKey, Status, Message) = (UnexpectedServerError, code, message);
+            (Code, Status, Message) = (UnexpectedServerError, code, message);
 
         public RestErrorResponse() =>
-            (ErrorKey, Status, Message) = (UnexpectedServerError, (int) HttpStatusCode.InternalServerError,
+            (Code, Status, Message) = (UnexpectedServerError, (int) HttpStatusCode.InternalServerError,
                 UnexpectedServerError);
 
 
@@ -30,8 +32,10 @@ namespace WebApi
 
         public int Status { get; }
 
-        public IEnumerable<Error> Errors { get; } = new List<Error>();
+        public IEnumerable<RestError> Errors { get; } = new List<RestError>();
 
-        public string ErrorKey { get; }
+        public string Code { get; }
     }
+
+    public record RestError(string Code, string Message, string? Property);
 }

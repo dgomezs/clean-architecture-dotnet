@@ -6,6 +6,7 @@ using Domain.Shared.Errors;
 using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using WebApi;
+using WebApi.Errors;
 
 namespace CleanArchitecture.TodoList.WebApi.Tests.Config
 {
@@ -13,12 +14,12 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
     {
         public static async Task AssertError(HttpResponseMessage response, RestErrorResponse errorResponse)
         {
-            await AssertError(response, errorResponse.ErrorKey, errorResponse.Message, errorResponse.Errors,
+            await AssertError(response, errorResponse.Code, errorResponse.Message, errorResponse.Errors,
                 errorResponse.Status);
         }
 
-        private static JToken ExpectedErrorResult(string errorKey, string errorMessage,
-            int expectedHttpStatusCode, IEnumerable<Error> errors)
+        private static JToken ExpectedErrorResult(string code, string errorMessage,
+            int expectedHttpStatusCode, IEnumerable<RestError> errors)
 
         {
             var serializedErrors = JsonSerializer.Serialize(errors, new JsonSerializerOptions
@@ -28,16 +29,16 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
             });
 
             return JToken.Parse(
-                $"{{\"message\":\"{errorMessage}\",\"status\":{expectedHttpStatusCode},\"errors\":{serializedErrors},\"errorKey\":\"{errorKey}\"}}");
+                $"{{\"message\":\"{errorMessage}\",\"status\":{expectedHttpStatusCode},\"errors\":{serializedErrors},\"code\":\"{code}\"}}");
         }
 
-        private static async Task AssertError(HttpResponseMessage response, string errorKey, string errorMessage,
-            IEnumerable<Error> errors,
+        private static async Task AssertError(HttpResponseMessage response, string code, string errorMessage,
+            IEnumerable<RestError> errors,
             int expectedHttpStatusCode)
         {
             response.StatusCode.Should().Be(expectedHttpStatusCode);
             var body = JToken.Parse(await response.Content.ReadAsStringAsync()).ToString();
-            var expectedResult = ExpectedErrorResult(errorKey, errorMessage,
+            var expectedResult = ExpectedErrorResult(code, errorMessage,
                 expectedHttpStatusCode, errors).ToString();
             expectedResult.Should().Be(body);
         }

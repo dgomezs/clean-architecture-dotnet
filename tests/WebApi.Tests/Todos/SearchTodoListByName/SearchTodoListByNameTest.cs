@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using WebApi;
+using WebApi.Errors;
 using Xunit;
 
 namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.SearchTodoListByName
@@ -60,7 +61,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.SearchTodoListByName
             // arrange
             var error = new Error(errorKey, "Name", "'Name' must not be empty.");
             var expectedErrorResponse = new RestErrorResponse((int) HttpStatusCode.BadRequest,
-                error.ErrorKey, new List<Error>(), error.Message);
+                error.Code, new List<Error>(), error.Message);
             // assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             await ErrorAssertionUtils.AssertError(response, expectedErrorResponse);

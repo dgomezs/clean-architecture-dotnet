@@ -45,7 +45,7 @@ namespace Domain.Shared.Errors
         }
 
 
-        public string ErrorKey => MainError.ErrorKey;
+        public string ErrorKey => MainError.Code;
 
         public IEnumerable<Error> Errors => _errors;
 
