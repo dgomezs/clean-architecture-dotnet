@@ -24,6 +24,11 @@ namespace WebApi.Auth.UserManagement
             return owner.Id;
         }
 
+        public Task<bool> HasUserSignedUpInAuthSystem(EmailAddress create)
+        {
+            return Task.FromResult(true);
+        }
+
         private static EmailAddress GetEmail(ClaimsPrincipal claimsPrincipal)
         {
             var email = GetClaim(claimsPrincipal, ClaimsConstants.EmailClaim);

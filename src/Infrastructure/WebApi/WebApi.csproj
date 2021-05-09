@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <Folder Include="Controllers\Todos" />
+      <Folder Include="Errors" />
     </ItemGroup>
 
 </Project>

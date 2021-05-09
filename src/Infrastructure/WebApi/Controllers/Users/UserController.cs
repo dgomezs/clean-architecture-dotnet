@@ -2,6 +2,7 @@
 using Application.Services.Users.UseCases.CreateUser;
 using Domain.Users.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Auth.UserManagement;
 
 namespace WebApi.Controllers.Users
 {
@@ -12,11 +13,15 @@ namespace WebApi.Controllers.Users
         [HttpPost]
         public async Task<string> CreateUser(
             [FromServices] ICreateUserUseCase createUserUseCase,
+            [FromServices] IUserManager userManager,
             [FromBody] RestCreateUserRequest createUserRequest)
         {
             var (firstName, lastName, email) = createUserRequest;
             var createUserCommand = CreateUserCommand.Create(firstName, lastName,
                 email);
+
+            var hasUserSignedUpInAuthSystem =
+                await userManager.HasUserSignedUpInAuthSystem(createUserCommand.Email);
             UserId result = await createUserUseCase.Invoke(
                 createUserCommand);
             return result.Value.ToString();
