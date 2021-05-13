@@ -24,24 +24,25 @@ namespace WebApi.Auth.UserManagement
                 return userId;
             }
 
-            var emailAddress = ExtractEmailFromClaims(claimsPrincipal);
+            var emailAddress = ExtractEmailFromClaims(claimsPrincipal) ??
+                               throw new ArgumentException("invalid claims");
 
             var owner = await _userRepository.GetByEmail(emailAddress) ??
                         throw new DomainException(new UserDoesNotExistError(emailAddress));
             return owner.Id;
         }
 
-        private UserId? ExtractUserIdFromClaims(ClaimsPrincipal claimsPrincipal)
+        private static UserId? ExtractUserIdFromClaims(ClaimsPrincipal claimsPrincipal)
         {
             var userIdClaim = GetClaim(claimsPrincipal, ClaimsConstants.UserIdClaim);
             return userIdClaim is not null ? new UserId(new Guid(userIdClaim)) : null;
         }
 
 
-        private static EmailAddress ExtractEmailFromClaims(ClaimsPrincipal claimsPrincipal)
+        private static EmailAddress? ExtractEmailFromClaims(ClaimsPrincipal claimsPrincipal)
         {
             var email = GetClaim(claimsPrincipal, ClaimsConstants.EmailClaim);
-            return EmailAddress.Create(email);
+            return email is not null ? EmailAddress.Create(email) : null;
         }
 
         private static string? GetClaim(ClaimsPrincipal claimsPrincipal, string claim)
