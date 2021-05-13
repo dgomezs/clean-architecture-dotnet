@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Services.Users.Errors;
 using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
+using Domain.Shared.Errors;
 using Domain.Users.ValueObjects;
 
 namespace WebApi.Auth.Auth0
@@ -21,19 +24,44 @@ namespace WebApi.Auth.Auth0
             _managementConnection = managementConnection;
         }
 
+        public async Task AssignUserId(EmailAddress email, UserId userId)
+        {
+            var users = await GetUsersByEmail(email);
+            if (!users.Any())
+            {
+                throw new DomainException(new UserDoesNotExistError(email));
+            }
+
+            var management = await GetManagementApiClient();
+
+            foreach (var user in users)
+            {
+                await management.Users.UpdateAsync(user.UserId, new UserUpdateRequest
+                {
+                    UserMetadata = new Auth0UserMetaData(userId.Value.ToString())
+                });
+            }
+        }
+
         public async Task<bool> HasUserSignedUpInAuthSystem(EmailAddress email)
         {
-            var token = await _authTokenService.GetManagementToken();
-            var management = new ManagementApiClient(token, new Uri(_config.Domain + "api/v2"), _managementConnection);
-
-
-            var users = await management.Users.GetUsersByEmailAsync(email.Value);
+            var users = await GetUsersByEmail(email);
             return users.Any();
         }
 
-        public Task AssignUserId(EmailAddress emailAddress, UserId expectedId)
+        private async Task<IList<User>> GetUsersByEmail(EmailAddress email)
         {
-            throw new NotImplementedException();
+            var management = await GetManagementApiClient();
+            var users = await management.Users.GetUsersByEmailAsync(email.Value);
+            return users;
+        }
+
+        private async Task<ManagementApiClient> GetManagementApiClient()
+        {
+            var token = await _authTokenService.GetManagementToken();
+            var management =
+                new ManagementApiClient(token, new Uri(_config.ManagementApi), _managementConnection);
+            return management;
         }
     }
 }

@@ -15,7 +15,10 @@ namespace WebApi.Auth.Auth0
                 "AUTH_ISSUER");
             TokenPath = $"{Domain}oauth/token";
             TokenAudience = $"{Domain}api/v2/";
+            ManagementApi = $"{Domain}api/v2";
         }
+
+        public string ManagementApi { get; }
 
         public string TokenPath { get; }
 
