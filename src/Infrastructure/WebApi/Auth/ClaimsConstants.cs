@@ -2,10 +2,9 @@
 {
     public static class ClaimsConstants
     {
-        
-        private static string NameSpace = "https://todo-list-app.com/";
-        public static string EmailClaim = $"{NameSpace}email";
-        public static string UserIdClaim = $"{NameSpace}TodoListUserId";
-        public static string ScopeClaim = "scope";
+        private const string NameSpace = "https://todo-list-app.com/";
+        public static readonly string EmailClaim = $"{NameSpace}email";
+        public static readonly string UserIdClaim = $"{NameSpace}TodoListUserId";
+        public const string ScopeClaim = "scope";
     }
 }
