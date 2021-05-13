@@ -31,6 +31,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Infrastructure\WebApi\WebApi.csproj" />
       <ProjectReference Include="..\FakeTestData\FakeTestData.csproj" />
+      <ProjectReference Include="..\TestCategories\TestCategories.csproj" />
     </ItemGroup>
 
 </Project>
