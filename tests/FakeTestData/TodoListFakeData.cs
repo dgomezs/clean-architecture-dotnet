@@ -40,7 +40,7 @@ namespace FakeTestData
         {
             var todoListName = TodoListNameFaker(namePrefix);
             return Enumerable.Range(0, count).Select(_ => new TodoList(ownerId, todoListName.Generate(),
-                new TodoListId(Guid.NewGuid()), TodosFakeData.CreateTodos(numberOfTodos))).ToList();
+                new TodoListId(Guid.NewGuid()), TodosFakeData.CreateTodosNotDone(numberOfTodos))).ToList();
         }
 
         private static Faker<TodoListName> TodoListNameFaker(string prefix)
