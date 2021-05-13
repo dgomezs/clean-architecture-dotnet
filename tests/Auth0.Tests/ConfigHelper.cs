@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace CleanArchitecture.TodoList.WebApi.Tests.Config
+namespace Auth0.Tests
 {
     public static class ConfigHelper
     {
@@ -8,7 +8,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
         {
             return new ConfigurationBuilder()
                 .AddEnvironmentVariables()
-                .AddUserSecrets<Startup>()
+                .AddUserSecrets<Auth0TokenTest>()
                 .Build();
         }
     }

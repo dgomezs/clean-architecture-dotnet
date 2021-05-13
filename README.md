@@ -97,7 +97,7 @@ In production DB users for DBUP and MSSQL should be different with different per
 }
 ```
 
-### WebApi.Tests
+### Auth0.Tests
 
 ```
 {

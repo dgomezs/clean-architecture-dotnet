@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using NodaTime;
 
-namespace WebApi.Auth.Auth0
+namespace Auth0
 {
     public class AuthTokenService
     {

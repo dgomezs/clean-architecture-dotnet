@@ -26,6 +26,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Core\Application.Services\Application.Services.csproj" />
         <ProjectReference Include="..\Core\Domain\Domain.csproj" />
+        <ProjectReference Include="..\Infrastructure\Auth0\Auth0.csproj" />
         <ProjectReference Include="..\Infrastructure\Persistence\Persistence.csproj" />
         <ProjectReference Include="..\Infrastructure\WebApi\WebApi.csproj" />
     </ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using Microsoft.Extensions.Configuration;
 
-namespace WebApi.Auth.Auth0
+namespace Auth0
 {
     public class Auth0Config
     {

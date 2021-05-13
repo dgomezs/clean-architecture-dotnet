@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using Auth0;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutofacSerilogIntegration;
@@ -8,7 +9,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApi;
-using WebApi.Auth.Auth0;
 using WebApi.Auth.Config;
 
 namespace App
@@ -28,7 +28,7 @@ namespace App
             WebApiInstall.ConfigureServices(services);
             WebApiInstall.ConfigureAuthorization(services, auth);
             WebApiInstall.ConfigureAuthentication(services, auth);
-            WebApiInstall.ConfigureAuth0(services, new Auth0Config(Configuration));
+            Auth0Install.ConfigureAuth0(services, new Auth0Config(Configuration));
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

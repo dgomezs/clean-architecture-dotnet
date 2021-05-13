@@ -3,17 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Auth0.AuthenticationApi;
 using Auth0.ManagementApi;
-using CleanArchitecture.TodoList.WebApi.Tests.Config;
 using Domain.Users.ValueObjects;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using NodaTime;
 using TestCategories;
-using WebApi.Auth.Auth0;
 using Xunit;
 
-namespace CleanArchitecture.TodoList.WebApi.Tests.Auth0
+namespace Auth0.Tests
 {
     public class Auth0UserSignedUpTest
     {

@@ -2,16 +2,14 @@
 using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
 using Bogus;
-using CleanArchitecture.TodoList.WebApi.Tests.Config;
 using FluentAssertions;
 using Moq;
 using NodaTime;
 using NodaTime.Testing;
 using TestCategories;
-using WebApi.Auth.Auth0;
 using Xunit;
 
-namespace CleanArchitecture.TodoList.WebApi.Tests.Auth0
+namespace Auth0.Tests
 {
     public class Auth0TokenTest
     {

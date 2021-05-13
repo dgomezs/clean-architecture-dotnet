@@ -7,8 +7,9 @@ using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
 using Domain.Shared.Errors;
 using Domain.Users.ValueObjects;
+using WebApi.Auth;
 
-namespace WebApi.Auth.Auth0
+namespace Auth0
 {
     public class Auth0Service : IAuthService
     {

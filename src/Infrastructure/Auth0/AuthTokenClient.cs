@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
 
-namespace WebApi.Auth.Auth0
+namespace Auth0
 {
     public class AuthTokenClient: IAuthTokenClient
     {
