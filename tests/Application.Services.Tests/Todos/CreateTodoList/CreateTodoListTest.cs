@@ -21,10 +21,10 @@ namespace Application.Services.Tests.Todos.CreateTodoList
     public class CreateTodoListTest
     {
         private readonly ICreateTodoListUseCase _createTodoListUseCase;
+        private readonly ICreateUserUseCase _createUserUseCase;
         private readonly InMemoryEventPublisher _eventPublisher;
         private readonly AutoMock _mock;
         private readonly InMemoryTodoListRepository _todoListRepository;
-        private readonly ICreateUserUseCase _createUserUseCase;
 
         public CreateTodoListTest()
         {
@@ -80,7 +80,7 @@ namespace Application.Services.Tests.Todos.CreateTodoList
             // act
             var exception = await Assert.ThrowsAsync<DomainException>(() =>
                 _createTodoListUseCase.Invoke(createTodoListRequest));
-            
+
             var exceptionData = exception.Data;
             Assert.Equal(UserDoesNotExistError.UserDoesNotExists, exception.ErrorKey);
             Assert.Equal(createTodoListRequest.OwnerId.Value.ToString(), exceptionData["UserId"]);

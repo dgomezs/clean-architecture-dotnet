@@ -11,12 +11,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
 {
     public class FakeJwtManager
     {
-        public static string Issuer { get; } = Guid.NewGuid().ToString();
-        public static string Audience { get; } = Guid.NewGuid().ToString();
-        public static SecurityKey SecurityKey { get; }
-        public static SigningCredentials SigningCredentials { get; }
-
-        private static readonly JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+        private static readonly JwtSecurityTokenHandler tokenHandler = new();
         private static readonly RandomNumberGenerator generator = RandomNumberGenerator.Create();
         private static readonly byte[] key = new byte[32];
 
@@ -26,6 +21,11 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
             SecurityKey = new SymmetricSecurityKey(key) {KeyId = Guid.NewGuid().ToString()};
             SigningCredentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha256);
         }
+
+        public static string Issuer { get; } = Guid.NewGuid().ToString();
+        public static string Audience { get; } = Guid.NewGuid().ToString();
+        public static SecurityKey SecurityKey { get; }
+        public static SigningCredentials SigningCredentials { get; }
 
         public static string GenerateJwtToken(EmailAddress userEmailAddress, List<string> scopes)
         {

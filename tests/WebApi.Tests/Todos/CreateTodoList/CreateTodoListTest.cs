@@ -18,7 +18,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using WebApi;
 using WebApi.Auth.Scopes;
 using WebApi.Controllers.Todos.TodoList;
 using WebApi.Errors;
@@ -29,18 +28,12 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
 {
     public class CreateTodoListTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
+        private const string ListName = "todoList";
         private readonly Mock<ICreateTodoListUseCase> _createTodoListUseCaseMock;
 
         private readonly CustomWebApplicationFactory<Startup> _factory;
 
         private readonly Mock<IUserRepository> _userRepository;
-
-        private static List<string> CreateTodoListScope => new()
-        {
-            Scopes.CreateTodoListsScope
-        };
-
-        private const string ListName = "todoList";
 
         public CreateTodoListTest(CustomWebApplicationFactory<Startup> factory)
         {
@@ -48,6 +41,11 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
             _userRepository = new Mock<IUserRepository>();
             _createTodoListUseCaseMock = new Mock<ICreateTodoListUseCase>();
         }
+
+        private static List<string> CreateTodoListScope => new()
+        {
+            Scopes.CreateTodoListsScope
+        };
 
         [Fact]
         public async Task Should_create_new_list_when_user_is_in_system_and_todo_list_does_not_exist()

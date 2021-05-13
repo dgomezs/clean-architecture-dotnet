@@ -32,7 +32,7 @@ namespace Domain.Tests.ValidateTodoDescription
             // assert
             AssertTodoDescriptionName(StringFakeData.GenerateRandomString(251));
         }
-        
+
         [Fact]
         public void Should_trim_beginning_and_end()
         {

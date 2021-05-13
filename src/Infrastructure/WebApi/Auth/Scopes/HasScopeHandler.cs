@@ -12,7 +12,8 @@ namespace WebApi.Auth.Scopes
             HasScopeRequirement requirement)
         {
             // If user does not have the scope claim, get out of here
-            if (!context.User.HasClaim(c => c.Type == ClaimsConstants.ScopeClaim && c.Issuer == requirement.Issuer))
+            if (!context.User.HasClaim(c =>
+                c.Type == ClaimsConstants.ScopeClaim && c.Issuer == requirement.Issuer))
                 return Task.CompletedTask;
 
             // Split the scopes string into an array

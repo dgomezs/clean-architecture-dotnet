@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.Users.UseCases.CreateUser;
-using Autofac.Extras.Moq;
 using Domain.Shared.Errors;
+using Domain.Users.Entities;
 using Domain.Users.ValueObjects;
 using Xunit;
 
@@ -50,7 +50,7 @@ namespace Application.Services.Tests.Users.CreateUser
 
         // TODO add cases for invalid names and email
 
-        private async Task<Domain.Users.Entities.User> CreateUser()
+        private async Task<User> CreateUser()
         {
             var createUserCommand = FakeCommandGenerator.FakeCreateUserCommand();
             await ArrangeUserDoesNotExist(createUserCommand.Email);

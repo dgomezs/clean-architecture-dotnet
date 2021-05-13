@@ -9,8 +9,8 @@ namespace Application.Services.Todos.Errors
     {
         public const string TodoListDoesNotExist = "TodoListDoesNotExist";
         private const string ErrorMessage = "Todo list does not exists";
-        private readonly string _todoListId;
         private readonly string _todoId;
+        private readonly string _todoListId;
 
         public TodoListDoesNotExistsError(TodoListId todoListId) : base(TodoListDoesNotExist,
             ErrorMessage) =>

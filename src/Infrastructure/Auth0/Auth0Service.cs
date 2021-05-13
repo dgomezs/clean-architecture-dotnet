@@ -13,8 +13,8 @@ namespace Auth0
 {
     public class Auth0Service : IAuthService
     {
-        private readonly Auth0Config _config;
         private readonly AuthTokenService _authTokenService;
+        private readonly Auth0Config _config;
         private readonly IManagementConnection _managementConnection;
 
         public Auth0Service(Auth0Config config, AuthTokenService authTokenService
@@ -29,19 +29,15 @@ namespace Auth0
         {
             var users = await GetUsersByEmail(email);
             if (!users.Any())
-            {
                 throw new DomainException(new UserDoesNotExistError(email));
-            }
 
             var management = await GetManagementApiClient();
 
             foreach (var user in users)
-            {
                 await management.Users.UpdateAsync(user.UserId, new UserUpdateRequest
                 {
                     UserMetadata = new Auth0UserMetaData(userId.Value.ToString())
                 });
-            }
         }
 
         public async Task<bool> HasUserSignedUpInAuthSystem(EmailAddress email)

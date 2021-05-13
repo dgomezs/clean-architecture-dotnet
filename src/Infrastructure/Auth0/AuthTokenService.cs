@@ -5,10 +5,10 @@ namespace Auth0
 {
     public class AuthTokenService
     {
+        private readonly IAuthTokenClient _authTokenClient;
+        private readonly IClock _clock;
         private string _token;
         private Instant _tokenExpiration;
-        private readonly IClock _clock;
-        private readonly IAuthTokenClient _authTokenClient;
 
         public AuthTokenService(IAuthTokenClient authTokenClient
             , IClock clock)
@@ -20,9 +20,7 @@ namespace Auth0
         public async Task<string> GetManagementToken()
         {
             if (_clock.GetCurrentInstant() < _tokenExpiration)
-            {
                 return _token;
-            }
 
             var token = await _authTokenClient.GetNewToken();
 

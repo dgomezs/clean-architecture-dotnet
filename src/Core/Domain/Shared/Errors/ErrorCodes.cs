@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Domain.Shared.Errors
+﻿namespace Domain.Shared.Errors
 {
     public static class ErrorCodes
     {

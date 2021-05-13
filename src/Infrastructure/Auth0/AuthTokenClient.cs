@@ -5,7 +5,7 @@ using Auth0.AuthenticationApi.Models;
 
 namespace Auth0
 {
-    public class AuthTokenClient: IAuthTokenClient
+    public class AuthTokenClient : IAuthTokenClient
     {
         private readonly Auth0Config _config;
         private readonly IAuthenticationConnection _managementConnection;

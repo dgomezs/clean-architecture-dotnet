@@ -18,12 +18,20 @@ namespace Application.Services.Tests.TestDoubles
                                                                         && todoListName.Equals(t.Name)));
         }
 
+        public Task<TodoList?> GetByTodoId(TodoId todoId)
+        {
+            var valueOrDefault =
+                Elements.Values.SingleOrDefault(l => l.Todos.Exists(t => todoId.Equals(t.Id)));
+            Elements.Clear(); // force the entity to be saved again
+            return Task.FromResult(valueOrDefault);
+        }
+
 
         protected override TodoListId GetId(TodoList todoList) =>
             todoList.Id;
 
         protected override TodoList Copy(TodoList todoList) =>
-            new(todoList.OwnerId,TodoListName.Create(todoList.Name.Name), new TodoListId(todoList.Id.Value),
+            new(todoList.OwnerId, TodoListName.Create(todoList.Name.Name), new TodoListId(todoList.Id.Value),
                 Copy(todoList.Todos.ToList()));
 
         private static List<Todo> Copy(IEnumerable<Todo> todos)
@@ -35,14 +43,6 @@ namespace Application.Services.Tests.TestDoubles
         {
             return new(new TodoId(todoList.Id.Value), TodoDescription.Create(todoList.Description.Description),
                 todoList.Done);
-        }
-
-        public Task<TodoList?> GetByTodoId(TodoId todoId)
-        {
-            var valueOrDefault =
-                Elements.Values.SingleOrDefault(l => l.Todos.Exists(t => todoId.Equals(t.Id)));
-            Elements.Clear(); // force the entity to be saved again
-            return Task.FromResult(valueOrDefault);
         }
 
         public async Task RemoveByName(UserId ownerId, TodoListName todoListName)

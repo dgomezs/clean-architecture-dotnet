@@ -32,6 +32,15 @@ namespace Domain.Shared.Errors
             => (MainError, _errors) = (mainError, errors.ToList());
 
 
+        public string ErrorKey => MainError.Code;
+
+        public IEnumerable<Error> Errors => _errors;
+
+        public override string Message => MainError.Message;
+
+        public override IDictionary Data => MainError.Data;
+
+
         public static DomainException FromSeqErrors(Seq<Error> errors)
         {
             return errors.Case switch
@@ -43,15 +52,6 @@ namespace Domain.Shared.Errors
                 _ => new DomainException()
             };
         }
-
-
-        public string ErrorKey => MainError.Code;
-
-        public IEnumerable<Error> Errors => _errors;
-
-        public override string Message => MainError.Message;
-
-        public override IDictionary Data => MainError.Data;
 
         public DomainException PrefixErrors(string prefix)
         {

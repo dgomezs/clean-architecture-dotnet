@@ -7,10 +7,10 @@ namespace Domain.Todos.TodoValidationRules
 {
     internal class OnlyOwnerCanAddTodos : IAddTodoValidationRule
     {
-        private UserId UserThatAddsTodo { get; }
-
         public OnlyOwnerCanAddTodos(UserId userThatAddsTodo) =>
             UserThatAddsTodo = userThatAddsTodo;
+
+        private UserId UserThatAddsTodo { get; }
 
         public Error? CanTodoBeAdded(TodoList todoList)
         {

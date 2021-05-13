@@ -20,9 +20,7 @@ namespace WebApi.Auth.UserManagement
         {
             var userId = ExtractUserIdFromClaims(claimsPrincipal);
             if (userId is not null)
-            {
                 return userId;
-            }
 
             var emailAddress = ExtractEmailFromClaims(claimsPrincipal) ??
                                throw new ArgumentException("invalid claims");

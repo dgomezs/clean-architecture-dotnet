@@ -7,10 +7,10 @@ namespace Infrastructure.Persistence
 {
     public sealed class TodoListContext : DbContext
     {
+        public const string Schema = "todos";
+
         public TodoListContext(DbContextOptions options) : base(options) =>
             ChangeTracker.LazyLoadingEnabled = false;
-
-        public const string Schema = "todos";
 
         public DbSet<TodoList> TodoLists { get; set; }
         public DbSet<User> Users { get; set; }

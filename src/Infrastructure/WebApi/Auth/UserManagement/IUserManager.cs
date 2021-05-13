@@ -7,6 +7,5 @@ namespace WebApi.Auth.UserManagement
     public interface IUserManager
     {
         Task<UserId> GetUserId(ClaimsPrincipal claimsPrincipal);
-      
     }
 }

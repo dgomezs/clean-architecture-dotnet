@@ -1,22 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Application.Services.Todos.UseCases.AddTodo;
 using Application.Services.Todos.UseCases.CreateTodoList;
 using CleanArchitecture.TodoList.WebApi.Tests.Config;
-using Domain.Shared.Errors;
-using Domain.Todos.ValueObjects;
 using Domain.Users.ValueObjects;
-using FluentAssertions;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using WebApi;
-using WebApi.Controllers.Todos.TodoList;
 using Xunit;
-using static LanguageExt.Prelude;
 
 namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.AddTodo
 {

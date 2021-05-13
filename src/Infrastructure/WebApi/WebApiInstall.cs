@@ -27,7 +27,7 @@ namespace WebApi
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = _ => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             // Disable validation so we can handle all errors with the exception handler
@@ -78,11 +78,9 @@ namespace WebApi
             services.AddAuthorization(options =>
             {
                 foreach (var scope in Scopes.All)
-                {
                     options.AddPolicy(scope,
                         policy => policy.Requirements.Add(new HasScopeRequirement(scope,
                             authConfig.GetIssuer())));
-                }
             });
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
             services.AddScoped<IUserManager, UserManager>();

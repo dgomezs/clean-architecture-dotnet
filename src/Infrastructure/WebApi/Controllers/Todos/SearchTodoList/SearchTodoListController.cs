@@ -26,7 +26,7 @@ namespace WebApi.Controllers.Todos.SearchTodoList
 
         private static UserId ValidateOwnerId(string ownerIdValue)
         {
-            return new UserId(new Guid(Guard.Against.NullOrEmpty(ownerIdValue, nameof(ownerIdValue))));
+            return new(new Guid(Guard.Against.NullOrEmpty(ownerIdValue, nameof(ownerIdValue))));
         }
 
         private static async Task<string> ValidateName(string? name)

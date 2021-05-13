@@ -5,23 +5,21 @@ namespace WebApi.Auth.Config
 {
     public class AuthConfig : IAuthConfig
     {
+        private readonly string _audience;
+        private readonly string _issuer;
         private const string AuthIssuerParam = "AUTH_ISSUER";
         private const string AudienceParam = "AUTH_AUDIENCE";
 
         public AuthConfig(IConfiguration configuration)
         {
-            Issuer = Guard.Against.NullOrEmpty(configuration[AuthIssuerParam], AuthIssuerParam);
-            Audience = Guard.Against.NullOrEmpty(configuration[AudienceParam], AudienceParam);
+            _issuer = Guard.Against.NullOrEmpty(configuration[AuthIssuerParam], AuthIssuerParam);
+            _audience = Guard.Against.NullOrEmpty(configuration[AudienceParam], AudienceParam);
         }
 
         public string GetIssuer() =>
-            Issuer;
-
-        public string Issuer { get; }
+            _issuer;
 
         public string GetAudience() =>
-            Audience;
-
-        public string Audience { get; }
+            _audience;
     }
 }

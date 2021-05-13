@@ -21,14 +21,14 @@ namespace Application.Services.Tests.Todos.AddTodo
 {
     public class AddTodoTest
     {
+        private const int MaxNumberOfTodosNotDoneAllowed = 5;
         private readonly IAddTodoUseCase _addTodoUseCase;
         private readonly ICreateTodoListUseCase _createTodoListUseCase;
+        private readonly ICreateUserUseCase _createUserUseCase;
         private readonly InMemoryEventPublisher _eventPublisher;
         private readonly AutoMock _mock;
         private readonly InMemoryTodoListRepository _todoListRepository;
-        private readonly ICreateUserUseCase _createUserUseCase;
         private readonly InMemoryUserRepository _userRepository;
-        private const int MaxNumberOfTodosNotDoneAllowed = 5;
 
 
         public AddTodoTest()

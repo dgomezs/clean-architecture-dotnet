@@ -23,9 +23,9 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
 {
     public class CreateUserTest : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
+        private readonly Mock<IAuthService> _authServices;
         private readonly Mock<ICreateUserUseCase> _createUserUseCaseMock;
         private readonly CustomWebApplicationFactory<Startup> _factory;
-        private readonly Mock<IAuthService> _authServices;
 
         public CreateUserTest(CustomWebApplicationFactory<Startup> factory)
         {

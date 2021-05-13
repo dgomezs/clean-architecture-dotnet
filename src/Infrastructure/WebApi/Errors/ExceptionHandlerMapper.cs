@@ -57,7 +57,8 @@ namespace WebApi.Errors
             return appException switch
             {
                 EntityAlreadyExistsError => HttpStatusCode.Conflict,
-                EntityNotFoundError => HttpStatusCode.BadRequest, // TODO changing this to NotFound gives an error while copying content stream
+                EntityNotFoundError => HttpStatusCode
+                    .BadRequest, // TODO changing this to NotFound gives an error while copying content stream
                 ValidationError => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError
             };

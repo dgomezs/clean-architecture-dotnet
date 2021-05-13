@@ -1,11 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Application.Services.Users.Errors;
 using Application.Services.Users.UseCases.CreateUser;
 using Domain.Shared.Errors;
 using Domain.Users.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Auth;
-using WebApi.Auth.UserManagement;
 using WebApi.Errors;
 
 namespace WebApi.Controllers.Users
@@ -33,7 +31,6 @@ namespace WebApi.Controllers.Users
                 createUserCommand);
             await authService.AssignUserId(createUserCommand.Email, result);
             return result.Value.ToString();
-
         }
     }
 }

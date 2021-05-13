@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Domain.Users;
 using Domain.Users.Entities;
 using Domain.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +21,7 @@ namespace Infrastructure.Persistence.EfConfigurations
 
             user.Property<long>(IdShadowProperty)
                 .HasColumnType("long").ValueGeneratedOnAdd();
-            
+
             user.Property(t => t.Id)
                 .IsRequired()
                 .HasConversion(v => v.Value,

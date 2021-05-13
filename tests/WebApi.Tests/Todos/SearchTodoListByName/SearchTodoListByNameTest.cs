@@ -13,7 +13,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using WebApi;
 using WebApi.Errors;
 using Xunit;
 

@@ -17,11 +17,11 @@ namespace Auth0.Tests
     {
         private readonly Auth0Service _authService;
         private readonly IConfiguration _configuration;
-        private AuthTokenService _authTokenServiceService;
-        private EmailAddress _existingUserEmail;
-        private HttpClientAuthenticationConnection _httpClientAuthenticationConnection;
-        private HttpClientManagementConnection _httpClientManagementConnection;
-        private Auth0Config _auth0Config;
+        private readonly Auth0Config _auth0Config;
+        private readonly AuthTokenService _authTokenServiceService;
+        private readonly EmailAddress _existingUserEmail;
+        private readonly HttpClientAuthenticationConnection _httpClientAuthenticationConnection;
+        private readonly HttpClientManagementConnection _httpClientManagementConnection;
 
         public Auth0UserSignedUpTest()
         {

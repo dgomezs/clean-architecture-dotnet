@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Services.Tests.TestDoubles;
 using Application.Services.Todos.UseCases.MarkTodoAsDone;
-using Autofac.Extras.Moq;
 using Domain.Todos.Entities;
 using Domain.Users.ValueObjects;
 using FakeTestData;
