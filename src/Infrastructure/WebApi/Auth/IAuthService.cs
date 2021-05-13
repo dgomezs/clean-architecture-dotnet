@@ -5,6 +5,6 @@ namespace WebApi.Auth
 {
     public interface IAuthService
     {
-        Task<bool> HasUserSignedUpInAuthSystem(EmailAddress create);
+        Task<bool> HasUserSignedUpInAuthSystem(EmailAddress email);
     }
 }

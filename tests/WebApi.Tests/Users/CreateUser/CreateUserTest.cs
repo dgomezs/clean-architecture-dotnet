@@ -36,7 +36,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
         }
 
         [Fact]
-        public async Task Should_create_user_when_valid_data_and_exists_in_auth_system()
+        public async Task Should_create_user_when_valid_data_and_has_signed_up_in_auth_system()
         {
             // Arrange
             var createUserRequest = CreateUserRequest();
@@ -44,7 +44,6 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
             MockUserHasSignedUp(createUserRequest);
             // act
             var response = await SendCreateUserCommand(createUserRequest);
-
             // Assert
             _authServices.Verify(
                 m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(createUserRequest.Email)), Times.Once);

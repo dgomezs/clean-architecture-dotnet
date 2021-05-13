@@ -17,7 +17,7 @@ namespace WebApi.Auth.Auth0
             _clock = clock;
         }
 
-        public async Task<string> GetToken()
+        public async Task<string> GetManagementToken()
         {
             if (_clock.GetCurrentInstant() < _tokenExpiration)
             {
