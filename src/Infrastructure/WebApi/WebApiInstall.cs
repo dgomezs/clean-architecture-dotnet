@@ -1,5 +1,7 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Text.Json;
+using Auth0.AuthenticationApi;
 using Auth0.ManagementApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -14,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using NodaTime;
 using WebApi.Auth;
 using WebApi.Auth.Auth0;
 using WebApi.Auth.Config;
@@ -60,8 +63,13 @@ namespace WebApi
 
         public static void ConfigureAuth0(IServiceCollection services, Auth0Config config)
         {
+            services.AddSingleton(config);
             services.AddSingleton<IManagementConnection, HttpClientManagementConnection>();
-            //services.AddSingleton(new AuthTokenManagement(config));
+            services.AddSingleton<IAuthenticationConnection, HttpClientAuthenticationConnection>();
+            services.AddSingleton<IAuthTokenClient, AuthTokenClient>();
+            services.AddSingleton(s =>
+                new AuthTokenService(s.GetService<IAuthTokenClient>() ?? throw new InvalidOperationException(),
+                    SystemClock.Instance));
             services.AddScoped<IAuthService, Auth0Service>();
         }
 
