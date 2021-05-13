@@ -28,7 +28,6 @@ namespace App
             WebApiInstall.ConfigureServices(services);
             WebApiInstall.ConfigureAuthorization(services, auth);
             WebApiInstall.ConfigureAuthentication(services, auth);
-            Auth0Install.ConfigureAuth0(services, new Auth0Config(Configuration));
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -36,6 +35,7 @@ namespace App
             builder.RegisterLogger();
             builder.Register(_ => Configuration).AsSelf().SingleInstance();
             builder.RegisterModule(new PersistenceModule());
+            builder.RegisterModule(new Auth0Module());
             builder.RegisterModule(new ApplicationServicesModule());
         }
 
