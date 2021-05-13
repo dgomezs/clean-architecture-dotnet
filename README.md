@@ -1,8 +1,8 @@
 # Clean Architecture and Domain Driven Design
 
-Starting point for Clean Architecture and Domain-Driven Design projects.
+Simple project showing casing Clean Architecture and Domain-Driven Design projects.
 
-Repos that inspired this template
+Repos that inspired this one
 
 - https://github.com/jasontaylordev/CleanArchitecture
 - https://github.com/ardalis/CleanArchitecture
