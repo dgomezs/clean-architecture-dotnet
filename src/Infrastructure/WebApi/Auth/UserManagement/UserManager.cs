@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Services.Users.Errors;
@@ -17,19 +18,27 @@ namespace WebApi.Auth.UserManagement
 
         public async Task<UserId> GetUserId(ClaimsPrincipal claimsPrincipal)
         {
-            var emailAddress = GetEmail(claimsPrincipal);
+            var userId = ExtractUserIdFromClaims(claimsPrincipal);
+            if (userId is not null)
+            {
+                return userId;
+            }
+
+            var emailAddress = ExtractEmailFromClaims(claimsPrincipal);
 
             var owner = await _userRepository.GetByEmail(emailAddress) ??
                         throw new DomainException(new UserDoesNotExistError(emailAddress));
             return owner.Id;
         }
 
-        public Task<bool> HasUserSignedUpInAuthSystem(EmailAddress create)
+        private UserId? ExtractUserIdFromClaims(ClaimsPrincipal claimsPrincipal)
         {
-            return Task.FromResult(true);
+            var userIdClaim = GetClaim(claimsPrincipal, ClaimsConstants.UserIdClaim);
+            return userIdClaim is not null ? new UserId(new Guid(userIdClaim)) : null;
         }
 
-        private static EmailAddress GetEmail(ClaimsPrincipal claimsPrincipal)
+
+        private static EmailAddress ExtractEmailFromClaims(ClaimsPrincipal claimsPrincipal)
         {
             var email = GetClaim(claimsPrincipal, ClaimsConstants.EmailClaim);
             return EmailAddress.Create(email);

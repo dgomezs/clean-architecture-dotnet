@@ -31,6 +31,19 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
         {
             var claims = GetClaims(userEmailAddress, scopes);
 
+            return WriteToken(claims);
+        }
+
+        public static string GenerateJwtToken(UserId ownerId, List<string> scopes)
+        {
+            var claims = GetClaims(ownerId, scopes);
+
+            return WriteToken(claims);
+        }
+
+
+        private static string WriteToken(IEnumerable<Claim> claims)
+        {
             return tokenHandler.WriteToken(new JwtSecurityToken(Issuer, Audience, claims, null,
                 DateTime.UtcNow.AddMinutes(10), SigningCredentials));
         }
@@ -47,9 +60,25 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
         {
             var claims = new List<Claim>
             {
-                new Claim(type: ClaimsConstants.EmailClaim, value: userEmailAddress.Value,
+                new(ClaimsConstants.EmailClaim, userEmailAddress.Value,
                     ClaimValueTypes.String, Issuer),
-                new Claim(type: "scope", string.Join(" ", scopes), ClaimValueTypes.String, Issuer)
+                ClopesClaim(scopes)
+            };
+            return claims;
+        }
+
+        private static Claim ClopesClaim(List<string> scopes)
+        {
+            return new("scope", string.Join(" ", scopes), ClaimValueTypes.String, Issuer);
+        }
+
+        private static List<Claim> GetClaims(UserId ownerId, List<string> scopes)
+        {
+            var claims = new List<Claim>
+            {
+                new(ClaimsConstants.UserIdClaim, ownerId.Value.ToString(),
+                    ClaimValueTypes.String, Issuer),
+                ClopesClaim(scopes)
             };
             return claims;
         }

@@ -50,13 +50,28 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         }
 
         [Fact]
-        public async Task Should_create_new_list_when_no_errors()
+        public async Task Should_create_new_list_when_user_is_in_system_and_todo_list_does_not_exist()
         {
             // Arrange
             var owner = UserFakeData.CreateUser();
             var expectedId = MockSuccessfulCreateTodoListResponse(owner, ListName);
             // act
             var response = await SendCreateTodoListCommand(owner.Email, ListName);
+            // Assert
+            response.EnsureSuccessStatusCode(); // Status Code 200-299
+            var body = await response.Content.ReadAsStringAsync();
+            body.Should().Be(expectedId.Value.ToString());
+        }
+
+        [Fact]
+        public async Task
+            Should_create_new_list_when_user_is_in_system_token_has_user_id_todo_list_does_not_exist()
+        {
+            // Arrange
+            var owner = UserFakeData.CreateUser();
+            var expectedId = MockSuccessfulCreateTodoListResponse(owner, ListName);
+            // act
+            var response = await SendCreateTodoListCommand(owner.Id, ListName);
             // Assert
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             var body = await response.Content.ReadAsStringAsync();
@@ -130,6 +145,13 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Todos.CreateTodoList
         {
             return await SendCreateTodoListCommand(todoListName, HttpRequestHelper.GetToken(
                 ownerEmailAddress, CreateTodoListScope));
+        }
+
+        private async Task<HttpResponseMessage> SendCreateTodoListCommand(UserId userId,
+            string todoListName)
+        {
+            return await SendCreateTodoListCommand(todoListName, HttpRequestHelper.GetToken(
+                userId, CreateTodoListScope));
         }
 
 

@@ -18,6 +18,11 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Config
         {
             return GetAuthHeader(FakeJwtManager.GenerateJwtToken(ownerEmailAddress, scopes));
         }
+        
+        public static AuthenticationHeaderValue GetToken(UserId ownerId, List<string> scopes)
+        {
+            return GetAuthHeader(FakeJwtManager.GenerateJwtToken(ownerId, scopes));
+        }
 
         public static AuthenticationHeaderValue GetExpiredToken(EmailAddress ownerEmailAddress,
             List<string> scopes)
