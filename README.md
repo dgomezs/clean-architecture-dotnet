@@ -104,7 +104,8 @@ In production DB users for DBUP and MSSQL should be different with different per
   "AUTH_ISSUER": "https://[YOUR_AUTH0_DOMAIN].auth0.com/",
    "AUTH_AUDIENCE": "XXX", 
   "AUTH0_CLIENT_ID":  "XXX",  
-  "AUTH0_CLIENT_SECRET" : "XXX" 
+  "AUTH0_CLIENT_SECRET" : "XXX",
+  "AUTH0_TEST_EMAIL_ADDRESS" : "XXX" // replace with an email adddress of a user that must exist on auth0
 }
 
 ```
