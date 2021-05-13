@@ -30,5 +30,10 @@ namespace WebApi.Auth.Auth0
             var users = await management.Users.GetUsersByEmailAsync(email.Value);
             return users.Any();
         }
+
+        public Task AssignUserId(EmailAddress emailAddress, UserId expectedId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

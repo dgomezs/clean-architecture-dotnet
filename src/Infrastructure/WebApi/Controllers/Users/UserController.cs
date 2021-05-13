@@ -17,7 +17,7 @@ namespace WebApi.Controllers.Users
         [HttpPost]
         public async Task<string> CreateUser(
             [FromServices] ICreateUserUseCase createUserUseCase,
-            [FromServices] IAuthService authManager,
+            [FromServices] IAuthService authService,
             [FromBody] RestCreateUserRequest createUserRequest)
         {
             var (firstName, lastName, email) = createUserRequest;
@@ -25,12 +25,13 @@ namespace WebApi.Controllers.Users
                 email);
 
             var hasUserSignedUpInAuthSystem =
-                await authManager.HasUserSignedUpInAuthSystem(createUserCommand.Email);
+                await authService.HasUserSignedUpInAuthSystem(createUserCommand.Email);
             if (!hasUserSignedUpInAuthSystem)
                 throw new DomainException(new UserHasNotSignedUpError(createUserCommand.Email));
 
             UserId result = await createUserUseCase.Invoke(
                 createUserCommand);
+            await authService.AssignUserId(createUserCommand.Email, result);
             return result.Value.ToString();
 
         }

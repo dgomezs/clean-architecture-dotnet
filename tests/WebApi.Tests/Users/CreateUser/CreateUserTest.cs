@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using WebApi.Auth;
-using WebApi.Auth.UserManagement;
 using WebApi.Controllers.Users;
 using WebApi.Errors;
 using Xunit;
@@ -40,13 +39,16 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
         {
             // Arrange
             var createUserRequest = CreateUserRequest();
+            var emailAddress = EmailAddress.Create(createUserRequest.Email);
             var expectedId = MockSuccessfulCreateUserResponse(createUserRequest);
             MockUserHasSignedUp(createUserRequest);
             // act
             var response = await SendCreateUserCommand(createUserRequest);
             // Assert
             _authServices.Verify(
-                m => m.HasUserSignedUpInAuthSystem(EmailAddress.Create(createUserRequest.Email)), Times.Once);
+                m => m.HasUserSignedUpInAuthSystem(emailAddress)
+                , Times.Once);
+            _authServices.Verify(m => m.AssignUserId(emailAddress, expectedId), Times.Once);
             response.EnsureSuccessStatusCode(); // Status Code 200-299
             var body = await response.Content.ReadAsStringAsync();
             body.Should().Be(expectedId.Value.ToString());
@@ -58,7 +60,7 @@ namespace CleanArchitecture.TodoList.WebApi.Tests.Users.CreateUser
             // arrange
             var createUserRequest = CreateUserRequest();
             MockUserHasNotSignedUpYet(createUserRequest);
-            
+
             // act
             var response = await SendCreateUserCommand(createUserRequest);
 
