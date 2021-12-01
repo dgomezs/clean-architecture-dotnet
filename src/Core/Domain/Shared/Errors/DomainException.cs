@@ -45,10 +45,9 @@ namespace Domain.Shared.Errors
         {
             return errors.Case switch
             {
-                EmptyCase<Error> => new DomainException(),
-                HeadCase<Error> headCase => new DomainException(headCase.Head),
-                HeadTailCase<Error> headTailCase => throw new DomainException(headTailCase.Head,
-                    headTailCase.Tail),
+                null => new DomainException(),
+                Error e => new DomainException(e),
+                (Error e, Seq<Error> rest) => throw new DomainException(e, rest),
                 _ => new DomainException()
             };
         }

@@ -8,7 +8,7 @@
     <ItemGroup>
         <PackageReference Include="Ardalis.GuardClauses" Version="3.0.1" />
         <PackageReference Include="FluentValidation" Version="9.5.2" />
-        <PackageReference Include="LanguageExt.Core" Version="3.4.15" />
+        <PackageReference Include="LanguageExt.Core" Version="4.0.3" />
         <PackageReference Include="NodaTime" Version="3.0.5" />
     </ItemGroup>
 

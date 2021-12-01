@@ -41,13 +41,13 @@ namespace WebApi.Errors
             return vException.Errors.Select(x =>
                     new Error(x.ErrorCode, x.PropertyName, x.ErrorMessage)).ToSeq().Case switch
                 {
-                    EmptyCase<Error> => new RestErrorResponse(),
-                    HeadCase<Error> headCase => new RestErrorResponse((int) HttpStatusCode.BadRequest,
-                        headCase.Head.Code,
-                        headCase.Head.Message),
-                    HeadTailCase<Error> headTailCase => new RestErrorResponse((int) HttpStatusCode.BadRequest,
-                        headTailCase.Head.Code,
-                        headTailCase.Tail, headTailCase.Head.Message),
+                    null => new RestErrorResponse(),
+                    Error head => new RestErrorResponse((int) HttpStatusCode.BadRequest,
+                        head.Code,
+                        head.Message),
+                    (Error head, Seq<Error> tail)=> new RestErrorResponse((int) HttpStatusCode.BadRequest,
+                        head.Code,
+                        tail, head.Message),
                     _ => new RestErrorResponse()
                 };
         }

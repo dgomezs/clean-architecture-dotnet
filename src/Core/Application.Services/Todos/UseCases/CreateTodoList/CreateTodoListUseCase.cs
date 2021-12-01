@@ -8,6 +8,7 @@ using Application.Services.Users.Repositories;
 using Domain.Shared.Errors;
 using Domain.Todos.Entities;
 using Domain.Todos.ValueObjects;
+using Domain.Users.ValueObjects;
 using LanguageExt;
 
 namespace Application.Services.Todos.UseCases.CreateTodoList
@@ -33,20 +34,38 @@ namespace Application.Services.Todos.UseCases.CreateTodoList
         public async Task<Either<Error, TodoListId>> InvokeWithErrors(
             CreateTodoListCommand createTodoListCommand)
         {
-            var existingOwner = await _userRepository.GetById(createTodoListCommand.OwnerId);
-            var todoListName = createTodoListCommand.TodoListName;
-            if (existingOwner is null)
-                return new UserDoesNotExistError(createTodoListCommand.OwnerId);
+            return await CheckExistingOwnerExists(createTodoListCommand.OwnerId)
+                .ToAsync()
+                .Bind(u => CreateTodoList(createTodoListCommand)
+                    .ToAsync())
+                .MapAsync(PublishEvents)
+                .Map(todoList => todoList.Id);
+        }
 
+        private async Task<Either<Error, Unit>> CheckExistingOwnerExists(UserId ownerId)
+        {
+            var existingOwner = await _userRepository.GetById(ownerId);
+            if (existingOwner is null)
+                return new UserDoesNotExistError(ownerId);
+            return Unit.Default;
+        }
+
+        private async Task<Either<Error, TodoList>> CreateTodoList(CreateTodoListCommand createTodoListCommand)
+        {
+            var todoListName = createTodoListCommand.TodoListName;
             var todoList = await _todoListRepository.GetByName(createTodoListCommand.OwnerId, todoListName);
             if (todoList is not null)
                 return new TodoListAlreadyExistsError(todoListName);
 
-            var result = new TodoList(createTodoListCommand.OwnerId, todoListName);
-            await _todoListRepository.Save(result);
+            var newTodoList = new TodoList(createTodoListCommand.OwnerId, todoListName);
+            await _todoListRepository.Save(newTodoList);
+            return newTodoList;
+        }
 
-            await _domainEventPublisher.PublishEvents(result.DomainEvents);
-            return result.Id;
+        private async Task<TodoList> PublishEvents(TodoList todoList)
+        {
+            await _domainEventPublisher.PublishEvents(todoList.DomainEvents);
+            return todoList;
         }
     }
 }

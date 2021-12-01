@@ -21,10 +21,9 @@ namespace Application.Services.Shared.Extensions
         {
             return result.Match(r => r, errors => errors.Case switch
             {
-                EmptyCase<Error> => throw new DomainException(ErrorCodes.UnexpectedError),
-                HeadCase<Error> headCase => throw new DomainException(headCase.Head),
-                HeadTailCase<Error> headTailCase => throw new DomainException(headTailCase.Head,
-                    headTailCase.Tail),
+                null => throw new DomainException(ErrorCodes.UnexpectedError),
+                Error head => throw new DomainException(head),
+                (Error head, Seq<Error> tail) => throw new DomainException(head, tail),
                 _ => throw new DomainException(ErrorCodes.UnexpectedError)
             });
         }
